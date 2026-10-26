@@ -1,0 +1,114 @@
+---
+// Card corner button: white tile (top-left and bottom-right corners rounded) with an up-right
+// arrow. Place it inside a `.group` card. When the card is hovered or its link is keyboard-focused,
+// tangerine floods in from the bottom-left corner while the arrow flies out to the top-right and
+// a fresh one glides in behind it. Pressing the card gives a small, quick squeeze.
+// Reduced motion: an instant color change, no movement.
+import ArrowIcon from './ArrowIcon.astro';
+---
+
+<span
+	class="corner-tile flex size-11 items-center justify-center rounded-tl-xl rounded-br-xl bg-white text-ink"
+>
+	<span class="corner-fill" aria-hidden="true"></span>
+	<span class="corner-arrows">
+		<span class="corner-arrow corner-arrow--out"><ArrowIcon size={14} class="-rotate-45" /></span>
+		<span class="corner-arrow corner-arrow--in" aria-hidden="true"><ArrowIcon size={14} class="-rotate-45" /></span>
+	</span>
+</span>
+
+<style>
+	.corner-tile {
+		/* Long ease-out: quick to respond, soft to land. */
+		--ease: cubic-bezier(0.16, 1, 0.3, 1);
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		/* Same shape as the rounded corners (TL, TR, BR, BL). Browsers can briefly skip the
+		   rounded overflow clip while the fill animates on its own layer; clip-path always holds. */
+		clip-path: inset(0 round 0.75rem 0 0.75rem 0);
+		transition:
+			color 0.45s var(--ease),
+			scale 0.2s var(--ease);
+	}
+
+	/* Circle centered on the bottom-left corner, big enough to cover the tile when fully grown. */
+	.corner-fill {
+		position: absolute;
+		left: -150%;
+		bottom: -150%;
+		z-index: -1;
+		width: 300%;
+		height: 300%;
+		border-radius: 9999px;
+		background: var(--color-accent);
+		scale: 0;
+		transition: scale 0.6s var(--ease);
+	}
+
+	/* Both arrows share one grid cell; the incoming one waits off-tile at the bottom-left. */
+	.corner-arrows {
+		display: grid;
+	}
+	.corner-arrow {
+		grid-area: 1 / 1;
+		display: flex;
+		transition: translate 0.5s var(--ease);
+	}
+	.corner-arrow--in {
+		translate: -220% 220%;
+	}
+
+	@media (hover: hover) {
+		:global(.group:hover) .corner-tile {
+			color: white;
+		}
+		:global(.group:hover) .corner-fill {
+			scale: 1;
+		}
+		:global(.group:hover) .corner-arrow--out {
+			translate: 220% -220%;
+		}
+		:global(.group:hover) .corner-arrow--in {
+			translate: 0 0;
+			transition-delay: 0.08s;
+		}
+	}
+
+	/* Keyboard focus gets the same treatment as hover. */
+	:global(.group:has(a:focus-visible)) .corner-tile {
+		color: white;
+	}
+	:global(.group:has(a:focus-visible)) .corner-fill {
+		scale: 1;
+	}
+	:global(.group:has(a:focus-visible)) .corner-arrow--out {
+		translate: 220% -220%;
+	}
+	:global(.group:has(a:focus-visible)) .corner-arrow--in {
+		translate: 0 0;
+		transition-delay: 0.08s;
+	}
+
+	/* Press: a short squeeze, so the click feels physical. */
+	:global(.group:active) .corner-tile {
+		scale: 0.94;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.corner-tile,
+		.corner-fill,
+		.corner-arrow {
+			transition: none !important;
+		}
+		.corner-arrow--in {
+			display: none;
+		}
+		.corner-arrow--out {
+			translate: 0 0 !important;
+		}
+		:global(.group:active) .corner-tile {
+			scale: 1;
+		}
+	}
+</style>

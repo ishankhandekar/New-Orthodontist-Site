@@ -1,0 +1,205 @@
+---
+import { Image } from 'astro:assets';
+import ArrowIcon from './ArrowIcon.astro';
+import sarahPhoto from '../assets/gallery-sarah.png';
+import marcusPhoto from '../assets/gallery-marcus.png';
+import priyaPhoto from '../assets/gallery-priya.png';
+
+/*
+	TODO: Every case below is a placeholder (stock photos, made-up names and treatments). Replace
+	with real patients who have given written consent to appear on the site. Use full-face
+	lifestyle portraits of the finished smile (no clinical close-ups or retractor shots), at least
+	1000px wide. `focus` sets where the 4:5 crop sits, so the face stays in frame.
+	TODO: The "View case study" links point to case pages that don't exist yet.
+*/
+type Category = 'invisalign' | 'braces' | 'adult';
+
+const filters: { id: 'all' | Category; label: string }[] = [
+	{ id: 'all', label: 'All Work' },
+	{ id: 'invisalign', label: 'Invisalign' },
+	{ id: 'braces', label: 'Modern Braces' },
+	{ id: 'adult', label: 'Adult Care' },
+];
+
+const cases: {
+	slug: string;
+	name: string;
+	treatment: string;
+	duration: string;
+	categories: Category[];
+	tone: string;
+	image?: ImageMetadata;
+	focus?: string;
+}[] = [
+	{ slug: 'sarah', name: 'Sarah', treatment: 'Invisalign', duration: '14 months', categories: ['invisalign', 'adult'], tone: 'from-[#f3ebe2] to-[#e6d6c6]', image: sarahPhoto, focus: 'object-[50%_28%]' },
+	{ slug: 'marcus', name: 'Marcus', treatment: 'Modern Braces', duration: '20 months', categories: ['braces'], tone: 'from-[#efe8e0] to-[#ddd0c3]', image: marcusPhoto, focus: 'object-[50%_22%]' },
+	{ slug: 'priya', name: 'Priya', treatment: 'Invisalign Teen', duration: '12 months', categories: ['invisalign'], tone: 'from-[#f5ede4] to-[#ead9c8]', image: priyaPhoto, focus: 'object-[50%_35%]' },
+];
+---
+
+<section id="gallery" data-gallery class="bg-white px-5 pt-24 pb-20 text-ink sm:px-7 lg:pt-36 lg:pb-28">
+	<div class="mx-auto max-w-7xl">
+		<!-- Section label row -->
+		<div class="flex justify-between text-[11px] tracking-wide text-ink/70 uppercase">
+			<span>[ Smile gallery ]</span>
+			<span>[03]</span>
+		</div>
+
+		<!-- Editorial header: display serif left, intro + filters right -->
+		<header class="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-12 lg:items-end lg:gap-8">
+			<!-- Same type as the hero headline. -->
+			<h2
+				class="text-[2.125rem] leading-[1.08] font-normal tracking-[-0.01em] text-balance sm:text-[clamp(2.5rem,4.4vw,4rem)] lg:col-span-7"
+			>
+				Confident smiles, beautifully finished.
+			</h2>
+
+			<div class="lg:col-span-4 lg:col-start-9">
+				<p class="max-w-sm text-base leading-relaxed text-ink/75">
+					Real patients, photographed as they live: out in the world, smiling without a second
+					thought. Every result was planned and finished by Dr. Lee.
+				</p>
+
+				<!-- Revealed by the script, so visitors without JS just see every case. -->
+				<div
+					role="group"
+					aria-label="Filter transformations"
+					data-filters
+					hidden
+					class="mt-8 flex flex-wrap gap-x-6 gap-y-3"
+				>
+					{
+						filters.map((f, i) => (
+							<button
+								type="button"
+								data-filter={f.id}
+								aria-pressed={i === 0 ? 'true' : 'false'}
+								class="py-1 text-sm text-ink/70 decoration-accent decoration-2 underline-offset-[10px] transition-colors hover:text-ink focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink aria-pressed:text-ink aria-pressed:underline"
+							>
+								{f.label}
+							</button>
+						))
+					}
+				</div>
+				<p data-status class="sr-only" aria-live="polite"></p>
+			</div>
+		</header>
+
+		<!-- Cards: one column on mobile, three equal-height cards side by side from tablet up. -->
+		<ul class="mt-16 grid gap-x-8 gap-y-16 md:grid-cols-3 lg:mt-24 lg:gap-x-10">
+			{
+				cases.map((c, i) => (
+					<li data-categories={c.categories.join(' ')} class="gallery-card">
+						<article class="group relative">
+							<div class:list={['aspect-[4/5] overflow-hidden bg-linear-to-br', c.tone]}>
+								{c.image ? (
+									<Image
+										src={c.image}
+										alt={`${c.name}, smiling after treatment`}
+										widths={[400, c.image.width]}
+										sizes="(min-width: 768px) 30vw, 100vw"
+										class:list={[
+											'size-full object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transition-none',
+											c.focus,
+										]}
+									/>
+								) : (
+									<div class="flex size-full items-end p-5">
+										<span class="text-[11px] tracking-[0.18em] text-ink/75 uppercase">Portrait coming soon</span>
+									</div>
+								)}
+							</div>
+
+							<!-- Index and link share the small top row, so the name and treatment get the full width. -->
+							<div class="mt-5 border-t border-ink/10 pt-4">
+								<div class="flex items-center justify-between gap-4">
+									<p class="text-[11px] tracking-[0.18em] text-ink/70 uppercase">
+										N° {String(i + 1).padStart(2, '0')}
+									</p>
+									<a
+										href={`/smile-gallery/${c.slug}`}
+										class="inline-flex shrink-0 items-center gap-2 text-xs tracking-[0.14em] text-ink uppercase after:absolute after:inset-0 focus-visible:outline-none group-has-[a:focus-visible]:outline-2 group-has-[a:focus-visible]:outline-offset-8 group-has-[a:focus-visible]:outline-ink"
+									>
+										View case study<span class="sr-only">: {c.name}, {c.treatment}</span>
+										<ArrowIcon
+											size={11}
+											class="text-accent transition-transform motion-safe:group-hover:translate-x-1"
+										/>
+									</a>
+								</div>
+								<h3 class="mt-2 font-display text-[1.75rem] leading-tight font-normal">{c.name}</h3>
+								<p class="mt-1 text-sm text-ink/75">
+									{c.treatment}, {c.duration}
+								</p>
+							</div>
+						</article>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<style>
+	/* Fade-in as cards enter the viewport. Only applied once the script runs, so content is never
+	   hidden without JS, and never for visitors who prefer reduced motion. */
+	.gallery-card.is-pending {
+		opacity: 0;
+		transform: translateY(1.5rem);
+	}
+	/* Transition only on the way in, so hiding cards on load is instant (no flash, no fade-out). */
+	.gallery-card:not(.is-pending) {
+		transition:
+			opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+			transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.gallery-card,
+		.gallery-card:not(.is-pending) {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	const root = document.querySelector<HTMLElement>('[data-gallery]')!;
+	const filterGroup = root.querySelector<HTMLElement>('[data-filters]')!;
+	const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+	const cards = [...root.querySelectorAll<HTMLElement>('[data-categories]')];
+	const status = root.querySelector<HTMLElement>('[data-status]')!;
+
+	// Filtering (plain buttons, so they're keyboard-operable by default).
+	filterGroup.hidden = false;
+	for (const button of buttons) {
+		button.addEventListener('click', () => {
+			const filter = button.dataset.filter!;
+			for (const b of buttons) b.setAttribute('aria-pressed', String(b === button));
+			let shown = 0;
+			for (const card of cards) {
+				const match = filter === 'all' || card.dataset.categories!.split(' ').includes(filter);
+				card.hidden = !match;
+				if (match) shown++;
+			}
+			status.textContent = `Showing ${shown} ${shown === 1 ? 'transformation' : 'transformations'}`;
+		});
+	}
+
+	// Fade cards in as they enter the viewport. Native scrolling only.
+	if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					entry.target.classList.remove('is-pending');
+					observer.unobserve(entry.target);
+				}
+			},
+			{ rootMargin: '0px 0px -10% 0px', threshold: 0.15 },
+		);
+		for (const card of cards) {
+			card.classList.add('is-pending');
+			observer.observe(card);
+		}
+	}
+</script>

@@ -1,0 +1,157 @@
+---
+import { Image } from 'astro:assets';
+import CornerArrow from './CornerArrow.astro';
+import bracesPhoto from '../assets/treatment-braces.png';
+import invisalignPhoto from '../assets/treatment-invisalign.jpg';
+import jawPhoto from '../assets/treatment-jaw.jpg';
+// TODO: Placeholder stock photo of the doctor; swap for Dr. Lee.
+import doctorPhoto from '../assets/about-doctor.jpg';
+
+// TODO: Placeholder copy; confirm with the client. The treatment links point to pages that
+// don't exist yet. The braces photo is only 490px wide; replace with a larger one (1000px+).
+
+// Shared card styling. Each card links through one arrow tile in its bottom-right corner; the
+// link stretches over the whole card (its ::after), so the entire card is clickable.
+const card =
+	'group relative isolate flex min-h-[26rem] flex-col overflow-hidden rounded-2xl p-5 lg:min-h-[30rem] has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-4 has-[a:focus-visible]:outline-ink';
+// The photo sits in its own frame clipped with clip-path as well as rounded corners: while the
+// zoom animates, browsers draw the photo on a separate layer and can briefly skip the card's
+// rounded overflow clip (corners flash square). clip-path is applied to that layer too. It lives
+// on this frame, not the card, so it doesn't cut off the card's keyboard focus outline.
+const photoFrame = 'absolute inset-0 -z-10 overflow-hidden rounded-2xl [clip-path:inset(0_round_1rem)]';
+// Photo zoom shares the corner button's long ease-out, slower, so card and button move as one.
+const photo =
+	'size-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04] motion-reduce:transition-none';
+const cornerLink = 'mt-auto ml-auto after:absolute after:inset-0 focus-visible:outline-none';
+---
+
+<section id="treatments" class="bg-white px-5 pt-20 pb-20 text-ink sm:px-7 lg:pt-28 lg:pb-28">
+	<div class="mx-auto max-w-7xl">
+		<!-- Section label row -->
+		<div class="flex justify-between text-[11px] tracking-wide text-ink/70 uppercase">
+			<span>[ Treatments ]</span>
+			<span>[04]</span>
+		</div>
+
+		<!-- Centered header. Headline uses the same type as the hero. -->
+		<header class="mx-auto mt-10 max-w-2xl text-center lg:mt-14">
+			<h2
+				class="text-[2.125rem] leading-[1.08] font-normal tracking-[-0.01em] text-balance sm:text-[clamp(2.5rem,4.4vw,4rem)]"
+			>
+				Every treatment, planned by Dr.&nbsp;Lee.
+			</h2>
+			<p class="mx-auto mt-5 max-w-md text-sm leading-relaxed text-ink/75">
+				Braces, Invisalign, and early jaw orthopedics for kids, teens, and adults, each plan designed
+				and checked by Dr. Lee herself.
+			</p>
+		</header>
+
+		<!-- Cards: stacked on mobile; three across on desktop with the reference's wide/narrow/wide rhythm. -->
+		<div class="mt-12 grid gap-4 lg:mt-16 lg:grid-cols-[1fr_0.8fr_1.3fr] lg:gap-5">
+			<!-- Braces: short description at the top, arrow tile in the corner -->
+			<article class:list={[card, 'text-white']}>
+				<div class={photoFrame}>
+					<Image
+						src={bracesPhoto}
+						alt="Close-up of a smile with metal braces"
+						widths={[490]}
+						sizes="(min-width: 1024px) 30vw, 100vw"
+						class:list={[photo, 'object-[50%_60%]']}
+					/>
+				</div>
+				<div
+					class="absolute inset-0 -z-10 bg-linear-to-b from-black/65 via-black/10 via-45% to-black/55"
+					aria-hidden="true"
+				>
+				</div>
+
+				<div class="flex items-start gap-3">
+					<span class="mt-1 size-2 shrink-0 rounded-full bg-accent outline-4 outline-accent/25" aria-hidden="true"></span>
+					<div>
+						<h3 class="text-lg font-medium">Braces</h3>
+						<p class="mt-1 max-w-[15rem] text-sm leading-snug text-white">
+							Metal and clear ceramic braces, precisely planned for every smile.
+						</p>
+					</div>
+				</div>
+
+				<a href="/treatments/braces" aria-label="Learn about braces" class={cornerLink}>
+					<CornerArrow />
+				</a>
+			</article>
+
+			<!-- Invisalign: short description at the top, arrow tile in the corner (same as Braces) -->
+			<article class:list={[card, 'text-white']}>
+				<div class={photoFrame}>
+					<Image
+						src={invisalignPhoto}
+						alt="Clear Invisalign aligners held in open hands"
+						widths={[640, 1024, 1600]}
+						sizes="(min-width: 1024px) 25vw, 100vw"
+						class:list={[photo, 'object-[58%_center]']}
+					/>
+				</div>
+				<div
+					class="absolute inset-0 -z-10 bg-linear-to-b from-black/65 via-black/10 via-45% to-black/50"
+					aria-hidden="true"
+				>
+				</div>
+
+				<div class="flex items-start gap-3">
+					<span class="mt-1 size-2 shrink-0 rounded-full bg-accent outline-4 outline-accent/25" aria-hidden="true"></span>
+					<div>
+						<h3 class="text-lg font-medium">Invisalign</h3>
+						<p class="mt-1 max-w-[15rem] text-sm leading-snug text-white">
+							Nearly invisible clear aligners you can take out to eat, brush, and smile.
+						</p>
+					</div>
+				</div>
+
+				<a href="/treatments/invisalign" aria-label="Learn about Invisalign" class={cornerLink}>
+					<CornerArrow />
+				</a>
+			</article>
+
+			<!-- Jaw orthopedics: byline and statement up top, arrow tile in the corner, model visible between -->
+			<article class:list={[card, 'text-ink']}>
+				<div class={photoFrame}>
+					<Image
+						src={jawPhoto}
+						alt="Gloved hand holding a dental model of a patient's teeth"
+						widths={[640, 1024, 1333]}
+						sizes="(min-width: 1024px) 40vw, 100vw"
+						class:list={[photo, 'object-[50%_62%]']}
+					/>
+				</div>
+				<!-- Soft wash over the light-blue sky keeps the dark text crisp -->
+				<div class="absolute inset-0 -z-10 bg-linear-to-b from-white/45 via-white/10 via-50% to-white/40" aria-hidden="true">
+				</div>
+
+				<div class="flex items-center gap-3">
+					<Image
+						src={doctorPhoto}
+						alt=""
+						width={96}
+						height={96}
+						class="size-10 rounded-full object-cover object-[50%_30%]"
+					/>
+					<div class="leading-tight">
+						<p class="text-sm font-medium">Dr. Judy Lee</p>
+						<p class="text-xs text-ink/75">Orthodontist</p>
+					</div>
+				</div>
+
+				<div class="mt-7">
+					<h3 class="text-xs tracking-[0.14em] text-ink/75 uppercase">Jaw orthopedics</h3>
+					<p class="mt-3 max-w-md text-[1.25rem] leading-snug tracking-[-0.01em] text-balance lg:text-[1.375rem]">
+						Guiding jaw growth early, while kids are still growing, so later treatment is simpler.
+					</p>
+				</div>
+
+				<a href="/treatments/jaw-orthopedics" aria-label="Learn about jaw orthopedics" class:list={[cornerLink, 'pt-8']}>
+					<CornerArrow />
+				</a>
+			</article>
+		</div>
+	</div>
+</section>

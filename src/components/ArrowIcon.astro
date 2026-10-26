@@ -1,0 +1,22 @@
+---
+// Geometric arrow: flat cuts, sharp mitered point, 90° head. Inherits `currentColor`.
+interface Props {
+	size?: number;
+	class?: string;
+}
+
+const { size = 14, class: className } = Astro.props;
+---
+
+<svg
+	class={className}
+	width={size}
+	height={size}
+	viewBox="0 0 12 12"
+	fill="none"
+	stroke="currentColor"
+	stroke-width="1.5"
+	aria-hidden="true"
+>
+	<path d="M1 6H10M5.75 1.75L10 6L5.75 10.25" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"></path>
+</svg>

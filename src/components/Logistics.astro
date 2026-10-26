@@ -1,0 +1,104 @@
+---
+import ArrowIcon from './ArrowIcon.astro';
+
+// TODO: Confirm the financing details (0% interest, in-house plans) and which PPO plans are
+// accepted with the client before launch.
+const steps = [
+	{
+		title: 'The Scan',
+		body: 'A fast, comfortable digital scan of your teeth. No messy impressions, just a few quiet minutes in the chair.',
+	},
+	{
+		title: 'The Plan',
+		body: 'Sit down with Dr. Lee herself to walk through your custom smile blueprint, and ask her anything.',
+	},
+	{
+		title: 'The Choice',
+		body: 'A clear breakdown of timelines and treatment options, so you can decide what feels right. Zero pressure.',
+	},
+];
+---
+
+<section
+	id="first-visit"
+	aria-labelledby="first-visit-heading"
+	class="bg-white px-5 py-20 text-ink sm:px-7 lg:py-28"
+>
+	<div class="mx-auto max-w-7xl">
+		<!-- Section label row -->
+		<div class="flex justify-between text-[11px] tracking-wide text-ink/70 uppercase">
+			<span>[ Investment &amp; first visit ]</span>
+			<span>[05]</span>
+		</div>
+
+		<!-- Asymmetric two columns on desktop; one vertical sequence on mobile. -->
+		<div class="mt-10 grid gap-16 lg:mt-14 lg:grid-cols-12 lg:gap-8">
+			<!-- Left: financial transparency. Sticks while the steps scroll past on large screens. -->
+			<div id="financing" class="lg:sticky lg:top-24 lg:col-span-5 lg:self-start">
+				<h2
+					id="first-visit-heading"
+					class="text-[2.125rem] leading-[1.08] font-normal tracking-[-0.01em] text-balance sm:text-[clamp(2.5rem,4.4vw,4rem)]"
+				>
+					Investment, made accessible.
+				</h2>
+				<p class="mt-6 max-w-md text-base leading-relaxed text-ink/75">
+					A confident smile shouldn't come with financial stress. We offer flexible in-house payment
+					plans at 0% interest, and we accept most major PPO insurance plans. Before anything begins,
+					we'll walk you through your coverage and options, so there are never any surprises.
+				</p>
+
+				<dl class="mt-10 grid max-w-md grid-cols-2 gap-x-8 gap-y-6">
+					<div>
+						<dt class="flex items-center gap-2 text-[11px] tracking-[0.14em] text-ink/70 uppercase">
+							<span class="h-px w-4 bg-accent" aria-hidden="true"></span>
+							Financing
+						</dt>
+						<dd class="mt-2 text-sm leading-snug">0% interest, in-house plans</dd>
+					</div>
+					<div>
+						<dt class="flex items-center gap-2 text-[11px] tracking-[0.14em] text-ink/70 uppercase">
+							<span class="h-px w-4 bg-accent" aria-hidden="true"></span>
+							Insurance
+						</dt>
+						<dd class="mt-2 text-sm leading-snug">Most major PPO plans accepted</dd>
+					</div>
+				</dl>
+
+				<a
+					href="#contact"
+					class="group mt-10 inline-flex items-center gap-2 text-sm font-medium underline decoration-ink/25 underline-offset-[6px] transition-colors hover:decoration-accent focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+				>
+					Ask about your coverage
+					<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
+				</a>
+			</div>
+
+			<!-- Right: the first visit, as a numbered sequence -->
+			<div id="first-visit-steps" class="lg:col-span-6 lg:col-start-7">
+				<h3 class="text-[11px] tracking-[0.14em] text-ink/70 uppercase">Your first visit</h3>
+				<ol class="mt-6">
+					{
+						steps.map((step, i) => (
+							<li class="grid grid-cols-[4.5rem_1fr] gap-x-6 border-t border-ink/10 py-8 sm:grid-cols-[6rem_1fr] sm:gap-x-8 sm:py-10">
+								<span
+									class="text-[2.75rem] leading-none font-light tracking-[-0.03em] tabular-nums sm:text-[3.5rem]"
+									aria-hidden="true"
+								>
+									{String(i + 1).padStart(2, '0')}
+								</span>
+								<div class="pt-1 sm:pt-2">
+									<h4 class="text-lg font-medium tracking-[-0.01em]">
+										<span class="sr-only">Step {i + 1}: </span>
+										<span class="mr-1.5 font-light text-accent" aria-hidden="true">/</span>
+										{step.title}
+									</h4>
+									<p class="mt-2 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">{step.body}</p>
+								</div>
+							</li>
+						))
+					}
+				</ol>
+			</div>
+		</div>
+	</div>
+</section>

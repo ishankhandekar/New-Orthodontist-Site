@@ -1,0 +1,197 @@
+---
+import { Image } from 'astro:assets';
+import ArrowIcon from './ArrowIcon.astro';
+import sarahPhoto from '../assets/gallery-sarah.png';
+import marcusPhoto from '../assets/gallery-marcus.png';
+import priyaPhoto from '../assets/gallery-priya.png';
+
+/*
+	TODO: Placeholder testimonials. Before launch, replace with real patient reviews used with
+	written consent (quotes must be genuine and unedited in meaning), and real photos.
+*/
+const testimonials = [
+	{
+		name: 'Sarah',
+		detail: 'Invisalign, 14 months',
+		quote: 'I kept forgetting I was even in treatment. Dr. Lee checked in at every visit, and my smile turned out better than I imagined.',
+		photo: sarahPhoto,
+		focus: 'object-[50%_28%]',
+	},
+	{
+		name: 'Marcus',
+		detail: 'Modern braces, 20 months',
+		quote: 'From the first scan to the day my braces came off, it was always Dr. Lee. That made all the difference.',
+		photo: marcusPhoto,
+		focus: 'object-[50%_22%]',
+	},
+	{
+		name: 'Priya',
+		detail: 'Invisalign Teen, 12 months',
+		quote: 'My parents loved how clear the payment plan was, and I loved that nobody at school could tell I had aligners.',
+		photo: priyaPhoto,
+		focus: 'object-[50%_35%]',
+	},
+];
+const total = testimonials.length;
+const navButton =
+	'flex size-10 items-center justify-center rounded-full border border-white/50 text-white transition-colors hover:bg-white hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
+---
+
+<!--
+	Full-bleed tangerine band with an apricot quote card. Client design choice: white text on the
+	tangerine, though it's below WCAG AA (2.49:1). The card keeps ink text (10.97:1).
+-->
+<section
+	id="testimonials"
+	aria-labelledby="testimonials-heading"
+	class="bg-accent px-5 py-16 text-white sm:px-7 lg:py-24"
+>
+	<div
+		data-testimonials
+		role="region"
+		aria-roledescription="carousel"
+		aria-label="Patient testimonials"
+		class="mx-auto max-w-7xl"
+	>
+		<!-- Section label row -->
+		<div class="flex justify-between text-[11px] tracking-wide uppercase">
+			<span>[ Testimonials ]</span>
+			<span>[06]</span>
+		</div>
+
+		<div class="mt-8 grid gap-8 lg:mt-10 lg:grid-cols-12 lg:gap-10">
+			<!-- Left: headline, portrait of the current patient, counter -->
+			<div class="flex flex-col lg:col-span-5">
+				<h2
+					id="testimonials-heading"
+					class="text-[2.125rem] leading-[1.08] font-normal tracking-[-0.01em] text-balance sm:text-[clamp(2.5rem,4.4vw,4rem)]"
+				>
+					Kind words from the families we treat.
+				</h2>
+
+				<div class="mt-auto hidden items-end gap-5 pt-12 lg:flex">
+					<div class="relative aspect-[4/5] w-48 overflow-hidden rounded-2xl xl:w-56">
+						{
+							testimonials.map((t, i) => (
+								<Image
+									src={t.photo}
+									alt=""
+									widths={[300, 500]}
+									sizes="14rem"
+									data-slide={i}
+									hidden={i !== 0}
+									class:list={['testimonial-fade absolute inset-0 size-full object-cover', t.focus]}
+								/>
+							))
+						}
+					</div>
+					<p class="text-sm tabular-nums" aria-hidden="true">
+						<span data-current>1</span> / {total}
+					</p>
+				</div>
+			</div>
+
+			<!-- Right: controls + quote card -->
+			<div class="flex flex-col gap-4 lg:col-span-7">
+				<!-- Revealed by the script, so visitors without JS just see the first quote. -->
+				<div data-controls hidden class="flex items-center justify-between gap-3 lg:justify-end">
+					<p class="text-sm tabular-nums lg:hidden" aria-hidden="true">
+						<span data-current>1</span> / {total}
+					</p>
+					<div class="flex gap-2">
+						<button type="button" data-prev aria-label="Previous testimonial" class={navButton}>
+							<ArrowIcon size={13} class="rotate-180" />
+						</button>
+						<button type="button" data-next aria-label="Next testimonial" class={navButton}>
+							<ArrowIcon size={13} />
+						</button>
+					</div>
+				</div>
+
+				<div class="flex min-h-[20rem] flex-1 flex-col rounded-2xl bg-accent-light p-6 text-ink sm:p-9 lg:min-h-[26rem] lg:p-10">
+					<span class="font-display text-6xl leading-[0.6] select-none" aria-hidden="true">“</span>
+					<!-- Polite live region: screen readers hear the new quote when the arrows are used. -->
+					<div aria-live="polite" class="flex flex-1 flex-col">
+						{
+							testimonials.map((t, i) => (
+								<figure
+									data-slide={i}
+									hidden={i !== 0}
+									role="group"
+									aria-roledescription="slide"
+									aria-label={`${i + 1} of ${total}`}
+									class="testimonial-fade flex flex-1 flex-col"
+								>
+									<blockquote class="mt-6 text-[1.375rem] leading-[1.3] tracking-[-0.01em] text-pretty sm:text-[1.75rem] lg:text-[2rem]">
+										<p>{t.quote}</p>
+									</blockquote>
+									<figcaption class="mt-auto flex items-center gap-3 pt-10">
+										<Image
+											src={t.photo}
+											alt=""
+											width={96}
+											height={96}
+											class:list={['size-11 rounded-xl object-cover', t.focus]}
+										/>
+										<span class="leading-tight">
+											<span class="block text-sm font-medium">{t.name}</span>
+											<span class="block text-xs text-ink/75">{t.detail}</span>
+										</span>
+									</figcaption>
+								</figure>
+							))
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	/* Soft crossfade between slides (skipped for reduced motion). */
+	.testimonial-fade {
+		transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	.testimonial-fade.is-fading {
+		opacity: 0;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.testimonial-fade {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	const root = document.querySelector<HTMLElement>('[data-testimonials]')!;
+	const controls = root.querySelector<HTMLElement>('[data-controls]')!;
+	const slides = [...root.querySelectorAll<HTMLElement>('[data-slide]')];
+	const counters = root.querySelectorAll<HTMLElement>('[data-current]');
+	const total = new Set(slides.map((s) => s.dataset.slide)).size;
+	const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	let current = 0;
+
+	const show = (index: number) => {
+		const next = (index + total) % total;
+		const swap = () => {
+			for (const s of slides) {
+				const active = Number(s.dataset.slide) === next;
+				s.hidden = !active;
+				s.classList.toggle('is-fading', active && !reduceMotion);
+			}
+			for (const c of counters) c.textContent = String(next + 1);
+			current = next;
+			// Fade the incoming slide in on the next frame.
+			requestAnimationFrame(() => requestAnimationFrame(() => slides.forEach((s) => s.classList.remove('is-fading'))));
+		};
+		if (reduceMotion) return swap();
+		// Fade the outgoing slide out, then swap.
+		for (const s of slides) if (!s.hidden) s.classList.add('is-fading');
+		setTimeout(swap, 200);
+	};
+
+	controls.hidden = false;
+	root.querySelector('[data-prev]')!.addEventListener('click', () => show(current - 1));
+	root.querySelector('[data-next]')!.addEventListener('click', () => show(current + 1));
+</script>

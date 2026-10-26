@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+/* In-page links (#about etc.) stop below the fixed site header instead of under it. */
+html {
+	scroll-padding-top: 3.5rem;
+}
+
+@theme {
+	--font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+	/* Editorial serif for display headings (Smile Gallery). */
+	--font-display: "Playfair Display", ui-serif, Georgia, serif;
+
+	/* Palette. Accent is for buttons, small highlights and icons only (~10% of the page).
+	   Ink text on it passes WCAG AA (5.92:1); white text is 2.49:1 and fails. White text is
+	   used on About's "Book now" by client choice. White icons on it are fine (decorative). */
+	--color-accent: #f08a4b;
+	--color-accent-dark: #e67a38; /* hover */
+	/* Secondary orange: light apricot for cards and soft fills. Ink text on it is ~11:1. */
+	--color-accent-light: #ffd7b5;
+	/* Same hue as the accent, deep enough for small orange text and icons (5.01:1 on white). */
+	--color-accent-deep: #b8500f;
+	--color-peach: #fff1e6;
+	--color-ink: #1b2b2a;
+
+	/* Motion. Use with `motion-safe:` so prefers-reduced-motion turns it off. */
+	--animate-hero-zoom: hero-zoom 20s ease-out both;
+	--animate-fade-rise: fade-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	--animate-marquee: marquee 40s linear infinite;
+	/* Office section text ring: a full turn every 12 seconds. */
+	--animate-ring-spin: ring-spin 12s linear infinite;
+
+	@keyframes ring-spin {
+		to {
+			rotate: 360deg;
+		}
+	}
+
+	/* Track holds two identical copies; sliding by half its width loops seamlessly. */
+	@keyframes marquee {
+		from {
+			transform: translateX(0);
+		}
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	@keyframes hero-zoom {
+		from {
+			transform: scale(1);
+		}
+		to {
+			transform: scale(1.08);
+		}
+	}
+
+	@keyframes fade-rise {
+		from {
+			opacity: 0;
+			transform: translateY(16px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+}

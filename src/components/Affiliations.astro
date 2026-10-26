@@ -1,0 +1,47 @@
+---
+// TODO: Confirm each listing with Dr. Lee before launch (memberships, board certification and
+// the systems the practice actually uses), and whether "backed by" is the right wording;
+// associations don't usually endorse individual practices. Swap in official logos only with
+// permission and per each organization's brand guidelines.
+const names = [
+	{ label: 'AACD', style: 'font-semibold tracking-tight' },
+	{ label: 'ABO', style: 'font-medium tracking-[0.35em]' },
+	{ label: 'Invisalign', style: 'font-light' },
+	{ label: 'American Dental Association', style: 'font-serif font-bold tracking-tight' },
+	{ label: 'AAO', style: 'font-medium tracking-[0.35em]' },
+	{ label: 'iTero', style: 'font-light' },
+	{ label: 'Damon System', style: 'font-semibold tracking-tight' },
+];
+---
+
+<section aria-label="Professional affiliations" class="bg-white pt-8 pb-1 text-ink sm:pt-10">
+	<p class="px-5 text-[11px] font-medium tracking-[0.2em] text-ink/60 uppercase sm:px-7">
+		Proudly backed by…
+	</p>
+
+	<!--
+		Marquee: the track holds the list twice and slides left by half its width, so it loops
+		seamlessly. Edges fade out; it pauses on hover. With reduced motion it stays still and
+		can be scrolled sideways instead.
+	-->
+	<div
+		class="group mt-3 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)] motion-reduce:overflow-x-auto"
+	>
+		<div class="flex w-max motion-safe:animate-marquee group-hover:[animation-play-state:paused]">
+			{
+				[0, 1].map((copy) => (
+					<ul
+						aria-hidden={copy === 1 ? 'true' : undefined}
+						class="flex shrink-0 items-center gap-12 py-2 pr-12 sm:gap-20 sm:pr-20"
+					>
+						{names.map((n) => (
+							<li class:list={['text-xl whitespace-nowrap text-ink/55 sm:text-[1.375rem]', n.style]}>
+								{n.label}
+							</li>
+						))}
+					</ul>
+				))
+			}
+		</div>
+	</div>
+</section>

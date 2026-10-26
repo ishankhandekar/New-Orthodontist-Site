@@ -1,0 +1,428 @@
+---
+import Logo from './Logo.astro';
+
+type NavLink = { label: string; href: string };
+type Menu = {
+	id: string;
+	label: string;
+	columns: { heading: string; large?: boolean; links: NavLink[] }[];
+};
+
+// TODO: Treatment pages, the Before & After page, Meet Dr. Lee, Our Team and Office & Tech pages
+// don't exist yet. Gallery and Meet Dr. Lee point at their homepage sections until they're built.
+const menus: Menu[] = [
+	{
+		id: 'treatments',
+		label: 'Treatments',
+		columns: [
+			{
+				heading: 'Explore treatments',
+				large: true,
+				links: [
+					{ label: 'Invisalign', href: '/treatments/invisalign' },
+					{ label: 'Braces', href: '/treatments/braces' },
+					{ label: 'Jaw Orthopedics', href: '/treatments/jaw-orthopedics' },
+				],
+			},
+			{
+				heading: 'Care for every age',
+				links: [
+					{ label: 'Kids Ortho', href: '/treatments/kids' },
+					{ label: 'Adult Ortho', href: '/treatments/adults' },
+				],
+			},
+		],
+	},
+	{
+		id: 'patient-info',
+		label: 'Patient Info',
+		columns: [
+			{
+				heading: 'Before you start',
+				large: true,
+				links: [
+					{ label: 'Financial & Insurance', href: '/#financing' },
+					{ label: 'First Visit', href: '/#first-visit-steps' },
+				],
+			},
+			{
+				heading: 'Questions',
+				links: [
+					{ label: 'FAQ', href: '/#faq' },
+					{ label: 'Office hours & location', href: '/#contact' },
+				],
+			},
+		],
+	},
+	{
+		id: 'about-us',
+		label: 'About Us',
+		columns: [
+			{
+				// TODO: Confirm Dr. Lee is board certified (American Board of Orthodontics) before launch.
+				heading: 'Board Certified Specialist',
+				large: true,
+				links: [{ label: 'Meet Dr. Lee', href: '/#about' }],
+			},
+			{
+				heading: 'Our practice',
+				links: [
+					{ label: 'Our Team', href: '/about/team' },
+					{ label: 'Office & Tech', href: '/about/office' },
+				],
+			},
+		],
+	},
+];
+const [treatments, patientInfo, aboutUs] = menus;
+
+// Top-level order in the bar and the phone menu: dropdowns and plain links mixed.
+const topLevel: (Menu | NavLink)[] = [treatments, patientInfo, { label: 'Gallery', href: '/#gallery' }, aboutUs];
+const isMenu = (item: Menu | NavLink): item is Menu => 'columns' in item;
+// TODO: Point to the scheduling software or booking form once it's chosen.
+const bookHref = '/#contact';
+
+const topLink =
+	'flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs text-white/90 transition-colors group-data-[solid=true]:text-ink/75 hover:text-white group-data-[solid=true]:hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-current';
+const ease = 'ease-[cubic-bezier(0.16,1,0.3,1)]';
+---
+
+<!--
+	Sticky site header. data-scrolled shrinks it to a thin bar; data-solid turns it white (when
+	scrolled, or whenever a menu is open). Desktop menus roll down as one full-width panel under the
+	bar, Apple-style, with the page blurred behind it. Phones get a full-screen menu.
+-->
+<header
+	id="site-header"
+	data-scrolled="false"
+	data-solid="false"
+	class="group fixed inset-x-0 top-0 z-50 border-b border-transparent text-white transition-[background-color,border-color,color] duration-300 data-[solid=true]:border-ink/8 data-[solid=true]:bg-white data-[solid=true]:text-ink motion-reduce:transition-none"
+>
+	<div
+		class="flex items-center justify-between px-5 pt-5 transition-[padding] duration-300 group-data-[scrolled=true]:py-2 sm:px-7 sm:pt-6 sm:group-data-[scrolled=true]:py-2 motion-reduce:transition-none"
+	>
+		<Logo />
+
+		<nav
+			aria-label="Main"
+			class="flex items-center gap-1 rounded-xl border border-white/15 bg-ink/50 p-1 pl-2 backdrop-blur-md transition-[background-color,border-color,padding] duration-300 group-data-[solid=true]:border-transparent group-data-[solid=true]:bg-transparent group-data-[solid=true]:backdrop-blur-none group-data-[scrolled=true]:py-0 motion-reduce:transition-none"
+		>
+			<ul class="hidden items-center md:flex">
+				{
+					topLevel.map((item) =>
+						isMenu(item) ? (
+							<li>
+								<button
+									type="button"
+									class={topLink}
+									aria-expanded="false"
+									aria-controls="mega-menu"
+									data-menu-trigger={item.id}
+								>
+									{item.label}
+									<svg
+										class="size-3 transition-transform duration-300 motion-reduce:transition-none"
+										viewBox="0 0 12 12"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="1.5"
+										aria-hidden="true"
+									>
+										<path d="M3 4.5 6 7.5 9 4.5" stroke-linecap="round" stroke-linejoin="round" />
+									</svg>
+								</button>
+							</li>
+						) : (
+							<li>
+								<a href={item.href} class={topLink} data-menu-close>
+									{item.label}
+								</a>
+							</li>
+						),
+					)
+				}
+			</ul>
+			<a
+				href={bookHref}
+				class="rounded-lg border border-transparent bg-white px-3.5 py-2 text-xs font-medium text-ink transition-[background-color,border-color,padding] hover:bg-white/90 group-data-[solid=true]:border-ink/15 group-data-[solid=true]:hover:bg-ink/5 group-data-[scrolled=true]:py-1.5"
+			>
+				Book consult
+			</a>
+
+			<!-- Mobile menu toggle: two lines that cross into an X -->
+			<button
+				type="button"
+				id="mobile-menu-toggle"
+				aria-expanded="false"
+				aria-controls="mobile-menu"
+				aria-label="Open menu"
+				class="group/burger relative flex size-9 items-center justify-center rounded-lg md:hidden"
+			>
+				<span
+					class:list={[
+						'absolute h-[1.5px] w-4.5 bg-current transition-transform duration-300 -translate-y-[3px] group-aria-expanded/burger:translate-y-0 group-aria-expanded/burger:rotate-45 motion-reduce:transition-none',
+						ease,
+					]}
+				></span>
+				<span
+					class:list={[
+						'absolute h-[1.5px] w-4.5 bg-current transition-transform duration-300 translate-y-[3px] group-aria-expanded/burger:translate-y-0 group-aria-expanded/burger:-rotate-45 motion-reduce:transition-none',
+						ease,
+					]}
+				></span>
+			</button>
+		</nav>
+	</div>
+
+	<!--
+		Desktop mega panel. Rolls open via grid rows 0fr -> 1fr. Both menus share one grid cell, so
+		switching between them crossfades without the panel jumping height. inert while closed.
+	-->
+	<div
+		id="mega-menu"
+		data-open="false"
+		inert
+		class:list={[
+			'hidden grid-rows-[0fr] transition-[grid-template-rows] duration-500 data-[open=true]:grid-rows-[1fr] md:grid motion-reduce:transition-none',
+			ease,
+		]}
+	>
+		<div class="min-h-0 overflow-hidden">
+			<div class="mx-auto grid max-w-7xl px-7 pt-8 pb-14 text-ink">
+				{
+					menus.map((m) => (
+						<div
+							data-menu-panel={m.id}
+							class:list={[
+								'invisible col-start-1 row-start-1 grid -translate-y-1 grid-cols-[minmax(0,24rem)_minmax(0,16rem)] gap-x-16 opacity-0 transition-[opacity,translate,visibility] duration-300 data-[active=true]:visible data-[active=true]:translate-y-0 data-[active=true]:opacity-100 data-[active=true]:delay-100 motion-reduce:transition-none',
+								ease,
+							]}
+						>
+							{m.columns.map((col) => (
+								<div>
+									<p class="text-xs text-ink/70">{col.heading}</p>
+									<ul class:list={['mt-4', col.large ? 'space-y-1' : 'space-y-2.5']}>
+										{col.links.map((l) => (
+											<li>
+												<a
+													href={l.href}
+													data-menu-close
+													class:list={[
+														'inline-block rounded-sm transition-colors hover:text-accent-deep focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink',
+														col.large
+															? 'text-[1.75rem] leading-tight font-semibold tracking-[-0.02em]'
+															: 'text-sm font-medium',
+													]}
+												>
+													{l.label}
+												</a>
+											</li>
+										))}
+									</ul>
+								</div>
+							))}
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</header>
+
+<!-- Blurs and softens the page under an open desktop menu. Clicking it closes the menu. -->
+<div
+	id="mega-backdrop"
+	aria-hidden="true"
+	class="pointer-events-none fixed inset-0 z-40 hidden bg-white/30 opacity-0 backdrop-blur-xl transition-opacity duration-300 data-[open=true]:pointer-events-auto data-[open=true]:opacity-100 md:block motion-reduce:transition-none"
+>
+</div>
+
+<!-- Mobile menu: full screen under the header bar -->
+<div
+	id="mobile-menu"
+	data-open="false"
+	inert
+	class:list={[
+		'invisible fixed inset-0 z-40 -translate-y-2 overflow-y-auto bg-white px-5 pt-24 pb-10 text-ink opacity-0 transition-[opacity,translate,visibility] duration-300 data-[open=true]:visible data-[open=true]:translate-y-0 data-[open=true]:opacity-100 sm:px-7 md:hidden motion-reduce:transition-none',
+		ease,
+	]}
+>
+	<nav aria-label="Mobile">
+		<ul class="divide-y divide-ink/10 border-b border-ink/10">
+			{
+				topLevel.map((m) =>
+					!isMenu(m) ? (
+						<li>
+							<a href={m.href} data-menu-close class="block py-4 text-2xl font-medium tracking-[-0.01em]">
+								{m.label}
+							</a>
+						</li>
+					) : (
+						<li data-mobile-section data-open="false" class="group/section">
+							<button
+								type="button"
+								aria-expanded="false"
+								aria-controls={`mobile-${m.id}`}
+								class="flex w-full items-center justify-between py-4 text-left text-2xl font-medium tracking-[-0.01em]"
+							>
+								{m.label}
+								<svg
+									class="size-4 transition-transform duration-300 group-data-[open=true]/section:rotate-180 motion-reduce:transition-none"
+									viewBox="0 0 12 12"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.5"
+									aria-hidden="true"
+								>
+									<path d="M3 4.5 6 7.5 9 4.5" stroke-linecap="round" stroke-linejoin="round" />
+								</svg>
+							</button>
+							<div
+								id={`mobile-${m.id}`}
+								inert
+								class:list={[
+									'grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 group-data-[open=true]/section:grid-rows-[1fr] motion-reduce:transition-none',
+									ease,
+								]}
+							>
+								<ul class="min-h-0 space-y-3 overflow-hidden">
+									{m.columns
+										.flatMap((c) => c.links)
+										.map((l, i, all) => (
+											<li class:list={[i === all.length - 1 && 'pb-5']}>
+												<a href={l.href} data-menu-close class="text-lg text-ink/75 hover:text-ink">
+													{l.label}
+												</a>
+											</li>
+										))}
+								</ul>
+							</div>
+						</li>
+					),
+				)
+			}
+		</ul>
+		<a
+			href={bookHref}
+			data-menu-close
+			class="mt-8 flex w-full items-center justify-center rounded-lg border border-ink/15 bg-white py-3.5 text-base font-medium"
+		>
+			Book consult
+		</a>
+	</nav>
+</div>
+
+<script>
+	const header = document.getElementById('site-header')!;
+	const mega = document.getElementById('mega-menu')!;
+	const backdrop = document.getElementById('mega-backdrop')!;
+	const triggers = [...header.querySelectorAll<HTMLButtonElement>('[data-menu-trigger]')];
+	const panels = [...mega.querySelectorAll<HTMLElement>('[data-menu-panel]')];
+	const mobile = document.getElementById('mobile-menu')!;
+	const mobileToggle = document.getElementById('mobile-menu-toggle')!;
+
+	let openId: string | null = null;
+	let mobileOpen = false;
+	let closeTimer: number | undefined;
+
+	// Thin bar once scrolled; solid white when scrolled or any menu is open.
+	const updateHeader = () => {
+		const scrolled = window.scrollY > 16;
+		header.dataset.scrolled = String(scrolled);
+		header.dataset.solid = String(scrolled || openId !== null || mobileOpen);
+	};
+
+	// ---- Desktop mega menu ----
+	const openMenu = (id: string) => {
+		clearTimeout(closeTimer);
+		openId = id;
+		mega.dataset.open = backdrop.dataset.open = 'true';
+		mega.inert = false;
+		for (const p of panels) {
+			const active = p.dataset.menuPanel === id;
+			p.dataset.active = String(active);
+			p.inert = !active;
+		}
+		for (const t of triggers) {
+			const active = t.dataset.menuTrigger === id;
+			t.setAttribute('aria-expanded', String(active));
+			t.querySelector('svg')!.style.rotate = active ? '180deg' : '';
+		}
+		updateHeader();
+	};
+	const closeMenu = () => {
+		clearTimeout(closeTimer);
+		if (openId === null) return;
+		openId = null;
+		mega.dataset.open = backdrop.dataset.open = 'false';
+		mega.inert = true;
+		for (const p of panels) p.dataset.active = 'false';
+		for (const t of triggers) {
+			t.setAttribute('aria-expanded', 'false');
+			t.querySelector('svg')!.style.rotate = '';
+		}
+		updateHeader();
+	};
+	const closeSoon = () => {
+		clearTimeout(closeTimer);
+		closeTimer = window.setTimeout(closeMenu, 150);
+	};
+
+	for (const t of triggers) {
+		const id = t.dataset.menuTrigger!;
+		t.addEventListener('click', () => (openId === id ? closeMenu() : openMenu(id)));
+		t.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && openMenu(id));
+	}
+	// Hovering a plain link or the logo closes the panel, like Apple's nav.
+	for (const el of header.querySelectorAll('nav [data-menu-close], a[aria-label]')) {
+		el.addEventListener('pointerenter', (e) => (e as PointerEvent).pointerType === 'mouse' && closeSoon());
+	}
+	header.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && closeSoon());
+	header.addEventListener('pointerenter', () => clearTimeout(closeTimer));
+	backdrop.addEventListener('click', closeMenu);
+	mega.addEventListener('click', (e) => (e.target as Element).closest('[data-menu-close]') && closeMenu());
+	header.addEventListener('focusout', (e) => {
+		if (!header.contains(e.relatedTarget as Node)) closeMenu();
+	});
+
+	// ---- Mobile menu ----
+	const setMobile = (open: boolean) => {
+		mobileOpen = open;
+		mobile.dataset.open = String(open);
+		mobile.inert = !open;
+		mobileToggle.setAttribute('aria-expanded', String(open));
+		mobileToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+		document.documentElement.style.overflow = open ? 'hidden' : '';
+		updateHeader();
+	};
+	mobileToggle.addEventListener('click', () => setMobile(!mobileOpen));
+	mobile.addEventListener('click', (e) => (e.target as Element).closest('[data-menu-close]') && setMobile(false));
+	for (const section of mobile.querySelectorAll<HTMLElement>('[data-mobile-section]')) {
+		const button = section.querySelector('button')!;
+		const list = section.querySelector<HTMLElement>('[id]')!;
+		button.addEventListener('click', () => {
+			const open = section.dataset.open !== 'true';
+			section.dataset.open = String(open);
+			button.setAttribute('aria-expanded', String(open));
+			list.inert = !open;
+		});
+	}
+	// Leaving phone width with the menu open (e.g. rotating a tablet) closes it.
+	matchMedia('(min-width: 768px)').addEventListener('change', (e) => e.matches && setMobile(false));
+
+	// ---- Shared ----
+	document.addEventListener('keydown', (e) => {
+		if (e.key !== 'Escape') return;
+		if (openId !== null) {
+			const trigger = triggers.find((t) => t.dataset.menuTrigger === openId);
+			closeMenu();
+			trigger?.focus();
+		} else if (mobileOpen) {
+			setMobile(false);
+			mobileToggle.focus();
+		}
+	});
+
+	updateHeader();
+	window.addEventListener('scroll', updateHeader, { passive: true });
+</script>
