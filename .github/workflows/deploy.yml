@@ -1,0 +1,44 @@
+# Builds the site and publishes it to GitHub Pages on every push to main.
+# Live at https://ishankhandekar.github.io/New-Orthodontist-Site/
+# (Repo settings -> Pages -> Source must be set to "GitHub Actions".)
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deploy runs at a time; newer pushes queue instead of cancelling one in progress.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # Pages serves project sites from a subfolder. If a custom domain is added later,
+      # set SITE_URL to it and BASE_PATH to "/".
+      SITE_URL: https://ishankhandekar.github.io
+      BASE_PATH: /New-Orthodontist-Site
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v7
+      - name: Build with Astro
+        uses: withastro/action@v6
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

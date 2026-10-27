@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 // Smile arc of graduated beads on an archwire, modernized from the practice's original logo.
 // The smile is always the accent orange.
 // - `nav` (default): compact stacked wordmark that inherits `currentColor`.
@@ -23,7 +24,7 @@ const beads = [
 ---
 
 <a
-	href="/"
+	href={url('/')}
 	aria-label="Torrey Hills Orthodontics home"
 	class:list={['flex', lockup ? 'items-end gap-4 text-accent' : 'items-center gap-2.5', className]}
 >

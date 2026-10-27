@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { Image } from 'astro:assets';
 import CornerArrow from './CornerArrow.astro';
 import bracesPhoto from '../assets/treatment-braces.png';
@@ -75,7 +76,7 @@ const cornerLink = 'mt-auto ml-auto after:absolute after:inset-0 focus-visible:o
 					</div>
 				</div>
 
-				<a href="/treatments/braces" aria-label="Learn about braces" class={cornerLink}>
+				<a href={url('/treatments/braces')} aria-label="Learn about braces" class={cornerLink}>
 					<CornerArrow />
 				</a>
 			</article>
@@ -107,7 +108,7 @@ const cornerLink = 'mt-auto ml-auto after:absolute after:inset-0 focus-visible:o
 					</div>
 				</div>
 
-				<a href="/treatments/invisalign" aria-label="Learn about Invisalign" class={cornerLink}>
+				<a href={url('/treatments/invisalign')} aria-label="Learn about Invisalign" class={cornerLink}>
 					<CornerArrow />
 				</a>
 			</article>
@@ -148,7 +149,7 @@ const cornerLink = 'mt-auto ml-auto after:absolute after:inset-0 focus-visible:o
 					</p>
 				</div>
 
-				<a href="/treatments/jaw-orthopedics" aria-label="Learn about jaw orthopedics" class:list={[cornerLink, 'pt-8']}>
+				<a href={url('/treatments/jaw-orthopedics')} aria-label="Learn about jaw orthopedics" class:list={[cornerLink, 'pt-8']}>
 					<CornerArrow />
 				</a>
 			</article>

@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { Image } from 'astro:assets';
 import ArrowIcon from './ArrowIcon.astro';
 import sarahPhoto from '../assets/gallery-sarah.png';
@@ -117,7 +118,7 @@ const cases: {
 										N° {String(i + 1).padStart(2, '0')}
 									</p>
 									<a
-										href={`/smile-gallery/${c.slug}`}
+										href={url(`/smile-gallery/${c.slug}`)}
 										class="inline-flex shrink-0 items-center gap-2 text-xs tracking-[0.14em] text-ink uppercase after:absolute after:inset-0 focus-visible:outline-none group-has-[a:focus-visible]:outline-2 group-has-[a:focus-visible]:outline-offset-8 group-has-[a:focus-visible]:outline-ink"
 									>
 										View case study<span class="sr-only">: {c.name}, {c.treatment}</span>
