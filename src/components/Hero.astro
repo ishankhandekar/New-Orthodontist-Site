@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import ArrowIcon from './ArrowIcon.astro';
+import { phone } from '../lib/contact';
 // TODO: Placeholder stock photo. Swap for a real photo of Dr. Lee with a patient.
 import heroImage from '../assets/hero-patient.jpg';
 ---
@@ -25,7 +26,7 @@ import heroImage from '../assets/hero-patient.jpg';
 		/>
 	</div>
 	<!-- Bottom gradient keeps white text readable over any photo; the short top one covers the logo, nav and status pill. -->
-	<div class="absolute inset-0 -z-10 bg-linear-to-t from-black/75 via-black/40 via-45% to-transparent sm:from-black/65 sm:via-black/30" aria-hidden="true">
+	<div class="absolute inset-0 -z-10 bg-linear-to-t from-black/80 via-black/50 via-55% to-transparent sm:from-black/65 sm:via-black/30 sm:via-45%" aria-hidden="true">
 	</div>
 	<div class="absolute inset-x-0 top-0 -z-10 h-56 bg-linear-to-b from-black/70 to-transparent" aria-hidden="true">
 	</div>
@@ -80,7 +81,15 @@ import heroImage from '../assets/hero-patient.jpg';
 		class="mx-5 flex justify-between gap-4 border-t border-white/20 py-3.5 text-xs text-white/90 sm:mx-7"
 	>
 		<span>Carmel Valley, CA</span>
+		<!-- Tap-to-call, set quietly in the strip's own type so it reads as info, not an ad. -->
+		<a
+			href={phone.href}
+			class="tabular-nums underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+		>
+			{phone.display}
+		</a>
+		<!-- Hidden on phones, where the strip only fits two items and the headline already names Dr. Lee. -->
 		<!-- TODO: Confirm credentials (e.g. board-certified) with the client before adding them here. -->
-		<span>Dr. Judy Lee, Orthodontist</span>
+		<span class="hidden sm:inline">Dr. Judy Lee, Orthodontist</span>
 	</div>
 </section>

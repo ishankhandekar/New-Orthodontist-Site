@@ -20,6 +20,8 @@ html {
 	/* Same hue as the accent, deep enough for small orange text and icons (5.01:1 on white). */
 	--color-accent-deep: #b8500f;
 	--color-peach: #fff1e6;
+	/* Very light grey for the footer. */
+	--color-mist: #fafafa;
 	--color-ink: #1b2b2a;
 
 	/* Motion. Use with `motion-safe:` so prefers-reduced-motion turns it off. */

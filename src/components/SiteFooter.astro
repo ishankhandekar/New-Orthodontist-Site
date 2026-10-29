@@ -1,0 +1,95 @@
+---
+import { address, phone, socials } from '../lib/contact';
+import { bookHref, galleryLink, legalLinks, menus } from '../lib/nav';
+import { url } from '../lib/url';
+import ArrowIcon from './ArrowIcon.astro';
+import Logo from './Logo.astro';
+
+const [treatments, patientInfo, aboutUs] = menus;
+const linksOf = (menu: (typeof menus)[number]) => menu.columns.flatMap((c) => c.links);
+
+// Footer columns mirror the navbar, plus the practice's legal pages.
+const columns = [
+	{ heading: treatments.label, links: [...linksOf(treatments), { ...galleryLink, label: 'Smile Gallery' }] },
+	{ heading: patientInfo.label, links: linksOf(patientInfo) },
+	{ heading: aboutUs.label, links: linksOf(aboutUs) },
+	{ heading: 'Policies', links: legalLinks },
+];
+const year = new Date().getFullYear();
+
+// ink/70 on the mist background is 5.5:1 (ink/60 would fail AA at 4.0:1).
+const link =
+	'text-ink/70 transition-colors hover:text-ink focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink';
+---
+
+<!-- Site-wide footer on very light grey: practice details on the left, sitemap columns on the right. -->
+<footer class="bg-mist px-5 text-ink sm:px-7">
+	<div class="mx-auto max-w-7xl pt-16 pb-8 lg:pt-20">
+		<div class="grid gap-14 lg:grid-cols-12 lg:gap-8">
+			<!-- Practice details, so pages without the office section still show how to reach us -->
+			<div class="text-sm lg:col-span-4">
+				<Logo class="w-fit" />
+				<div class="mt-6 space-y-1 text-ink/70">
+					<p><a href={phone.href} class={link}>{phone.display}</a></p>
+					<address class="not-italic">{address[0]}<br />{address[1]}</address>
+				</div>
+				<a
+					href={url(bookHref)}
+					class="group mt-6 inline-flex items-center gap-2 font-medium focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+				>
+					Schedule a Free Consultation
+					<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
+				</a>
+			</div>
+
+			<nav aria-label="Footer" class="grid grid-cols-2 gap-x-8 gap-y-10 text-sm sm:grid-cols-4 lg:col-span-8">
+				{
+					columns.map((col) => (
+						<div>
+							<h2 class="font-medium">{col.heading}</h2>
+							<ul class="mt-4 space-y-2.5">
+								{col.links.map((l) => (
+									<li>
+										<a href={url(l.href)} class={link}>
+											{l.label}
+										</a>
+									</li>
+								))}
+							</ul>
+						</div>
+					))
+				}
+			</nav>
+		</div>
+
+		<!-- Bottom row: copyright and site credit, social links -->
+		<div
+			class="mt-16 flex flex-col gap-4 border-t border-ink/10 pt-6 text-xs text-ink/70 sm:flex-row sm:items-center sm:justify-between"
+		>
+			<div class="flex flex-wrap gap-x-5 gap-y-1">
+				<p>© {year} Torrey Hills Orthodontics. All rights reserved.</p>
+				<p>
+					Built by{' '}
+					<a
+						href="https://studioik.design"
+						target="_blank"
+						rel="noopener"
+						class="underline decoration-ink/30 underline-offset-2 transition-colors hover:text-ink hover:decoration-ink focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+						>studioIK<span class="sr-only"> (opens in a new tab)</span></a
+					>
+				</p>
+			</div>
+			<ul class="flex gap-5" aria-label="Find us online">
+				{
+					socials.map((s) => (
+						<li>
+							<a href={s.href} class={link}>
+								{s.name}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</div>
+</footer>

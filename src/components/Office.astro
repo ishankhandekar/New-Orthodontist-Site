@@ -1,33 +1,35 @@
 ---
+import { address, phone, socials } from '../lib/contact';
 import ArrowIcon from './ArrowIcon.astro';
 import Logo from './Logo.astro';
 
-const phone = { display: '(858) 481-1771', href: 'tel:+18584811771' };
-const address = ['4765 Carmel Mountain Road, Suite 200', 'San Diego, CA 92130'];
 const directions =
-	'https://www.google.com/maps/dir/?api=1&destination=' +
-	encodeURIComponent('4765 Carmel Mountain Road, Suite 200, San Diego, CA 92130');
+	'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(address.join(', '));
 const hours = [
 	{ days: 'Mon, Tue', time: '9–5', rotational: true },
 	{ days: 'Wed, Thu', time: '9–5', rotational: false },
 	{ days: 'Fri', time: '12–5', rotational: true },
 	{ days: 'Sat, Sun', time: 'Closed', rotational: false },
 ];
-// TODO: Add the practice's real profile URLs.
-const socials = [
-	{ name: 'Facebook', href: '#' },
-	{ name: 'Instagram', href: '#' },
-	{ name: 'Google', href: '#' },
-	{ name: 'Yelp', href: '#' },
-];
 
-const ringText = 'One specialist, start to finish · Torrey Hills Orthodontics · ';
+// Repeated twice: at 32px with 0.2em tracking this runs almost exactly one lap (2765 units),
+// so textLength only nudges it to close the loop instead of stretching the letters apart.
+const ringPhrase = 'One specialist, start to finish · Torrey Hills Orthodontics · ';
+const ringText = ringPhrase + ringPhrase;
 
-// Small orange text uses accent-deep (same hue as the accent, 5.01:1 on white). Inside the ring
-// (lg+), sizes are in container query units so the block always fits within the circle.
-const label =
-	'text-xs font-semibold tracking-[0.14em] text-accent-deep uppercase lg:text-[1.55cqw]';
-const value = 'mt-2 text-lg leading-snug lg:mt-[0.9cqw] lg:text-[2.45cqw]';
+// The ring is the section's only orange; labels inside match the site's small grey label style.
+// Inside the ring (lg+), sizes are in container query units so the block always fits within it;
+// the small text has a floor so it stays readable when the ring is at its smallest.
+const label = 'text-[11px] tracking-wide text-ink/60 uppercase lg:text-[max(11px,1.4cqw)]';
+const value = 'mt-1.5 text-[1.0625rem] leading-snug tracking-[-0.01em] lg:mt-[0.8cqw] lg:text-[max(15px,2.3cqw)]';
+// Click-to-copy values: the copy cursor and a hairline underline on hover hint that they're clickable.
+const copyButton =
+	'cursor-copy text-left underline decoration-transparent underline-offset-4 transition-colors hover:decoration-ink/25 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink';
+const copied = 'copied text-[11px] tracking-wide text-accent-deep uppercase lg:text-[max(11px,1.4cqw)]';
+const fullAddress = address.join(', ');
+// Action rows: label left, arrow right, hairline rule between, like a short editorial menu.
+const actionRow =
+	'group flex items-center justify-between gap-6 border-b border-ink/10 py-3.5 text-[0.9375rem] tracking-[-0.01em] transition-colors hover:text-ink/70 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink';
 ---
 
 <section
@@ -35,26 +37,36 @@ const value = 'mt-2 text-lg leading-snug lg:mt-[0.9cqw] lg:text-[2.45cqw]';
 	aria-labelledby="contact-heading"
 	class="bg-white px-5 py-20 text-ink sm:px-7 lg:py-16"
 >
-	<h2 id="contact-heading" class="sr-only">Office information</h2>
-
 	<div class="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-12 lg:gap-8">
-		<!-- Left: logo lockup, tagline, directions -->
+		<!-- Left: the smile mark over a headline in the site's hero type, a note, and directions -->
 		<div class="lg:col-span-5">
-			<Logo variant="lockup" class="w-fit" />
-			<p class="mt-8 text-base text-ink/75 sm:text-lg">Proud to serve the Carmel Valley community</p>
-			<a
-				href={directions}
-				target="_blank"
-				rel="noopener noreferrer"
-				class="group mt-7 inline-flex items-center gap-2.5 border-b border-accent-deep/40 pb-1.5 text-lg text-accent-deep transition-colors hover:border-accent-deep focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+			<Logo variant="mark" class="h-8" />
+			<h2
+				id="contact-heading"
+				class="mt-8 text-[2.125rem] leading-[1.08] font-normal tracking-[-0.01em] text-balance sm:text-[clamp(2.5rem,4.4vw,4rem)]"
 			>
-				Get directions<span class="sr-only"> (opens Google Maps in a new tab)</span>
-				<ArrowIcon
-					size={12}
-					class="-rotate-45 transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
-				/>
-			</a>
-			<p class="mt-10 text-base text-ink/75">Appointments must be booked ahead of time.</p>
+				Proud to serve the Carmel Valley community.
+			</h2>
+			<p class="mt-6 max-w-sm text-base text-ink/60">Visits are by appointment only, so please book ahead.</p>
+			<!-- The three actions as a short list of hairline rows rather than competing buttons. -->
+			<div class="mt-8 max-w-sm border-t border-ink/10">
+				<!-- TODO: Every consultation button links to #contact (this section), which has no booking form. Point them all at the practice's booking page once there is one; until then this one calls. -->
+				<a href={phone.href} class={actionRow}>
+					Schedule a Free Consultation
+					<ArrowIcon size={12} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
+				</a>
+				<a href={directions} target="_blank" rel="noopener noreferrer" class={actionRow}>
+					<span>Get directions<span class="sr-only"> (opens Google Maps in a new tab)</span></span>
+					<ArrowIcon
+						size={12}
+						class="-rotate-45 text-accent transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+					/>
+				</a>
+				<a href={phone.href} class={actionRow}>
+					Call us
+					<ArrowIcon size={12} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
+				</a>
+			</div>
 		</div>
 
 		<!--
@@ -73,94 +85,137 @@ const value = 'mt-2 text-lg leading-snug lg:mt-[0.9cqw] lg:text-[2.45cqw]';
 				</defs>
 				<text
 					fill="currentColor"
-					font-size="54"
-					font-weight="500"
-					style="text-transform: uppercase"
+					font-size="32"
+					style="text-transform: uppercase; letter-spacing: 0.2em"
 				>
-					<textPath href="#office-ring" textLength="2740" lengthAdjust="spacing">{ringText}</textPath>
+					<textPath href="#office-ring" textLength="2765" lengthAdjust="spacing">{ringText}</textPath>
 				</text>
 			</svg>
 
 			<div class="lg:absolute lg:inset-0 lg:flex lg:items-center lg:justify-center">
-				<div class="space-y-9 lg:w-[50cqw] lg:space-y-[4.2cqw]">
-					<div>
-						<h3 class={label}>Phone number</h3>
+				<div class="space-y-8 lg:w-[50cqw] lg:space-y-[3.6cqw]">
+					<!-- Phone and address copy on click ("Call us" on the left handles calling). -->
+					<div data-copy-group>
+						<div class="flex items-baseline gap-2">
+							<h3 class={label}>Phone number</h3>
+							<span data-copied role="status" class={copied}></span>
+						</div>
 						<p class={value}>
-							<a
-								href={phone.href}
-								class="transition-colors hover:text-accent-deep focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-							>
+							<button type="button" data-copy={phone.display} aria-label={`Copy phone number ${phone.display}`} class={copyButton}>
 								{phone.display}
-							</a>
+							</button>
 						</p>
 					</div>
 
-					<div>
-						<h3 class={label}>Address</h3>
+					<div data-copy-group>
+						<div class="flex items-baseline gap-2">
+							<h3 class={label}>Address</h3>
+							<span data-copied role="status" class={copied}></span>
+						</div>
 						<address class:list={[value, 'not-italic']}>
-							{address[0]}<br />{address[1]}
+							<button type="button" data-copy={fullAddress} aria-label={`Copy address ${fullAddress}`} class={copyButton}>
+								<!-- Non-breaking space keeps "Suite 200" together when the line wraps. -->
+								{address[0].replace('Suite ', 'Suite ')}<br />{address[1]}
+							</button>
 						</address>
 					</div>
 
 					<div>
 						<h3 class={label}>Office hours</h3>
-						<dl class="mt-3 space-y-2 text-lg lg:mt-[1.3cqw] lg:space-y-[0.9cqw] lg:text-[2.3cqw]">
+						<!-- Days and times line up in two columns; rotating days get an asterisk and a footnote. -->
+						<dl class="mt-2 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-[1.0625rem] tracking-[-0.01em] lg:mt-[1cqw] lg:gap-x-[3cqw] lg:gap-y-[0.5cqw] lg:text-[max(15px,2.3cqw)]">
 							{
 								hours.map((h) => (
-									<div class="flex flex-wrap items-baseline gap-x-2">
-										<dt class="font-semibold">{h.days}</dt>
-										<dd>{h.time}</dd>
-										{h.rotational && (
-											<dd class="ml-1 text-[11px] tracking-[0.12em] text-accent-deep uppercase lg:text-[1.35cqw]">
-												Rotational
-											</dd>
-										)}
+									<div class="contents">
+										<dt>{h.days}</dt>
+										<dd class="tabular-nums">
+											{h.time}
+											{h.rotational && <span class="text-ink/60">*</span>}
+										</dd>
 									</div>
 								))
 							}
 						</dl>
+						<p class="mt-3 text-[13px] text-ink/60 lg:mt-[1.2cqw] lg:text-[max(12px,1.4cqw)]">
+							* Open on a rotating schedule, so call to confirm.
+						</p>
 					</div>
 
-					<ul class="flex gap-3 lg:gap-[1.6cqw]" aria-label="Find us online">
-						{
-							socials.map((s) => (
-								<li>
-									<a
-										href={s.href}
-										aria-label={s.name}
-										class="flex size-12 items-center justify-center rounded-full bg-peach text-accent-deep transition-colors hover:bg-accent-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink lg:size-[7.4cqw]"
-									>
-										{s.name === 'Facebook' && (
-											<svg class="size-5 lg:size-[2.5cqw]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-												<path d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.6-1.6h1.7V4.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.2h2.8V22h3.4z" />
-											</svg>
-										)}
-										{s.name === 'Instagram' && (
-											<svg class="size-5 lg:size-[2.5cqw]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-												<rect x="3.5" y="3.5" width="17" height="17" rx="5" />
-												<circle cx="12" cy="12" r="4" />
-												<circle cx="17.3" cy="6.7" r="0.6" fill="currentColor" />
-											</svg>
-										)}
-										{s.name === 'Google' && (
-											<span class="text-xl leading-none font-semibold lg:text-[2.7cqw]" aria-hidden="true">G</span>
-										)}
-										{s.name === 'Yelp' && (
-											<svg class="size-5 lg:size-[2.5cqw]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-												<rect x="10.6" y="2.5" width="2.8" height="8" rx="1.4" />
-												<rect x="10.6" y="2.5" width="2.8" height="8" rx="1.4" transform="rotate(72 12 12)" />
-												<rect x="10.6" y="2.5" width="2.8" height="8" rx="1.4" transform="rotate(144 12 12)" />
-												<rect x="10.6" y="2.5" width="2.8" height="8" rx="1.4" transform="rotate(216 12 12)" />
-												<rect x="10.6" y="2.5" width="2.8" height="8" rx="1.4" transform="rotate(288 12 12)" />
-											</svg>
-										)}
-									</a>
-								</li>
-							))
-						}
-					</ul>
+					<!-- Plain text links in the same label/value rhythm as the rest of the block. -->
+					<div>
+						<h3 id="office-socials" class={label}>Find us online</h3>
+						<ul
+							aria-labelledby="office-socials"
+							class="mt-1.5 flex flex-wrap gap-x-5 gap-y-1 text-[1.0625rem] tracking-[-0.01em] lg:mt-[0.8cqw] lg:gap-x-[2.6cqw] lg:text-[max(15px,2.3cqw)]"
+						>
+							{
+								socials.map((s) => (
+									<li>
+										<a
+											href={s.href}
+											class="underline decoration-ink/25 underline-offset-4 transition-colors hover:decoration-accent focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+										>
+											{s.name}
+										</a>
+									</li>
+								))
+							}
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </section>
+
+<style>
+	/* "Copied" fades in beside the label, then out. */
+	.copied {
+		opacity: 0;
+		transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	.copied.is-shown {
+		opacity: 1;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.copied {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	// The Clipboard API needs a secure page; fall back to the older selection-based copy.
+	const copyText = async (text: string) => {
+		try {
+			await navigator.clipboard.writeText(text);
+			return true;
+		} catch {
+			const field = Object.assign(document.createElement('textarea'), { value: text, readOnly: true });
+			field.style.cssText = 'position:fixed;opacity:0';
+			document.body.append(field);
+			field.select();
+			const ok = document.execCommand('copy');
+			field.remove();
+			return ok;
+		}
+	};
+
+	for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+		const status = button.closest('[data-copy-group]')!.querySelector<HTMLElement>('[data-copied]')!;
+		let hide: number | undefined;
+		let clear: number | undefined;
+		button.addEventListener('click', async () => {
+			if (!(await copyText(button.dataset.copy!))) return;
+			clearTimeout(hide);
+			clearTimeout(clear);
+			// Setting the text (not just showing it) lets screen readers announce it via role="status".
+			status.textContent = 'Copied';
+			status.classList.add('is-shown');
+			hide = window.setTimeout(() => {
+				status.classList.remove('is-shown');
+				clear = window.setTimeout(() => (status.textContent = ''), 300);
+			}, 1600);
+		});
+	}
+</script>

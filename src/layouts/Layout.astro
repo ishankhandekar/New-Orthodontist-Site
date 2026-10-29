@@ -1,6 +1,7 @@
 ---
 import { url } from '../lib/url';
 import '../styles/global.css';
+import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 
 interface Props {
@@ -27,5 +28,6 @@ const { title = 'Torrey Hills Orthodontics' } = Astro.props;
 	<body class="bg-white font-sans text-ink antialiased">
 		<SiteHeader />
 		<slot />
+		<SiteFooter />
 	</body>
 </html>

@@ -1,87 +1,7 @@
 ---
+import { bookHref, isMenu, menus, topLevel } from '../lib/nav';
 import { url } from '../lib/url';
 import Logo from './Logo.astro';
-
-type NavLink = { label: string; href: string };
-type Menu = {
-	id: string;
-	label: string;
-	columns: { heading: string; large?: boolean; links: NavLink[] }[];
-};
-
-// TODO: Treatment pages, the Before & After page, Meet Dr. Lee, Our Team and Office & Tech pages
-// don't exist yet. Gallery and Meet Dr. Lee point at their homepage sections until they're built.
-const menus: Menu[] = [
-	{
-		id: 'treatments',
-		label: 'Treatments',
-		columns: [
-			{
-				heading: 'Explore treatments',
-				large: true,
-				links: [
-					{ label: 'Invisalign', href: '/treatments/invisalign' },
-					{ label: 'Braces', href: '/treatments/braces' },
-					{ label: 'Jaw Orthopedics', href: '/treatments/jaw-orthopedics' },
-				],
-			},
-			{
-				heading: 'Care for every age',
-				links: [
-					{ label: 'Kids Ortho', href: '/treatments/kids' },
-					{ label: 'Adult Ortho', href: '/treatments/adults' },
-				],
-			},
-		],
-	},
-	{
-		id: 'patient-info',
-		label: 'Patient Info',
-		columns: [
-			{
-				heading: 'Before you start',
-				large: true,
-				links: [
-					{ label: 'Financial & Insurance', href: '/#financing' },
-					{ label: 'First Visit', href: '/#first-visit-steps' },
-				],
-			},
-			{
-				heading: 'Questions',
-				links: [
-					{ label: 'FAQ', href: '/#faq' },
-					{ label: 'Office hours & location', href: '/#contact' },
-				],
-			},
-		],
-	},
-	{
-		id: 'about-us',
-		label: 'About Us',
-		columns: [
-			{
-				// TODO: Confirm Dr. Lee is board certified (American Board of Orthodontics) before launch.
-				heading: 'Board Certified Specialist',
-				large: true,
-				links: [{ label: 'Meet Dr. Lee', href: '/#about' }],
-			},
-			{
-				heading: 'Our practice',
-				links: [
-					{ label: 'Our Team', href: '/about/team' },
-					{ label: 'Office & Tech', href: '/about/office' },
-				],
-			},
-		],
-	},
-];
-const [treatments, patientInfo, aboutUs] = menus;
-
-// Top-level order in the bar and the phone menu: dropdowns and plain links mixed.
-const topLevel: (Menu | NavLink)[] = [treatments, patientInfo, { label: 'Gallery', href: '/#gallery' }, aboutUs];
-const isMenu = (item: Menu | NavLink): item is Menu => 'columns' in item;
-// TODO: Point to the scheduling software or booking form once it's chosen.
-const bookHref = '/#contact';
 
 const topLink =
 	'flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs text-white/90 transition-colors group-data-[solid=true]:text-ink/75 hover:text-white group-data-[solid=true]:hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-current';
@@ -308,7 +228,7 @@ const ease = 'ease-[cubic-bezier(0.16,1,0.3,1)]';
 			data-menu-close
 			class="mt-8 flex w-full items-center justify-center rounded-lg border border-ink/15 bg-white py-3.5 text-base font-medium"
 		>
-			Book consult
+			Schedule a Free Consultation
 		</a>
 	</nav>
 </div>

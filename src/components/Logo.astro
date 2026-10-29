@@ -2,16 +2,19 @@
 import { url } from '../lib/url';
 // Smile arc of graduated beads on an archwire, modernized from the practice's original logo.
 // The smile is always the accent orange.
-// - `nav` (default): compact stacked wordmark that inherits `currentColor`.
-// - `lockup`: large display version (office info section), all in the accent orange:
-//   tracked "TORREY HILLS" over a large "Orthodontics". Logos are exempt from contrast rules.
+// - `nav` (default): home link with a compact stacked wordmark that inherits `currentColor`.
+// - `mark`: the smile alone, decorative (office info section); size it with `class`.
 interface Props {
 	class?: string;
-	variant?: 'nav' | 'lockup';
+	variant?: 'nav' | 'mark';
 }
 
 const { class: className, variant = 'nav' } = Astro.props;
-const lockup = variant === 'lockup';
+const mark = variant === 'mark';
+const Tag = mark ? 'span' : 'a';
+const attrs = mark
+	? { 'aria-hidden': 'true' as const }
+	: { href: url('/'), 'aria-label': 'Torrey Hills Orthodontics home' };
 
 const beads = [
 	{ cx: 3, cy: 14, r: 1.8 },
@@ -23,13 +26,9 @@ const beads = [
 ];
 ---
 
-<a
-	href={url('/')}
-	aria-label="Torrey Hills Orthodontics home"
-	class:list={['flex', lockup ? 'items-end gap-4 text-accent' : 'items-center gap-2.5', className]}
->
+<Tag {...attrs} class:list={['flex items-center gap-2.5', className]}>
 	<svg
-		class:list={['w-auto shrink-0 text-accent', lockup ? 'mb-1 h-10 sm:h-16' : 'h-7']}
+		class:list={['w-auto shrink-0 text-accent', mark ? 'h-full' : 'h-7']}
 		viewBox="0 0 44 30"
 		fill="currentColor"
 		aria-hidden="true"
@@ -44,17 +43,11 @@ const beads = [
 		{beads.map((b) => <circle {...b} />)}
 	</svg>
 	{
-		lockup ? (
-			<span class="flex flex-col">
-				<span class="text-xs font-medium tracking-[0.32em] uppercase sm:text-sm">Torrey Hills</span>
-				<!-- Scales with the screen on small phones so the lockup never overflows. -->
-				<span class="mt-1 text-[clamp(1.75rem,10vw,2.5rem)] leading-none font-light tracking-[-0.01em] sm:text-5xl">Orthodontics</span>
-			</span>
-		) : (
+		!mark && (
 			<span class="flex flex-col text-[13px] leading-[1.1] tracking-[-0.01em]">
 				<span class="font-medium">Torrey Hills</span>
 				<span class="font-light">Orthodontics</span>
 			</span>
 		)
 	}
-</a>
+</Tag>
