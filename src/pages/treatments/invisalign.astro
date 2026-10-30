@@ -1,0 +1,110 @@
+---
+import TreatmentPage from '../../components/TreatmentPage.astro';
+import Layout from '../../layouts/Layout.astro';
+// TODO: Placeholder photo. Swap for a real photo from the practice (1400px+ wide).
+import heroImage from '../../assets/treatment-invisalign.jpg';
+
+/*
+	TODO: Placeholder content. Dr. Lee should review every line, especially treatment length, visit
+	spacing, wear time and the cost wording, and confirm the practice's Invisalign provider details.
+*/
+---
+
+<Layout title="Invisalign | Torrey Hills Orthodontics" solidHeader>
+	<TreatmentPage
+		name="Invisalign"
+		headline="Straighten your smile, without anyone noticing."
+		intro="Clear, removable aligners, planned by Dr. Lee and checked by her at every visit. Eat what you like, brush normally, and smile all the way through."
+		image={heroImage}
+		imageAlt="Clear Invisalign aligners held in open hands"
+		imageFocus="object-[58%_center]"
+		facts={[
+			{ label: 'Typical length', value: '12–18 months' },
+			{ label: 'Check-ins', value: 'Every 8–10 weeks' },
+			{ label: 'Wear time', value: '20–22 hours a day' },
+			{ label: 'Best for', value: 'Teens and adults' },
+		]}
+		goodFor={[
+			'You want straighter teeth without visible brackets',
+			'Your crowding, spacing, or bite issue is mild to moderate',
+			'You can keep your aligners in 20–22 hours a day',
+			'You play sports, an instrument, or speak in public',
+		]}
+		notIdeal={[
+			'You would rather not be in charge of wearing them',
+			'Your bite needs major correction, where braces may work better',
+			"Your child's adult teeth are still coming in",
+		]}
+		steps={[
+			{
+				title: 'Scan and plan',
+				body: 'A quick 3D scan, no messy impressions. Dr. Lee maps every movement and shows you a preview of your finished smile.',
+			},
+			{
+				title: 'Your first aligners',
+				body: 'We fit your first set and show you how to wear and clean them, then answer every question you have.',
+			},
+			{
+				title: 'A new set every week or two',
+				body: 'Switch to the next aligners at home. Each set moves your teeth a little further.',
+			},
+			{
+				title: 'Check-ins, then retainers',
+				body: 'See Dr. Lee every 8–10 weeks. When you finish, a retainer keeps your new smile in place.',
+			},
+		]}
+		compare={{
+			heading: 'Invisalign or braces?',
+			columns: ['Invisalign', 'Braces'],
+			rows: [
+				{ label: 'Look', values: ['Nearly invisible', 'Visible, or clear ceramic'] },
+				{ label: 'Removable', values: ['Yes, to eat and brush', 'No, they stay on'] },
+				{ label: 'Food', values: ['No restrictions', 'Avoid hard and sticky foods'] },
+				{ label: 'Check-ins', values: ['Every 8–10 weeks', 'Every 6–8 weeks'] },
+				{ label: 'Best for', values: ['Mild to moderate cases', 'Every case, including complex ones'] },
+			],
+		}}
+		dayToDay={[
+			{
+				title: 'Eating',
+				body: 'Take your aligners out to eat, so there is no list of foods to avoid. Brush before you put them back in.',
+			},
+			{
+				title: 'Cleaning',
+				body: 'Rinse and gently brush your aligners morning and night. It takes about a minute.',
+			},
+			{
+				title: 'Sports and music',
+				body: 'Nothing to work around. Keep them in for most activities, or swap to a mouthguard for contact sports.',
+			},
+			{
+				title: 'Comfort',
+				body: 'Expect a little pressure for a day or two with each new set. It means they are working.',
+			},
+		]}
+		results="invisalign"
+		cost="Invisalign usually costs about the same as braces. Your exact price depends on how long treatment takes, and you'll get a clear, all-inclusive quote at your free consultation. We'll check your insurance and can set up a 0% interest monthly plan before you start."
+		faqs={[
+			{
+				q: 'Will people notice my aligners?',
+				a: 'Most people will not. Some teeth need small tooth-colored attachments to help them move, and those blend in too.',
+			},
+			{
+				q: 'How many hours a day do I need to wear them?',
+				a: 'About 20 to 22. Take them out only to eat, to drink anything other than water, and to brush.',
+			},
+			{
+				q: 'Does Invisalign hurt?',
+				a: 'You may feel some pressure for a day or two with each new set. Most patients find it milder than braces.',
+			},
+			{
+				q: 'What if I lose an aligner?',
+				a: 'Call us. Depending on timing, we will have you move to your next set or order a replacement, so treatment stays on track.',
+			},
+			{
+				q: 'Is Invisalign an option for teenagers?',
+				a: 'Yes. Many teens do very well with aligners, and Dr. Lee will help you decide whether they are the right fit for your teen.',
+			},
+		]}
+	/>
+</Layout>

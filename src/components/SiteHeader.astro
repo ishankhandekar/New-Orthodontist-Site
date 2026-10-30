@@ -1,7 +1,15 @@
 ---
+import { buttonArrow } from '../lib/buttons';
 import { bookHref, isMenu, menus, topLevel } from '../lib/nav';
 import { url } from '../lib/url';
+import ArrowIcon from './ArrowIcon.astro';
 import Logo from './Logo.astro';
+
+interface Props {
+	/** Pages without a photo hero keep the white bar from the start. */
+	solid?: boolean;
+}
+const { solid = false } = Astro.props;
 
 const topLink =
 	'flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs text-white/90 transition-colors group-data-[solid=true]:text-ink/75 hover:text-white group-data-[solid=true]:hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-current';
@@ -16,7 +24,8 @@ const ease = 'ease-[cubic-bezier(0.16,1,0.3,1)]';
 <header
 	id="site-header"
 	data-scrolled="false"
-	data-solid="false"
+	data-solid={String(solid)}
+	data-always-solid={solid ? '' : undefined}
 	class="group fixed inset-x-0 top-0 z-50 border-b border-transparent text-white transition-[background-color,border-color,color] duration-300 data-[solid=true]:border-ink/8 data-[solid=true]:bg-white data-[solid=true]:text-ink motion-reduce:transition-none"
 >
 	<div
@@ -65,7 +74,7 @@ const ease = 'ease-[cubic-bezier(0.16,1,0.3,1)]';
 			</ul>
 			<a
 				href={url(bookHref)}
-				class="rounded-lg border border-transparent bg-white px-3.5 py-2 text-xs font-medium text-ink transition-[background-color,border-color,padding] hover:bg-white/90 group-data-[solid=true]:border-ink/15 group-data-[solid=true]:hover:bg-ink/5 group-data-[scrolled=true]:py-1.5"
+				class="rounded-lg border border-white bg-white px-3.5 py-2 text-xs font-medium text-ink transition-[background-color,border-color,color,padding] duration-200 hover:bg-transparent hover:text-white group-data-[solid=true]:border-ink group-data-[solid=true]:bg-transparent group-data-[solid=true]:hover:bg-ink group-data-[solid=true]:hover:text-white group-data-[scrolled=true]:py-1.5"
 			>
 				Book consult
 			</a>
@@ -226,9 +235,10 @@ const ease = 'ease-[cubic-bezier(0.16,1,0.3,1)]';
 		<a
 			href={url(bookHref)}
 			data-menu-close
-			class="mt-8 flex w-full items-center justify-center rounded-lg border border-ink/15 bg-white py-3.5 text-base font-medium"
+			class="group mt-8 flex w-full items-center justify-center gap-2.5 rounded-lg border border-ink py-3.5 text-base font-medium transition-colors duration-200 hover:bg-ink hover:text-white"
 		>
 			Schedule a Free Consultation
+			<ArrowIcon size={12} class={buttonArrow} />
 		</a>
 	</nav>
 </div>
@@ -250,7 +260,8 @@ const ease = 'ease-[cubic-bezier(0.16,1,0.3,1)]';
 	const updateHeader = () => {
 		const scrolled = window.scrollY > 16;
 		header.dataset.scrolled = String(scrolled);
-		header.dataset.solid = String(scrolled || openId !== null || mobileOpen);
+		const alwaysSolid = header.hasAttribute('data-always-solid');
+		header.dataset.solid = String(alwaysSolid || scrolled || openId !== null || mobileOpen);
 	};
 
 	// ---- Desktop mega menu ----

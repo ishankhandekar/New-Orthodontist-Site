@@ -1,0 +1,276 @@
+---
+import { Image } from 'astro:assets';
+import { cases, type Category } from '../lib/cases';
+import { h2, pad, section, sectionInner, sectionInnerFirst, smallLabel as small, textLink } from '../lib/pageStyles';
+import { url } from '../lib/url';
+import Accordion from './Accordion.astro';
+import ArrowIcon from './ArrowIcon.astro';
+import ClosingCta from './ClosingCta.astro';
+import NumberedSteps from './NumberedSteps.astro';
+import PageHero from './PageHero.astro';
+
+/*
+	Shared template for every treatment page. Each section answers one question a patient asks, and
+	text sections alternate with visual ones (facts, steps, table, photos) so the page never turns
+	into a wall of text. Keep every block to about three sentences; anything longer belongs in the
+	questions accordion.
+*/
+interface Props {
+	name: string;
+	headline: string;
+	intro: string;
+	image: ImageMetadata;
+	imageAlt: string;
+	imageFocus?: string;
+	/** Quick facts under the hero, as label/value pairs. */
+	facts: { label: string; value: string }[];
+	goodFor: string[];
+	notIdeal: string[];
+	steps: { title: string; body: string }[];
+	/** Optional side-by-side comparison, e.g. Invisalign vs. braces. */
+	compare?: { heading: string; columns: string[]; rows: { label: string; values: string[] }[] };
+	dayToDay: { title: string; body: string }[];
+	/** Shows Smile Gallery cases tagged with this category. */
+	results?: Category;
+	cost: string;
+	faqs: { q: string; a: string }[];
+	/** Section headings default to "{name}" phrasing; override where that reads badly (plurals, retainers). */
+	headings?: Partial<Record<'fit' | 'fitLabel' | 'notIdealLabel' | 'steps' | 'day' | 'results' | 'faq' | 'closing' | 'closingText', string>>;
+}
+
+const { name, headline, intro, image, imageAlt, imageFocus, facts, goodFor, notIdeal, steps, compare, dayToDay, results, cost, faqs } =
+	Astro.props;
+const heading = {
+	fit: `Is ${name} right for you?`,
+	fitLabel: 'A great fit if',
+	notIdealLabel: 'Something else may suit you better if',
+	steps: `How ${name} works, step by step.`,
+	day: `Life with ${name}.`,
+	results: `Real ${name} smiles.`,
+	faq: `${name} questions, answered.`,
+	closing: `Not sure if ${name} is right for you?`,
+	closingText:
+		"That's exactly what the free consultation is for. Dr. Lee will look at your smile and walk you through every option.",
+	...Astro.props.headings,
+};
+
+const resultCases = results ? cases.filter((c) => c.categories.includes(results)) : [];
+
+---
+
+<main class="bg-white text-ink">
+	<!-- Hero: what it is, in five seconds -->
+	<PageHero
+		crumb={{ label: 'Treatments', href: '/#treatments' }}
+		{name}
+		{headline}
+		{intro}
+		{image}
+		{imageAlt}
+		{imageFocus}
+		{facts}
+	/>
+
+	<!--
+		Is it right for me? The reasons it fits lead in large type; the cases where something else may
+		suit better sit beside them as a quiet margin note (a hairline rule, no box).
+	-->
+	<section aria-labelledby="fit-heading" class={section}>
+		<div class={sectionInnerFirst}>
+			<h2 id="fit-heading" class={h2}>{heading.fit}</h2>
+			<div class="mt-12 grid gap-12 lg:mt-16 lg:grid-cols-12 lg:gap-8">
+				<div class="lg:col-span-7">
+					<h3 class={small}>{heading.fitLabel}</h3>
+					<ol class="mt-4 border-b border-ink/10">
+						{
+							goodFor.map((item, i) => (
+								<li class="grid grid-cols-[2.5rem_1fr] items-baseline border-t border-ink/10 py-5 sm:grid-cols-[3.5rem_1fr] sm:py-6">
+									<span class="text-xs text-ink/40 tabular-nums" aria-hidden="true">
+										{pad(i + 1)}
+									</span>
+									<span class="text-[1.375rem] leading-[1.25] tracking-[-0.01em] text-balance sm:text-[1.625rem]">{item}</span>
+								</li>
+							))
+						}
+					</ol>
+				</div>
+				<aside class="self-start border-l border-ink/15 pl-6 sm:pl-8 lg:col-span-4 lg:col-start-9 lg:mt-9" aria-labelledby="not-ideal-heading">
+					<h3 id="not-ideal-heading" class={small}>{heading.notIdealLabel}</h3>
+					<ul class="mt-5 space-y-4">
+						{
+							notIdeal.map((item) => (
+								<li class="text-[0.9375rem] leading-relaxed text-ink/70">{item}</li>
+							))
+						}
+					</ul>
+					{
+						compare && (
+							<a href="#compare" class:list={[textLink, 'mt-7']}>
+								See the side-by-side comparison
+								<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
+							</a>
+						)
+					}
+				</aside>
+			</div>
+		</div>
+	</section>
+
+	<!-- How it works: numbered steps, like the homepage's first visit -->
+	<section aria-labelledby="steps-heading" class={section}>
+		<div class={sectionInner}>
+			<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+				<h2 id="steps-heading" class:list={[h2, 'lg:sticky lg:top-24 lg:col-span-4 lg:self-start']}>
+					{heading.steps}
+				</h2>
+				<NumberedSteps {steps} class="lg:col-span-7 lg:col-start-6" />
+			</div>
+		</div>
+	</section>
+
+	{
+		compare && (
+			<section id="compare" aria-labelledby="compare-heading" class:list={[section, 'scroll-mt-16']}>
+				<div class={sectionInner}>
+					<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+						<h2 id="compare-heading" class:list={[h2, 'lg:col-span-4']}>
+							{compare.heading}
+						</h2>
+						<!-- A table beats paragraphs for comparisons; cells wrap so it fits a phone without scrolling -->
+						<div class="lg:col-span-8">
+							<table class="w-full table-fixed border-collapse text-left text-sm sm:text-[0.9375rem]">
+								<thead>
+									<tr class="border-b border-ink/10">
+										<td class="w-[28%] py-4 sm:w-1/4" />
+										{compare.columns.map((c, i) => (
+											<th scope="col" class:list={['py-4 pr-3 text-base font-normal tracking-[-0.01em] sm:pr-4 sm:text-lg', i === 0 && 'text-ink', i > 0 && 'text-ink/60']}>
+												{c}
+											</th>
+										))}
+									</tr>
+								</thead>
+								<tbody>
+									{compare.rows.map((r) => (
+										<tr class="border-b border-ink/10">
+											<th scope="row" class:list={[small, 'py-4 pr-3 align-top font-normal sm:pr-4']}>
+												{r.label}
+											</th>
+											{r.values.map((v, i) => (
+												<td class:list={['py-4 pr-3 align-top leading-snug sm:pr-4', i > 0 && 'text-ink/60']}>{v}</td>
+											))}
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</section>
+		)
+	}
+
+	<!-- Day to day: what living with it is like -->
+	<section aria-labelledby="day-heading" class={section}>
+		<div class={sectionInner}>
+			<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+				<h2 id="day-heading" class:list={[h2, 'lg:col-span-4']}>{heading.day}</h2>
+				<div class="grid gap-x-8 sm:grid-cols-2 lg:col-span-8">
+					{
+						dayToDay.map((d) => (
+							<div class="border-t border-ink/10 py-6 sm:py-8">
+								<h3 class="text-lg font-medium tracking-[-0.01em]">{d.title}</h3>
+								<p class="mt-2 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">{d.body}</p>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</div>
+	</section>
+
+	{
+		resultCases.length > 0 && (
+			<section aria-labelledby="results-heading" class={section}>
+				<div class={sectionInner}>
+					<div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+						<h2 id="results-heading" class={h2}>
+							{heading.results}
+						</h2>
+						<a href={url('/#gallery')} class:list={[textLink, 'shrink-0']}>
+							See the full gallery
+							<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
+						</a>
+					</div>
+					<ul class="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-x-10">
+						{resultCases.map((c) => (
+							<li>
+								<article class="group relative">
+									<div class:list={['aspect-[4/5] overflow-hidden bg-linear-to-br', c.tone]}>
+										{c.image && (
+											<Image
+												src={c.image}
+												alt={`${c.name}, smiling after treatment`}
+												widths={[400, c.image.width]}
+												sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw"
+												class:list={[
+													'size-full object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transition-none',
+													c.focus,
+												]}
+											/>
+										)}
+									</div>
+									<div class="mt-5 flex items-end justify-between gap-4 border-t border-ink/10 pt-4">
+										<div>
+											<h3 class="font-display text-[1.75rem] leading-tight font-normal">{c.name}</h3>
+											<p class="mt-1 text-sm text-ink/75">
+												{c.treatment}, {c.duration}
+											</p>
+										</div>
+										<a
+											href={url(`/smile-gallery/${c.slug}`)}
+											class="mb-1 inline-flex shrink-0 items-center gap-2 text-xs tracking-[0.14em] uppercase after:absolute after:inset-0 focus-visible:outline-none group-has-[a:focus-visible]:outline-2 group-has-[a:focus-visible]:outline-offset-8 group-has-[a:focus-visible]:outline-ink"
+										>
+											View case<span class="sr-only">: {c.name}</span>
+											<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-1" />
+										</a>
+									</div>
+								</article>
+							</li>
+						))}
+					</ul>
+				</div>
+			</section>
+		)
+	}
+
+	<!-- Cost: short, and points to the financing details rather than repeating them -->
+	<section aria-labelledby="cost-heading" class={section}>
+		<div class={sectionInner}>
+			<div class="grid gap-8 lg:grid-cols-12 lg:gap-8">
+				<h2 id="cost-heading" class:list={[h2, 'lg:col-span-4']}>What it costs.</h2>
+				<div class="lg:col-span-6 lg:col-start-6">
+					<p class="text-base leading-relaxed text-ink/75 sm:text-lg">{cost}</p>
+					<a href={url('/financing')} class:list={[textLink, 'mt-8']}>
+						How financing and insurance work
+						<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Questions: anything longer than a few sentences lives here -->
+	<section aria-labelledby="faq-heading" class={section}>
+		<div class={sectionInner}>
+			<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+				<h2 id="faq-heading" class:list={[h2, 'lg:sticky lg:top-24 lg:col-span-4 lg:self-start']}>
+					{heading.faq}
+				</h2>
+				<Accordion items={faqs} openFirst={false} class="lg:col-span-8 lg:col-start-5" />
+			</div>
+		</div>
+	</section>
+
+	<!-- Closing: the consultation is where "is this right for me?" gets answered -->
+	<ClosingCta heading={heading.closing} text={heading.closingText} />
+</main>

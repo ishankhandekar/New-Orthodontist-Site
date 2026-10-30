@@ -1,7 +1,7 @@
 ---
-import { url } from '../lib/url';
 import { Image } from 'astro:assets';
-import CornerArrow from './CornerArrow.astro';
+import { url } from '../lib/url';
+import ArrowIcon from './ArrowIcon.astro';
 import bracesPhoto from '../assets/treatment-braces.png';
 import invisalignPhoto from '../assets/treatment-invisalign.jpg';
 import jawPhoto from '../assets/treatment-jaw.jpg';
@@ -9,10 +9,11 @@ import jawPhoto from '../assets/treatment-jaw.jpg';
 import doctorPhoto from '../assets/about-doctor.jpg';
 
 // TODO: Placeholder copy; confirm with the client. The treatment links point to pages that
-// don't exist yet. The braces photo is only 490px wide; replace with a larger one (1000px+).
+// don't exist yet. The braces photo is only 473px wide; replace with a larger one (1000px+).
 
-// Shared card styling. Each card links through one arrow tile in its bottom-right corner; the
-// link stretches over the whole card (its ::after), so the entire card is clickable.
+// Shared card styling. Each card links through one small arrow button in its bottom-right corner;
+// the link stretches over the whole card (its ::after), so the entire card is clickable. Keyboard
+// focus outlines the card itself, since the whole card is the link.
 const card =
 	'group relative isolate flex min-h-[26rem] flex-col overflow-hidden rounded-2xl p-5 lg:min-h-[30rem] has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-4 has-[a:focus-visible]:outline-ink';
 // The photo sits in its own frame clipped with clip-path as well as rounded corners: while the
@@ -20,10 +21,14 @@ const card =
 // rounded overflow clip (corners flash square). clip-path is applied to that layer too. It lives
 // on this frame, not the card, so it doesn't cut off the card's keyboard focus outline.
 const photoFrame = 'absolute inset-0 -z-10 overflow-hidden rounded-2xl [clip-path:inset(0_round_1rem)]';
-// Photo zoom shares the corner button's long ease-out, slower, so card and button move as one.
+// Slow photo zoom on hover, with the site's long ease-out.
 const photo =
 	'size-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04] motion-reduce:transition-none';
-const cornerLink = 'mt-auto ml-auto after:absolute after:inset-0 focus-visible:outline-none';
+// Same on every card: a small white square with an up-right arrow. Hovering the card fills it ink.
+const cornerLink =
+	'mt-auto ml-auto flex size-9 items-center justify-center rounded-lg bg-white text-ink transition-colors duration-300 group-hover:bg-ink group-hover:text-white after:absolute after:inset-0 focus-visible:outline-none';
+const cornerArrow =
+	'-rotate-45 transition-transform duration-300 motion-safe:group-hover:translate-x-px motion-safe:group-hover:-translate-y-px';
 ---
 
 <section id="treatments" class="bg-white px-5 pt-20 pb-20 text-ink sm:px-7 lg:pt-28 lg:pb-28">
@@ -49,13 +54,13 @@ const cornerLink = 'mt-auto ml-auto after:absolute after:inset-0 focus-visible:o
 
 		<!-- Cards: stacked on mobile; three across on desktop with the reference's wide/narrow/wide rhythm. -->
 		<div class="mt-12 grid gap-4 lg:mt-16 lg:grid-cols-[1fr_0.8fr_1.3fr] lg:gap-5">
-			<!-- Braces: short description at the top, arrow tile in the corner -->
+			<!-- Braces: short description at the top, arrow in the corner -->
 			<article class:list={[card, 'text-white']}>
 				<div class={photoFrame}>
 					<Image
 						src={bracesPhoto}
 						alt="Close-up of a smile with metal braces"
-						widths={[490]}
+						widths={[bracesPhoto.width]}
 						sizes="(min-width: 1024px) 30vw, 100vw"
 						class:list={[photo, 'object-[50%_60%]']}
 					/>
@@ -76,12 +81,13 @@ const cornerLink = 'mt-auto ml-auto after:absolute after:inset-0 focus-visible:o
 					</div>
 				</div>
 
-				<a href={url('/treatments/braces')} aria-label="Learn about braces" class={cornerLink}>
-					<CornerArrow />
+				<a href={url('/treatments/braces')} class={cornerLink}>
+					<span class="sr-only">Learn about braces</span>
+					<ArrowIcon size={13} class={cornerArrow} />
 				</a>
 			</article>
 
-			<!-- Invisalign: short description at the top, arrow tile in the corner (same as Braces) -->
+			<!-- Invisalign: same layout as Braces -->
 			<article class:list={[card, 'text-white']}>
 				<div class={photoFrame}>
 					<Image
@@ -108,12 +114,13 @@ const cornerLink = 'mt-auto ml-auto after:absolute after:inset-0 focus-visible:o
 					</div>
 				</div>
 
-				<a href={url('/treatments/invisalign')} aria-label="Learn about Invisalign" class={cornerLink}>
-					<CornerArrow />
+				<a href={url('/treatments/invisalign')} class={cornerLink}>
+					<span class="sr-only">Learn about Invisalign</span>
+					<ArrowIcon size={13} class={cornerArrow} />
 				</a>
 			</article>
 
-			<!-- Jaw orthopedics: byline and statement up top, arrow tile in the corner, model visible between -->
+			<!-- Jaw orthopedics: byline and statement up top, arrow in the corner -->
 			<article class:list={[card, 'text-ink']}>
 				<div class={photoFrame}>
 					<Image
@@ -142,15 +149,16 @@ const cornerLink = 'mt-auto ml-auto after:absolute after:inset-0 focus-visible:o
 					</div>
 				</div>
 
-				<div class="mt-7">
+				<div class="mt-7 mb-8">
 					<h3 class="text-xs tracking-[0.14em] text-ink/75 uppercase">Jaw orthopedics</h3>
 					<p class="mt-3 max-w-md text-[1.25rem] leading-snug tracking-[-0.01em] text-balance lg:text-[1.375rem]">
 						Guiding jaw growth early, while kids are still growing, so later treatment is simpler.
 					</p>
 				</div>
 
-				<a href={url('/treatments/jaw-orthopedics')} aria-label="Learn about jaw orthopedics" class:list={[cornerLink, 'pt-8']}>
-					<CornerArrow />
+				<a href={url('/treatments/jaw-orthopedics')} class={cornerLink}>
+					<span class="sr-only">Learn about jaw orthopedics</span>
+					<ArrowIcon size={13} class={cornerArrow} />
 				</a>
 			</article>
 		</div>

@@ -1,0 +1,376 @@
+---
+import Accordion from '../components/Accordion.astro';
+import ArrowIcon from '../components/ArrowIcon.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import FactsStrip from '../components/FactsStrip.astro';
+import Layout from '../layouts/Layout.astro';
+import { buttonArrow, buttonInk } from '../lib/buttons';
+import { bookHref } from '../lib/nav';
+import { h2, section, sectionInner, smallLabel, textLink } from '../lib/pageStyles';
+import { url } from '../lib/url';
+
+/*
+	Financial & Insurance: one job, transparency. Its own layout (not the treatment or age template):
+	a promise-led hero, the quote as an itemized receipt, a payment calculator, how insurance works,
+	and insurance terms in plain English.
+	TODO: Every figure and policy here is a placeholder. Confirm with the practice what the quote
+	includes, the plan lengths and down payments they offer, accepted cards, HSA/FSA, and whether
+	first retainers are included, before launch.
+*/
+const promises = [
+	{ title: 'One all-inclusive quote', body: 'The price we quote is the price you pay, even if treatment takes longer.' },
+	{ title: '0% interest payment plans', body: 'Spread payments across your treatment with no interest and no hidden fees.' },
+	{ title: 'Insurance, handled', body: 'We check your benefits, file the claims, and track the payments for you.' },
+];
+
+const included = [
+	{ item: 'Consultation and 3D scan', value: 'Free' },
+	{ item: 'Your custom treatment plan', value: 'Included' },
+	{ item: 'Braces or aligners', value: 'Included' },
+	{ item: 'Every adjustment visit', value: 'Included' },
+	{ item: 'Emergency visits during treatment', value: 'Included' },
+	{ item: 'Your first set of retainers', value: 'Included' },
+	{ item: 'Retainer check-ins for the first year', value: 'Included' },
+];
+
+const insuranceSteps = [
+	{ label: 'Before treatment', title: 'We check your benefits', body: "Share your plan details and we'll confirm your orthodontic coverage, so your quote shows your real share." },
+	{ label: 'During treatment', title: 'We file the claims', body: 'We submit the paperwork and follow up with your insurer. Most pay their share in installments.' },
+	{ label: 'Your share', title: 'You pay only the rest', body: 'Whatever insurance does not cover can go on a 0% interest monthly plan.' },
+];
+
+const glossary = [
+	{ term: 'Orthodontic benefit', def: 'The part of a dental plan that covers braces or aligners. Not every plan includes one.' },
+	{ term: 'Lifetime maximum', def: 'The most your plan will ever pay toward orthodontics. It is usually separate from your regular dental maximum.' },
+	{ term: 'Coinsurance', def: "Your plan's share of the cost, often around half for orthodontics, up to the lifetime maximum." },
+	{ term: 'Age limit', def: 'Some plans only cover orthodontics for children under a certain age, often 19.' },
+	{ term: 'Deductible', def: 'What you pay before insurance starts paying. Many plans do not apply one to orthodontics.' },
+	{ term: 'Installment payments', def: 'Insurers often pay their share over the course of treatment rather than all at once.' },
+];
+
+const waysToPay = [
+	{ label: 'Monthly plans', value: '0% interest' },
+	{ label: 'Pay in full', value: 'Ask about savings' },
+	{ label: 'HSA and FSA', value: 'Accepted' },
+	{ label: 'Cards', value: 'All major cards' },
+];
+
+const faqs = [
+	{
+		q: 'Is the first consultation really free?',
+		a: 'Yes. The scan, the sit-down with Dr. Lee, and your written quote cost nothing, with no obligation to start.',
+	},
+	{
+		q: 'Will my price change if treatment takes longer?',
+		a: 'No. Your quote is all-inclusive. If treatment runs longer than planned, the extra visits are on us.',
+	},
+	{
+		q: 'Do your payment plans charge interest?',
+		a: 'No. Our in-house plans are 0% interest, with no hidden fees. You will see the exact monthly amount before you sign.',
+	},
+	{
+		q: 'Can I use my HSA or FSA?',
+		a: 'Yes. Orthodontic treatment is generally a qualified medical expense, and we can provide the receipts you need.',
+	},
+	{
+		q: "What if my insurance doesn't cover orthodontics?",
+		a: 'Many patients start without coverage. A 0% interest monthly plan spreads the cost across treatment.',
+	},
+];
+
+const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+// Calculator defaults (an illustration, not a price list).
+const calc = { total: 5500, totalMin: 2500, totalMax: 9000, down: 500, downMax: 2000, months: [12, 18, 24], defaultMonths: 24 };
+const monthly = (calc.total - calc.down) / calc.defaultMonths;
+---
+
+<Layout title="Financial & Insurance | Torrey Hills Orthodontics" solidHeader>
+	<main class="bg-white text-ink">
+		<!-- Hero: the promise, in words. No photo; this page is about clarity. -->
+		<section class="px-5 pt-28 pb-16 sm:px-7 lg:pt-36 lg:pb-24">
+			<div class="mx-auto grid max-w-7xl gap-14 lg:grid-cols-12 lg:gap-8">
+				<div class="lg:col-span-6">
+					<nav aria-label="Breadcrumb" class={smallLabel}>
+						<span>Patient info</span>
+						<span class="mx-2 text-ink/30" aria-hidden="true">/</span>
+						<span aria-current="page" class="text-ink">Financial &amp; insurance</span>
+					</nav>
+					<h1 class="mt-6 text-[2.75rem] leading-[1.02] font-normal tracking-[-0.02em] sm:text-[clamp(3.5rem,6vw,5.5rem)]">
+						Clear costs.<br />No surprises.
+					</h1>
+					<p class="mt-7 max-w-md text-base leading-relaxed text-ink/75 sm:text-lg">
+						You'll know exactly what treatment costs, what insurance covers, and what you'll pay each month,
+						before anything begins.
+					</p>
+					<a href={url(bookHref)} class:list={[buttonInk, 'mt-9']}>
+						Get your free quote
+						<ArrowIcon size={12} class={buttonArrow} />
+					</a>
+				</div>
+				<ul class="self-end border-b border-ink/10 lg:col-span-5 lg:col-start-8">
+					{
+						promises.map((p) => (
+							<li class="border-t border-ink/10 py-6">
+								<h2 class="text-lg font-medium tracking-[-0.01em]">{p.title}</h2>
+								<p class="mt-1.5 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">{p.body}</p>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</section>
+
+		<!-- The quote as a receipt: every line says what you get, and the last says what you won't be charged -->
+		<section aria-labelledby="included-heading" class={section}>
+			<div class={sectionInner}>
+				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+					<div class="lg:col-span-4">
+						<h2 id="included-heading" class={h2}>What your quote includes.</h2>
+						<p class="mt-5 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">
+							One price covers your whole treatment, from the first scan to your first retainers.
+						</p>
+					</div>
+					<div class="lg:col-span-7 lg:col-start-6">
+						<p class:list={[smallLabel, 'flex justify-between border-b-2 border-ink pb-3']}>
+							<span>Your treatment</span><span>Cost</span>
+						</p>
+						<ul class="py-2">
+							{
+								included.map((row) => (
+									<li class="flex items-baseline gap-3 py-3.5 text-[0.9375rem] sm:text-base">
+										<span>{row.item}</span>
+										<span class="mb-1 flex-1 border-b-2 border-dotted border-ink/30" aria-hidden="true" />
+										<span class="tabular-nums">{row.value}</span>
+									</li>
+								))
+							}
+						</ul>
+						<p class="flex items-baseline gap-3 border-y-2 border-ink py-5 text-lg font-medium tracking-[-0.01em] sm:text-xl">
+							<span>Surprise fees</span>
+							<span class="mb-1 flex-1 border-b-2 border-dotted border-ink/30" aria-hidden="true" />
+							<span class="tabular-nums">$0</span>
+						</p>
+						<p class="mt-5 max-w-lg text-sm leading-relaxed text-ink/60">
+							Not included: replacement retainers or appliances that are lost or broken. We'll always tell you the price
+							before we make anything.
+						</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Payment calculator: an illustration of how a 0% plan breaks down -->
+		<section aria-labelledby="calc-heading" class={section}>
+			<div class={sectionInner}>
+				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+					<div class="lg:col-span-4">
+						<h2 id="calc-heading" class={h2}>See what monthly payments could look like.</h2>
+						<p class="mt-5 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">
+							Move the sliders to see how a 0% interest plan breaks down. Your exact numbers come with your quote.
+						</p>
+					</div>
+					<form data-calc class="lg:col-span-7 lg:col-start-6" onsubmit="return false">
+						<div class="grid gap-10 sm:grid-cols-2 sm:gap-8">
+							<div>
+								<label for="calc-total" class:list={[smallLabel, 'flex justify-between']}>
+									<span>Treatment total</span>
+									<output data-out="total" for="calc-total" class="text-ink tabular-nums">{money.format(calc.total)}</output>
+								</label>
+								<input
+									id="calc-total"
+									data-in="total"
+									type="range"
+									min={calc.totalMin}
+									max={calc.totalMax}
+									step="100"
+									value={calc.total}
+									class="range mt-5 w-full"
+								/>
+							</div>
+							<div>
+								<label for="calc-down" class:list={[smallLabel, 'flex justify-between']}>
+									<span>Down payment</span>
+									<output data-out="down" for="calc-down" class="text-ink tabular-nums">{money.format(calc.down)}</output>
+								</label>
+								<input
+									id="calc-down"
+									data-in="down"
+									type="range"
+									min="0"
+									max={calc.downMax}
+									step="100"
+									value={calc.down}
+									class="range mt-5 w-full"
+								/>
+							</div>
+						</div>
+
+						<fieldset class="mt-10">
+							<legend class={smallLabel}>Plan length</legend>
+							<div class="mt-3 flex gap-6">
+								{
+									calc.months.map((m) => (
+										<label class="cursor-pointer py-1 text-[0.9375rem] text-ink/60 decoration-accent decoration-2 underline-offset-[10px] transition-colors hover:text-ink has-checked:text-ink has-checked:underline has-focus-visible:rounded-sm has-focus-visible:outline-2 has-focus-visible:outline-offset-4 has-focus-visible:outline-ink">
+											<input type="radio" name="months" value={m} checked={m === calc.defaultMonths} class="sr-only" />
+											{m} months
+										</label>
+									))
+								}
+							</div>
+						</fieldset>
+
+						<!-- Result: one big number, with the arithmetic shown underneath -->
+						<div class="mt-12 border-t-2 border-ink pt-6" aria-live="polite">
+							<p class={smallLabel}>Estimated monthly payment</p>
+							<p class="mt-3 text-[3.5rem] leading-none tracking-[-0.03em] tabular-nums sm:text-[4.5rem]">
+								<span data-out="monthly">{money.format(Math.ceil(monthly))}</span><span class="text-2xl text-ink/50 sm:text-3xl">/mo</span>
+							</p>
+							<p data-out="math" class="mt-4 text-sm text-ink/60 tabular-nums">
+								{money.format(calc.total)} minus {money.format(calc.down)} down, over {calc.defaultMonths} months. 0% interest, $0 in fees.
+							</p>
+						</div>
+						<p class="mt-6 text-xs leading-relaxed text-ink/50">
+							An example only, not a quote. Your price depends on your treatment and is confirmed in writing at your
+							free consultation.
+						</p>
+					</form>
+				</div>
+			</div>
+		</section>
+
+		<!-- Insurance: who does what, as a horizontal before / during / after -->
+		<section aria-labelledby="insurance-heading" class={section}>
+			<div class={sectionInner}>
+				<h2 id="insurance-heading" class:list={[h2, 'max-w-2xl']}>We handle the insurance paperwork.</h2>
+				<p class="mt-5 max-w-xl text-[0.9375rem] leading-relaxed text-ink/75">
+					We work with most major PPO plans. You don't need to call your insurer or fill out a single form.
+				</p>
+				<ol class="mt-12 grid gap-x-8 gap-y-10 md:grid-cols-3 lg:mt-16 lg:gap-x-10">
+					{
+						insuranceSteps.map((s, i) => (
+							<li class="border-t-2 border-ink pt-5">
+								<p class={smallLabel}>{s.label}</p>
+								<h3 class="mt-4 text-xl tracking-[-0.01em]">
+									<span class="sr-only">Step {i + 1}: </span>
+									{s.title}
+								</h3>
+								<p class="mt-2 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">{s.body}</p>
+							</li>
+						))
+					}
+				</ol>
+				<p class="mt-12 max-w-xl text-sm leading-relaxed text-ink/60">
+					Paying without insurance? You have the right to a Good Faith Estimate of your costs before treatment.{' '}
+					<a href={url('/good-faith-estimate')} class="underline decoration-ink/25 underline-offset-4 transition-colors hover:text-ink hover:decoration-accent">
+						Read the notice
+					</a>.
+				</p>
+			</div>
+		</section>
+
+		<!-- Insurance terms, in plain English -->
+		<section aria-labelledby="terms-heading" class={section}>
+			<div class={sectionInner}>
+				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+					<h2 id="terms-heading" class:list={[h2, 'lg:col-span-4']}>Insurance terms, in plain English.</h2>
+					<dl class="grid gap-x-10 sm:grid-cols-2 lg:col-span-8">
+						{
+							glossary.map((g) => (
+								<div class="border-t border-ink/10 py-6">
+									<dt class="text-lg font-medium tracking-[-0.01em]">{g.term}</dt>
+									<dd class="mt-2 text-[0.9375rem] leading-relaxed text-ink/75">{g.def}</dd>
+								</div>
+							))
+						}
+					</dl>
+				</div>
+			</div>
+		</section>
+
+		<!-- Other ways to pay: label/value pairs, no prose -->
+		<section aria-labelledby="pay-heading" class={section}>
+			<div class={sectionInner}>
+				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+					<h2 id="pay-heading" class:list={[h2, 'lg:col-span-4']}>Every way to pay.</h2>
+					<FactsStrip facts={waysToPay} class="lg:col-span-8" />
+				</div>
+			</div>
+		</section>
+
+		<section aria-labelledby="faq-heading" class={section}>
+			<div class={sectionInner}>
+				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+					<h2 id="faq-heading" class:list={[h2, 'lg:sticky lg:top-24 lg:col-span-4 lg:self-start']}>Money questions, answered.</h2>
+					<Accordion items={faqs} openFirst={false} class="lg:col-span-8 lg:col-start-5" />
+				</div>
+			</div>
+		</section>
+
+		<ClosingCta
+			heading="Get your exact numbers."
+			text="Your free consultation ends with a written, all-inclusive quote and an insurance estimate, so you can decide with everything in front of you."
+		/>
+	</main>
+</Layout>
+
+<style>
+	/* Minimal sliders: a hairline track and a solid ink thumb. */
+	.range {
+		appearance: none;
+		height: 18px;
+		background: transparent;
+		cursor: pointer;
+	}
+	.range::-webkit-slider-runnable-track {
+		height: 2px;
+		background: color-mix(in srgb, var(--color-ink) 15%, transparent);
+	}
+	.range::-moz-range-track {
+		height: 2px;
+		background: color-mix(in srgb, var(--color-ink) 15%, transparent);
+	}
+	.range::-webkit-slider-thumb {
+		appearance: none;
+		width: 18px;
+		height: 18px;
+		margin-top: -8px;
+		border-radius: 9999px;
+		background: var(--color-ink);
+		transition: scale 0.2s ease;
+	}
+	.range::-moz-range-thumb {
+		width: 18px;
+		height: 18px;
+		border: 0;
+		border-radius: 9999px;
+		background: var(--color-ink);
+	}
+	.range:active::-webkit-slider-thumb {
+		scale: 1.15;
+	}
+	.range:focus-visible {
+		outline: 2px solid var(--color-ink);
+		outline-offset: 6px;
+		border-radius: 2px;
+	}
+</style>
+
+<script>
+	const form = document.querySelector<HTMLFormElement>('[data-calc]')!;
+	const total = form.querySelector<HTMLInputElement>('[data-in="total"]')!;
+	const down = form.querySelector<HTMLInputElement>('[data-in="down"]')!;
+	const out = (name: string) => form.querySelector<HTMLElement>(`[data-out="${name}"]`)!;
+	const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+	const update = () => {
+		const t = Number(total.value);
+		// The down payment can't be more than the treatment total.
+		const d = Math.min(Number(down.value), t);
+		const months = Number(form.querySelector<HTMLInputElement>('input[name="months"]:checked')!.value);
+		out('total').textContent = money.format(t);
+		out('down').textContent = money.format(d);
+		out('monthly').textContent = money.format(Math.ceil((t - d) / months));
+		out('math').textContent = `${money.format(t)} minus ${money.format(d)} down, over ${months} months. 0% interest, $0 in fees.`;
+	};
+	form.addEventListener('input', update);
+</script>

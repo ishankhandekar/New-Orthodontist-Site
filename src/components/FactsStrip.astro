@@ -1,0 +1,29 @@
+---
+import { smallLabel } from '../lib/pageStyles';
+
+// Quick facts as label/value pairs between hairlines: two columns on phones, four on desktop.
+interface Props {
+	facts: { label: string; value: string }[];
+	class?: string;
+}
+
+const { facts, class: className } = Astro.props;
+---
+
+<dl class:list={['grid grid-cols-2 border-y border-ink/10 lg:grid-cols-4', className]}>
+	{
+		facts.map((f, i) => (
+			<div
+				class:list={[
+					'py-6 pr-4',
+					i % 2 === 1 && 'border-l border-ink/10 pl-4 lg:pl-6',
+					i % 2 === 0 && i > 0 && 'lg:border-l lg:border-ink/10 lg:pl-6',
+					i > 1 && 'border-t border-ink/10 lg:border-t-0',
+				]}
+			>
+				<dt class={smallLabel}>{f.label}</dt>
+				<dd class="mt-2 text-lg tracking-[-0.01em]">{f.value}</dd>
+			</div>
+		))
+	}
+</dl>

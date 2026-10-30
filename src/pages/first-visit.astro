@@ -1,0 +1,385 @@
+---
+import { Image } from 'astro:assets';
+import Accordion from '../components/Accordion.astro';
+import ArrowIcon from '../components/ArrowIcon.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import FactsStrip from '../components/FactsStrip.astro';
+import Layout from '../layouts/Layout.astro';
+import { buttonArrow, buttonInk } from '../lib/buttons';
+import { address, directionsUrl, phone } from '../lib/contact';
+import { bookHref } from '../lib/nav';
+import { h2, section, sectionInner, sectionInnerFirst, smallLabel, textLink } from '../lib/pageStyles';
+import { url } from '../lib/url';
+
+/*
+	First visit: takes the mystery out of every minute, and leans on photography to build trust.
+	Its own layout: a photo-led hero, the visit as a timed itinerary (with a photo that changes as you
+	scroll), a tickable checklist, a look inside the office, and practical details.
+	TODO: Every photo is a stock placeholder; swap in the practice's own. Confirm with the practice the
+	visit length and order, whether X-rays happen at the first visit, how patient forms are sent,
+	and the parking and entrance details.
+*/
+import officePhoto from '../assets/about-office.jpg';
+import doctorPhoto from '../assets/about-doctor.jpg';
+import scanPhoto from '../assets/treatment-invisalign.jpg';
+import planPhoto from '../assets/treatment-jaw.jpg';
+import smilePhoto from '../assets/hero-patient.jpg';
+import sarahPhoto from '../assets/gallery-sarah.png';
+import marcusPhoto from '../assets/gallery-marcus.png';
+import childPhoto from '../assets/gallery-priya.png';
+
+const facts = [
+	{ label: 'Length', value: 'About an hour' },
+	{ label: 'Cost', value: 'Free' },
+	{ label: "You'll see", value: 'Dr. Lee herself' },
+	{ label: "You'll leave with", value: 'A written plan and quote' },
+];
+
+const itinerary = [
+	{ time: '0:00', title: 'Welcome', body: "A friendly hello and a seat. Your forms are already done, so there's nothing to fill out.", photo: officePhoto, alt: 'The bright, calm reception area', focus: 'object-center' },
+	{ time: '0:05', title: 'Photos and 3D scan', body: 'A few quick photos and a 3D scan of your teeth. No messy impressions, nothing uncomfortable.', photo: scanPhoto, alt: 'Clear aligners made from a 3D scan', focus: 'object-[58%_center]' },
+	{ time: '0:20', title: 'Time with Dr. Lee', body: 'Dr. Lee examines your teeth, bite, and jaw herself, and asks what you would like to change.', photo: doctorPhoto, alt: 'Dr. Lee in the treatment room', focus: 'object-[50%_30%]' },
+	{ time: '0:35', title: 'Your plan', body: 'She walks you through what she sees, your options, and a preview of how your smile could look.', photo: planPhoto, alt: 'A dental model used to explain the plan', focus: 'object-[50%_62%]' },
+	{ time: '0:45', title: 'The numbers', body: 'Your all-inclusive quote, what insurance covers, and the monthly payment options.', photo: sarahPhoto, alt: 'A patient smiling during the visit', focus: 'object-[50%_28%]' },
+	{ time: '0:55', title: 'Your call', body: 'Ask anything. Then book your start date, or take time to think it over. No pressure either way.', photo: smilePhoto, alt: 'A smiling patient with braces', focus: 'object-[60%_30%]' },
+];
+
+const checklist = [
+	{ item: 'Fill out your forms online', note: "We'll text you a link after you book." },
+	{ item: 'Your insurance card', note: 'So we can check your benefits on the spot.' },
+	{ item: 'A photo ID', note: 'For you, or the parent if the visit is for a child.' },
+	{ item: 'A list of medications', note: 'Including anything taken regularly.' },
+	{ item: "Your dentist's name", note: 'So we can keep them in the loop.' },
+	{ item: 'Your questions', note: 'Nothing is too small to ask.' },
+];
+
+const takeaways = [
+	{ title: 'A preview of your new smile', body: 'See how your teeth could move, before anything begins.' },
+	{ title: 'A written treatment plan', body: 'Your options, timeline, and what each one involves.' },
+	{ title: 'An all-inclusive quote', body: 'One clear price, with nothing added later.' },
+	{ title: 'An insurance estimate', body: 'What your plan covers, and what your share would be.' },
+];
+
+const inside = [
+	{ photo: officePhoto, alt: 'The reception area', caption: 'A calm, bright space', focus: 'object-center' },
+	{ photo: doctorPhoto, alt: 'Dr. Lee', caption: 'Dr. Lee, at every visit', focus: 'object-[50%_30%]' },
+	{ photo: marcusPhoto, alt: 'A patient smiling after treatment', caption: 'Real patients, real smiles', focus: 'object-[50%_22%]' },
+];
+
+const childNotes = [
+	'You stay in the room the whole time.',
+	'No needles, no shots, nothing that hurts.',
+	'Dr. Lee explains everything in kid-friendly terms.',
+];
+
+const details = [
+	{ label: 'Address', value: address.join(', ') },
+	{ label: 'Parking', value: 'Free parking in the building lot' },
+	{ label: 'Finding us', value: 'Suite 200, on the second floor. The elevator is just inside the lobby.' },
+];
+
+const faqs = [
+	{ q: 'Do I need a referral from my dentist?', a: 'No. You can book your free consultation directly, and we are happy to work alongside your dentist.' },
+	{ q: 'Is there any obligation to start treatment?', a: 'None at all. You leave with your plan and quote, and you decide when, or whether, to begin.' },
+	{ q: 'Will you take X-rays?', a: 'If Dr. Lee needs them to plan treatment, we take them during the visit. It is quick and low-dose.' },
+	{ q: 'Can I bring someone with me?', a: 'Of course. Parents, partners, and family are always welcome to sit in.' },
+	{ q: 'What if I need to reschedule?', a: 'Just call us. We will find a new time that works for you.' },
+];
+
+const photoFrame = 'overflow-hidden rounded-2xl bg-mist';
+---
+
+<Layout title="Your First Visit | Torrey Hills Orthodontics" solidHeader>
+	<main class="bg-white text-ink">
+		<!-- Hero: the promise up top, then the office itself, full width -->
+		<section class="px-5 pt-28 pb-8 sm:px-7 lg:pt-36 lg:pb-12">
+			<div class="mx-auto max-w-7xl">
+				<div class="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-8">
+					<div class="lg:col-span-7">
+						<nav aria-label="Breadcrumb" class={smallLabel}>
+							<span>Patient info</span>
+							<span class="mx-2 text-ink/30" aria-hidden="true">/</span>
+							<span aria-current="page" class="text-ink">First visit</span>
+						</nav>
+						<h1 class="mt-6 text-[2.75rem] leading-[1.02] font-normal tracking-[-0.02em] text-balance sm:text-[clamp(3.5rem,6vw,5.5rem)]">
+							Your first visit, start to finish.
+						</h1>
+					</div>
+					<div class="lg:col-span-4 lg:col-start-9">
+						<p class="max-w-md text-base leading-relaxed text-ink/75 sm:text-lg">
+							Here's exactly what happens at your free consultation, minute by minute, so you can walk in knowing
+							what to expect.
+						</p>
+						<a href={url(bookHref)} class:list={[buttonInk, 'mt-7']}>
+							Book your first visit
+							<ArrowIcon size={12} class={buttonArrow} />
+						</a>
+					</div>
+				</div>
+
+				<div class:list={[photoFrame, 'mt-12 lg:mt-16']}>
+					<Image
+						src={officePhoto}
+						alt="The bright, calm reception area of the office"
+						widths={[640, 1024, 1600, 2000]}
+						sizes="(min-width: 1280px) 1216px, 100vw"
+						loading="eager"
+						class="aspect-[4/3] w-full object-cover sm:aspect-[21/9]"
+					/>
+				</div>
+				<FactsStrip {facts} class="mt-10 lg:mt-12" />
+			</div>
+		</section>
+
+		<!--
+			The visit, minute by minute. Desktop: the itinerary scrolls past a pinned photo that changes to
+			match the step in view. Phones: each step shows its own photo.
+		-->
+		<section aria-labelledby="itinerary-heading" class={section} data-itinerary>
+			<div class={sectionInnerFirst}>
+				<h2 id="itinerary-heading" class:list={[h2, 'max-w-2xl']}>The visit, minute by minute.</h2>
+				<div class="mt-12 grid gap-12 lg:mt-16 lg:grid-cols-12 lg:gap-8">
+					<ol class="lg:col-span-6">
+						{
+							itinerary.map((stop, i) => (
+								<li data-stop={i} class="stop group grid grid-cols-[3.25rem_1.25rem_1fr] gap-x-3 sm:grid-cols-[4rem_1.5rem_1fr] sm:gap-x-4">
+									<span class="stop-time pt-0.5 text-sm text-ink/50 tabular-nums transition-colors">{stop.time}</span>
+									<!-- Dot on a thin line; the line runs down to the next stop -->
+									<span class="relative flex justify-center" aria-hidden="true">
+										<span class="stop-dot relative z-10 mt-1.5 size-2.5 rounded-full border-2 border-ink/30 bg-white transition-colors" />
+										{i < itinerary.length - 1 && <span class="absolute top-3 -bottom-2 w-px bg-ink/15" />}
+									</span>
+									<div class="pb-12 sm:pb-16">
+										<h3 class="text-xl tracking-[-0.01em] sm:text-[1.625rem]">{stop.title}</h3>
+										<p class="mt-2 max-w-md text-[0.9375rem] leading-relaxed text-ink/75">{stop.body}</p>
+										<div class:list={[photoFrame, 'mt-5 lg:hidden']}>
+											<Image
+												src={stop.photo}
+												alt={stop.alt}
+												widths={[480, 800]}
+												sizes="100vw"
+												class:list={['aspect-[16/10] w-full object-cover', stop.focus]}
+											/>
+										</div>
+									</div>
+								</li>
+							))
+						}
+					</ol>
+					<div class="hidden lg:col-span-5 lg:col-start-8 lg:block">
+						<div class:list={[photoFrame, 'sticky top-28 aspect-[4/5]']}>
+							{
+								itinerary.map((stop, i) => (
+									<Image
+										src={stop.photo}
+										alt={i === 0 ? stop.alt : ''}
+										widths={[640, 1000]}
+										sizes="40vw"
+										data-photo={i}
+										class:list={['itinerary-photo absolute inset-0 size-full object-cover', stop.focus, i === 0 && 'is-active']}
+									/>
+								))
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Before you come: a checklist people can tick off on their phone -->
+		<section aria-labelledby="checklist-heading" class={section}>
+			<div class={sectionInner}>
+				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+					<div class="lg:col-span-4">
+						<h2 id="checklist-heading" class={h2}>Before you come.</h2>
+						<p class="mt-5 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">
+							A few things to bring, so the visit is all about you, not paperwork. Tick them off as you go.
+						</p>
+					</div>
+					<ul class="grid gap-x-8 border-b border-ink/10 sm:grid-cols-2 lg:col-span-8">
+						{
+							checklist.map((c, i) => (
+								<li class="border-t border-ink/10">
+									<label class="group flex cursor-pointer gap-4 py-5 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ink">
+										<input type="checkbox" id={`check-${i}`} class="peer sr-only" />
+										<span
+											class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border border-ink/30 text-white transition-colors peer-checked:border-ink peer-checked:bg-ink"
+											aria-hidden="true"
+										>
+											<svg class="size-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8">
+												<path d="M2.5 6.2 5 8.5l4.5-5" />
+											</svg>
+										</span>
+										<span class="transition-opacity peer-checked:opacity-50">
+											<span class="block text-[0.9375rem] font-medium tracking-[-0.01em] group-has-checked:line-through">{c.item}</span>
+											<span class="mt-1 block text-sm text-ink/60">{c.note}</span>
+										</span>
+									</label>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</div>
+		</section>
+
+		<!-- A look inside: photography carries this section -->
+		<section aria-labelledby="inside-heading" class={section}>
+			<div class={sectionInner}>
+				<h2 id="inside-heading" class:list={[h2, 'max-w-2xl']}>A look inside.</h2>
+				<ul class="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-3 lg:mt-16">
+					{
+						inside.map((p, i) => (
+							<li class:list={[i === 1 && 'sm:mt-16']}>
+								<div class={photoFrame}>
+									<Image src={p.photo} alt={p.alt} widths={[480, 900]} sizes="(min-width: 640px) 33vw, 100vw" class:list={['aspect-[4/5] w-full object-cover', p.focus]} />
+								</div>
+								<p class:list={[smallLabel, 'mt-4']}>{p.caption}</p>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</section>
+
+		<!-- What you'll leave with -->
+		<section aria-labelledby="leave-heading" class={section}>
+			<div class={sectionInner}>
+				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+					<div class="lg:col-span-4">
+						<h2 id="leave-heading" class={h2}>What you'll leave with.</h2>
+						<p class="mt-5 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">No pressure to decide that day.</p>
+					</div>
+					<div class="grid gap-x-8 sm:grid-cols-2 lg:col-span-8">
+						{
+							takeaways.map((t) => (
+								<div class="border-t border-ink/10 py-6 sm:py-8">
+									<h3 class="text-xl tracking-[-0.01em]">{t.title}</h3>
+									<p class="mt-2 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">{t.body}</p>
+								</div>
+							))
+						}
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Bringing your child: photo and a few reassurances -->
+		<section aria-labelledby="child-heading" class={section}>
+			<div class={sectionInner}>
+				<div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-8">
+					<div class:list={[photoFrame, 'lg:col-span-6']}>
+						<Image src={childPhoto} alt="A young patient smiling" widths={[640, 1000]} sizes="(min-width: 1024px) 50vw, 100vw" class="aspect-[4/3] w-full object-cover object-[50%_35%]" />
+					</div>
+					<div class="lg:col-span-5 lg:col-start-8">
+						<h2 id="child-heading" class={h2}>Bringing your child?</h2>
+						<p class="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-ink/75">
+							Many first visits are for kids around age 7. We keep it short, friendly, and easy.
+						</p>
+						<ul class="mt-8 border-b border-ink/10">
+							{childNotes.map((n) => <li class="border-t border-ink/10 py-4 text-lg tracking-[-0.01em]">{n}</li>)}
+						</ul>
+						<a href={url('/treatments/kids')} class:list={[textLink, 'mt-8']}>
+							More about care for kids
+							<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
+						</a>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Getting here -->
+		<section aria-labelledby="here-heading" class={section}>
+			<div class={sectionInner}>
+				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+					<h2 id="here-heading" class:list={[h2, 'lg:col-span-4']}>Getting here.</h2>
+					<div class="lg:col-span-8">
+						<dl class="border-b border-ink/10">
+							{
+								details.map((d) => (
+									<div class="grid gap-1 border-t border-ink/10 py-5 sm:grid-cols-[10rem_1fr] sm:gap-6">
+										<dt class={smallLabel}>{d.label}</dt>
+										<dd class="text-[0.9375rem] leading-relaxed">{d.value}</dd>
+									</div>
+								))
+							}
+							<div class="grid gap-1 border-t border-ink/10 py-5 sm:grid-cols-[10rem_1fr] sm:gap-6">
+								<dt class={smallLabel}>Questions</dt>
+								<dd class="text-[0.9375rem]">
+									<a href={phone.href} class="underline decoration-ink/25 underline-offset-4 transition-colors hover:decoration-accent">{phone.display}</a>
+								</dd>
+							</div>
+						</dl>
+						<a href={directionsUrl} target="_blank" rel="noopener noreferrer" class:list={[textLink, 'mt-8']}>
+							Get directions<span class="sr-only"> (opens Google Maps in a new tab)</span>
+							<ArrowIcon size={11} class="-rotate-45 text-accent transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+						</a>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section aria-labelledby="faq-heading" class={section}>
+			<div class={sectionInner}>
+				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+					<h2 id="faq-heading" class:list={[h2, 'lg:sticky lg:top-24 lg:col-span-4 lg:self-start']}>First visit questions.</h2>
+					<Accordion items={faqs} openFirst={false} class="lg:col-span-8 lg:col-start-5" />
+				</div>
+			</div>
+		</section>
+
+		<ClosingCta
+			heading="Ready for your first visit?"
+			text="It's free, it takes about an hour, and you'll leave knowing exactly what's possible."
+		/>
+	</main>
+</Layout>
+
+<style>
+	/* Pinned itinerary photos crossfade as the step in view changes. */
+	.itinerary-photo {
+		opacity: 0;
+		transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	.itinerary-photo.is-active {
+		opacity: 1;
+	}
+	/* The step in view gets a tangerine dot and a darker time. */
+	.stop.is-active .stop-dot {
+		border-color: var(--color-accent);
+		background: var(--color-accent);
+	}
+	.stop.is-active .stop-time {
+		color: var(--color-ink);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.itinerary-photo {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	const root = document.querySelector<HTMLElement>('[data-itinerary]')!;
+	const stops = [...root.querySelectorAll<HTMLElement>('[data-stop]')];
+	const photos = [...root.querySelectorAll<HTMLElement>('[data-photo]')];
+
+	const activate = (index: number) => {
+		stops.forEach((s, i) => s.classList.toggle('is-active', i === index));
+		photos.forEach((p, i) => p.classList.toggle('is-active', i === index));
+	};
+
+	// The step crossing the middle of the screen is the active one.
+	if ('IntersectionObserver' in window) {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) activate(Number((entry.target as HTMLElement).dataset.stop));
+				}
+			},
+			{ rootMargin: '-45% 0px -45% 0px' },
+		);
+		stops.forEach((s) => observer.observe(s));
+	}
+	activate(0);
+</script>

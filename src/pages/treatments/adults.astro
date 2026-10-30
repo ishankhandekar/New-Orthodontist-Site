@@ -1,0 +1,81 @@
+---
+import AgePage from '../../components/AgePage.astro';
+import Layout from '../../layouts/Layout.astro';
+// TODO: Placeholder photo (a gallery stock portrait). Swap for a real photo of an adult patient.
+import heroImage from '../../assets/gallery-marcus.png';
+
+// TODO: Placeholder content, including Dr. Lee's quote. She should review every line before launch.
+---
+
+<Layout title="Adult Orthodontics | Torrey Hills Orthodontics" solidHeader>
+	<AgePage
+		name="Adults"
+		headline="It's never too late for the smile you want."
+		intro="Healthy teeth can move at any age, and many of Dr. Lee's patients are adults. Discreet options fit around work, family, and everything in between."
+		image={heroImage}
+		imageAlt="Smiling adult outdoors"
+		imageFocus="object-[50%_22%]"
+		facts={[
+			{ label: 'Age limit', value: 'None' },
+			{ label: 'Most popular', value: 'Invisalign' },
+			{ label: 'Typical length', value: '12–18 months' },
+			{ label: 'Visits', value: 'Before or after work' },
+		]}
+		signsHeading="Reasons adults come in."
+		signs={[
+			{ title: 'Teeth that have shifted', body: 'Teeth often move over time, especially if retainers stopped being worn.' },
+			{ title: 'Crowding or gaps', body: 'Something that has always bothered you and never got fixed.' },
+			{ title: 'Bite problems', body: 'Uneven wear, jaw soreness, or teeth that don’t meet comfortably.' },
+			{ title: 'Before dental work', body: 'Moving teeth first can make implants or crowns work better.' },
+			{ title: 'Easier cleaning', body: 'Straight teeth are easier to brush and floss, which helps your gums.' },
+			{ title: 'Confidence', body: 'Smiling freely in meetings, photos, and everyday life.' },
+		]}
+		treatmentsHeading="Treatments adults choose."
+		treatments={[
+			{
+				name: 'Invisalign',
+				href: '/treatments/invisalign',
+				body: 'Nearly invisible and removable, so it fits around work and social life.',
+			},
+			{
+				name: 'Braces',
+				href: '/treatments/braces',
+				body: 'Clear ceramic braces blend in, and suit more complex bites.',
+			},
+			{
+				name: 'Retainers',
+				href: '/treatments/retainers',
+				body: "Replacements for lost or worn retainers, even if you weren't treated here.",
+			},
+		]}
+		stepsHeading="What to expect as an adult patient."
+		steps={[
+			{ title: 'Free consultation', body: 'A scan and an honest conversation with Dr. Lee about what is possible and what it will take.' },
+			{ title: 'A plan around your life', body: 'Options and timelines that fit your schedule, budget, and how visible you want treatment to be.' },
+			{ title: 'Efficient check-ins', body: 'Short visits every 6–10 weeks, with early and late appointment times.' },
+			{ title: 'Keeping it for good', body: 'Retainers keep your new smile in place for the long run.' },
+		]}
+		quote="Some of my happiest patients are adults who waited years to do this. It's never too late, and treatment is more discreet than most people expect."
+		faqHeading="Questions adults ask."
+		faqs={[
+			{
+				q: 'Am I too old for orthodontics?',
+				a: 'No. If your teeth and gums are healthy, they can be moved at any age.',
+			},
+			{
+				q: 'Will people notice?',
+				a: 'With Invisalign or clear ceramic braces, most people won’t. Many adults go through treatment without colleagues noticing.',
+			},
+			{
+				q: 'Does adult treatment take longer?',
+				a: 'Sometimes a little, but many adult cases take 12–18 months. You’ll get a personal timeline at your consultation.',
+			},
+			{
+				q: 'Does insurance cover adult orthodontics?',
+				a: "Some plans do. We'll check your benefits and can set up a 0% interest monthly plan.",
+			},
+		]}
+		closing="Ready for the smile you've been waiting for?"
+		closingText="Book a free consultation and find out what's possible, with no pressure and no obligation."
+	/>
+</Layout>

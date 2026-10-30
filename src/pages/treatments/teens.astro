@@ -1,0 +1,81 @@
+---
+import AgePage from '../../components/AgePage.astro';
+import Layout from '../../layouts/Layout.astro';
+// TODO: Placeholder photo (the homepage hero stock photo). Swap for a real photo of a teen patient.
+import heroImage from '../../assets/hero-patient.jpg';
+
+// TODO: Placeholder content, including Dr. Lee's quote. She should review every line before launch.
+---
+
+<Layout title="Teen Orthodontics | Torrey Hills Orthodontics" solidHeader>
+	<AgePage
+		name="Teens"
+		headline="A confident smile for the years that count."
+		intro="Most orthodontic treatment happens in the teen years, when adult teeth are in and the jaw is still growing. Dr. Lee makes it fit around school, sports, and everything else."
+		image={heroImage}
+		imageAlt="Smiling teen with braces on a sunny street"
+		imageFocus="object-[60%_30%]"
+		facts={[
+			{ label: 'Typical start', value: 'Ages 11 to 14' },
+			{ label: 'Typical length', value: '12–24 months' },
+			{ label: 'Options', value: 'Braces or Invisalign' },
+			{ label: 'Visits', value: 'Fit around school' },
+		]}
+		signsHeading="Signs it's time for treatment."
+		signs={[
+			{ title: 'Crowded or crooked teeth', body: 'Adult teeth overlapping, twisted, or without enough room.' },
+			{ title: 'Gaps between teeth', body: 'Spaces that have stayed after all the adult teeth came in.' },
+			{ title: 'An overbite or underbite', body: 'Top and bottom teeth that don’t meet the way they should.' },
+			{ title: 'Self-consciousness', body: 'Hiding a smile in photos is a reason worth taking seriously.' },
+			{ title: 'Hard to keep clean', body: 'Crowded teeth trap food and make brushing and flossing harder.' },
+			{ title: 'Your dentist mentioned it', body: 'A note from the family dentist is a good prompt for a free check.' },
+		]}
+		treatmentsHeading="Treatments teens choose."
+		treatments={[
+			{
+				name: 'Invisalign',
+				href: '/treatments/invisalign',
+				body: 'Nearly invisible aligners for teens who can keep them in 20–22 hours a day.',
+			},
+			{
+				name: 'Braces',
+				href: '/treatments/braces',
+				body: 'Metal or clear ceramic, working around the clock with nothing to remember.',
+			},
+			{
+				name: 'Retainers',
+				href: '/treatments/retainers',
+				body: 'Keeps the new smile in place once treatment is done.',
+			},
+		]}
+		stepsHeading="What to expect, start to finish."
+		steps={[
+			{ title: 'Free consultation', body: 'A scan, a few photos, and a sit-down with Dr. Lee to talk through options with you and your parents.' },
+			{ title: 'Choosing together', body: 'Braces or Invisalign, decided around your teen’s habits, activities, and goals.' },
+			{ title: 'Treatment that fits', body: 'Short check-ins every 6–10 weeks, with early and late appointments for school schedules.' },
+			{ title: 'Retainers to finish', body: 'The new smile is kept in place with retainers, fitted the day treatment ends.' },
+		]}
+		quote="Teens are busy, so I plan treatment around their lives, not the other way around. My goal is for them to forget they're even in treatment."
+		faqHeading="Questions teens and parents ask."
+		faqs={[
+			{
+				q: 'Braces or Invisalign for a teen?',
+				a: 'Both work well. Invisalign suits teens who will wear aligners consistently; braces suit those who would rather not think about it. Dr. Lee will help you decide together.',
+			},
+			{
+				q: 'Can my teen play sports with braces?',
+				a: 'Yes. A mouthguard is all that’s needed for contact sports, and aligners can come out for games.',
+			},
+			{
+				q: 'Will treatment get in the way of school?',
+				a: 'Check-ins are short and spaced 6–10 weeks apart, and we offer appointment times that work around the school day.',
+			},
+			{
+				q: 'Is teen treatment covered by insurance?',
+				a: "Many plans include orthodontic coverage for teens. We'll check your benefits and set up a 0% interest plan for the rest.",
+			},
+		]}
+		closing="Ready to talk about your teen's smile?"
+		closingText="Book a free consultation. Dr. Lee will walk you both through every option, with no pressure."
+	/>
+</Layout>

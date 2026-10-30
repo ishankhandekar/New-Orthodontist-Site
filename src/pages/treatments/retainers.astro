@@ -1,0 +1,113 @@
+---
+import TreatmentPage from '../../components/TreatmentPage.astro';
+import Layout from '../../layouts/Layout.astro';
+// TODO: Placeholder photo (a gallery stock portrait). Swap for a real photo from the practice.
+import heroImage from '../../assets/gallery-sarah.png';
+
+/*
+	TODO: Placeholder content. Dr. Lee should review every line, especially the wear schedule, the
+	retainer types offered, whether first retainers are included in treatment, and replacement fees.
+*/
+---
+
+<Layout title="Retainers | Torrey Hills Orthodontics" solidHeader>
+	<TreatmentPage
+		name="Retainers"
+		headline="Keep the smile you worked for."
+		intro="Teeth naturally try to drift back after braces or aligners. A retainer, fitted and checked by Dr. Lee, keeps them right where they belong."
+		image={heroImage}
+		imageAlt="Smiling patient after finishing treatment"
+		imageFocus="object-[50%_28%]"
+		facts={[
+			{ label: 'Starts', value: 'The day treatment ends' },
+			{ label: 'At first', value: 'Wear as directed' },
+			{ label: 'Long term', value: 'Every night' },
+			{ label: 'Check-ins', value: 'A few visits, then yearly' },
+		]}
+		goodFor={[
+			'Your retainer is lost, cracked, or broken',
+			'It no longer fits comfortably',
+			'Your teeth have started to shift',
+			'You finished treatment somewhere else and need a new one',
+		]}
+		notIdeal={[
+			'Your teeth have shifted a lot, so a short round of aligners may come first',
+			"It's been years since you wore one and it no longer goes in",
+		]}
+		steps={[
+			{
+				title: 'Fitted the day treatment ends',
+				body: 'When your braces come off or you finish aligners, we fit your retainers right away.',
+			},
+			{
+				title: 'Full-time at first',
+				body: 'Wear them as much as Dr. Lee advises while your teeth settle into their new positions.',
+			},
+			{
+				title: 'Nights for the long run',
+				body: "Most people move to nightly wear. It's the simplest way to keep your smile for good.",
+			},
+			{
+				title: 'Check-ins',
+				body: 'We check the fit at a few short visits, then about once a year.',
+			},
+		]}
+		compare={{
+			heading: 'Removable or fixed?',
+			columns: ['Removable', 'Fixed'],
+			rows: [
+				{ label: 'Look', values: ['Clear, nearly invisible', 'A thin wire behind your teeth'] },
+				{ label: 'Wear', values: ['You put it in, usually at night', 'Always in place'] },
+				{ label: 'Cleaning', values: ['Brush the retainer daily', 'Floss carefully around the wire'] },
+				{ label: 'Best for', values: ['Most patients', 'Teeth that tend to shift back'] },
+			],
+		}}
+		dayToDay={[
+			{
+				title: 'Wearing',
+				body: 'Put it in every night. If it ever feels tight, wear it more, not less.',
+			},
+			{
+				title: 'Cleaning',
+				body: 'Brush it gently with cool water every day. Hot water can warp clear retainers.',
+			},
+			{
+				title: 'Storing',
+				body: 'Always use the case. Most lost retainers end up wrapped in a napkin.',
+			},
+			{
+				title: 'Pets',
+				body: 'Keep retainers out of reach of dogs. They love to chew them.',
+			},
+		]}
+		cost="Your first retainers are included when you finish treatment with us. Replacements are a simple, fixed fee, and we'll tell you the price before we make anything."
+		faqs={[
+			{
+				q: 'How long do I need to wear a retainer?',
+				a: 'For as long as you want straight teeth. Most people wear one every night for the long term.',
+			},
+			{
+				q: 'What happens if I stop wearing it?',
+				a: "Teeth can slowly shift back. If it's been a while and it feels tight, call us before it stops fitting.",
+			},
+			{
+				q: 'How long does a retainer last?',
+				a: "Clear retainers usually last a few years with good care. We'll check yours at your visits.",
+			},
+			{
+				q: 'Can you make a retainer if I was treated somewhere else?',
+				a: "Yes. We'll scan your teeth and make a new one, even if you weren't treated here.",
+			},
+		]}
+		headings={{
+			fit: 'Do you need a new retainer?',
+			fitLabel: 'Time for a new one if',
+			notIdealLabel: 'You may need more than a retainer if',
+			steps: 'How retainers work, step by step.',
+			day: 'Living with a retainer.',
+			faq: 'Retainer questions, answered.',
+			closing: 'Lost or broken retainer?',
+			closingText: "Book a visit and we'll get you a new one before your teeth have a chance to move.",
+		}}
+	/>
+</Layout>

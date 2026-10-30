@@ -8,9 +8,11 @@ interface Props {
 	title?: string;
 	/** Focused pages (like the consultation intake) skip the site header and footer. */
 	bare?: boolean;
+	/** Pages without a photo hero start with the solid white header. */
+	solidHeader?: boolean;
 }
 
-const { title = 'Torrey Hills Orthodontics', bare = false } = Astro.props;
+const { title = 'Torrey Hills Orthodontics', bare = false, solidHeader = false } = Astro.props;
 ---
 
 <html lang="en">
@@ -28,7 +30,7 @@ const { title = 'Torrey Hills Orthodontics', bare = false } = Astro.props;
 		<title>{title}</title>
 	</head>
 	<body class="bg-white font-sans text-ink antialiased">
-		{!bare && <SiteHeader />}
+		{!bare && <SiteHeader solid={solidHeader} />}
 		<slot />
 		{!bare && <SiteFooter />}
 	</body>

@@ -1,0 +1,117 @@
+---
+import TreatmentPage from '../../components/TreatmentPage.astro';
+import Layout from '../../layouts/Layout.astro';
+// TODO: Placeholder photo, and only 473px wide. Swap for a real photo from the practice (1400px+ wide).
+import heroImage from '../../assets/treatment-braces.png';
+
+/*
+	TODO: Placeholder content. Dr. Lee should review every line, especially treatment length,
+	adjustment spacing, the bracket types offered and the metal vs. ceramic cost comparison.
+*/
+---
+
+<Layout title="Braces | Torrey Hills Orthodontics" solidHeader>
+	<TreatmentPage
+		name="Braces"
+		headline="Reliable results for every kind of smile."
+		intro="Modern metal and clear ceramic braces, planned by Dr. Lee and adjusted by her at every visit. They work around the clock, so there's nothing to remember."
+		image={heroImage}
+		imageAlt="Close-up of a smile with metal braces"
+		imageFocus="object-[50%_60%]"
+		facts={[
+			{ label: 'Typical length', value: '18–24 months' },
+			{ label: 'Adjustments', value: 'Every 6–8 weeks' },
+			{ label: 'Options', value: 'Metal or clear ceramic' },
+			{ label: 'Best for', value: 'Kids, teens, and adults' },
+		]}
+		goodFor={[
+			'You want the most predictable way to correct your bite',
+			'Your crowding or bite issue is complex',
+			"You'd rather not keep track of wearing anything",
+			'Your child is ready for treatment but might forget aligners',
+		]}
+		notIdeal={[
+			'You strongly prefer something nearly invisible, where Invisalign may suit you',
+			"You can't avoid hard and sticky foods during treatment",
+			'Your teeth only need a small adjustment',
+		]}
+		steps={[
+			{
+				title: 'Records and plan',
+				body: 'Photos and a 3D scan let Dr. Lee plan exactly how each tooth will move, and show you the timeline.',
+			},
+			{
+				title: 'Placing your braces',
+				body: "A comfortable visit of about an hour, with no needles. You'll leave with a care kit and clear instructions.",
+			},
+			{
+				title: 'Adjustments',
+				body: 'Every 6–8 weeks, Dr. Lee adjusts your wires to keep your teeth moving on schedule.',
+			},
+			{
+				title: 'Braces off, retainers on',
+				body: 'The day your braces come off, we fit retainers that keep your new smile in place.',
+			},
+		]}
+		compare={{
+			heading: 'Metal or clear ceramic?',
+			columns: ['Metal', 'Clear ceramic'],
+			rows: [
+				{ label: 'Look', values: ['Silver, with optional colored bands', 'Tooth-colored, blends in'] },
+				{ label: 'Strength', values: ['Very durable', 'Durable, a little more delicate'] },
+				{ label: 'Best for', values: ['Kids, teens, and active patients', 'Teens and adults who want discretion'] },
+				{ label: 'Cost', values: ['Usually lower', 'Usually a little higher'] },
+			],
+		}}
+		dayToDay={[
+			{
+				title: 'Eating',
+				body: 'Skip hard, sticky, and chewy foods like popcorn, gum, and caramel. Cut crunchy foods into small bites.',
+			},
+			{
+				title: 'Cleaning',
+				body: "Brush after meals and floss once a day with a threader or water flosser. We'll show you how.",
+			},
+			{
+				title: 'Sports and music',
+				body: 'Wear a mouthguard for contact sports. Most musicians adjust within a week or two.',
+			},
+			{
+				title: 'Comfort',
+				body: 'Teeth can feel sore for a few days after placement and adjustments. Soft foods and orthodontic wax help.',
+			},
+		]}
+		results="braces"
+		cost="The cost of braces depends on how long treatment takes and which type you choose. You'll get a clear, all-inclusive quote at your free consultation. We'll check your insurance and can set up a 0% interest monthly plan before you start."
+		faqs={[
+			{
+				q: 'Do braces hurt?',
+				a: "Getting braces put on doesn't hurt. Your teeth may feel sore for a few days afterward and after adjustments, and that settles quickly.",
+			},
+			{
+				q: 'What if a bracket comes loose?',
+				a: "Call us. It's rarely urgent, and we'll fix it at a quick visit or at your next appointment.",
+			},
+			{
+				q: 'Can adults get braces?',
+				a: 'Yes. Healthy teeth can move at any age, and clear ceramic braces are a popular choice for adults.',
+			},
+			{
+				q: 'How often are appointments?',
+				a: 'Every 6–8 weeks, for a short adjustment visit with Dr. Lee.',
+			},
+			{
+				q: 'What can I eat with braces?',
+				a: 'Most foods, cut into smaller pieces. Avoid hard, sticky, and chewy foods that can break a bracket.',
+			},
+		]}
+		headings={{
+			fit: 'Are braces right for you?',
+			steps: 'How braces work, step by step.',
+			day: 'Life with braces.',
+			results: 'Real braces smiles.',
+			faq: 'Braces questions, answered.',
+			closing: 'Not sure if braces are right for you?',
+		}}
+	/>
+</Layout>

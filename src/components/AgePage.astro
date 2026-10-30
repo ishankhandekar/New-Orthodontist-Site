@@ -1,0 +1,155 @@
+---
+import { h2, pad, section, sectionInner, sectionInnerFirst, smallLabel as small } from '../lib/pageStyles';
+import { url } from '../lib/url';
+import Accordion from './Accordion.astro';
+import ArrowIcon from './ArrowIcon.astro';
+import ClosingCta from './ClosingCta.astro';
+import NumberedSteps from './NumberedSteps.astro';
+import PageHero from './PageHero.astro';
+
+/*
+	Shared template for the "care for every age" pages (Kids, Teens, Adults). Same look as the
+	treatment pages, but organized around the person rather than the appliance: signs it's time, the
+	treatments that suit this age (linking to the treatment pages), what to expect, and an optional
+	word from Dr. Lee.
+*/
+interface Props {
+	name: string;
+	headline: string;
+	intro: string;
+	image: ImageMetadata;
+	imageAlt: string;
+	imageFocus?: string;
+	facts: { label: string; value: string }[];
+	signsHeading: string;
+	signs: { title: string; body: string }[];
+	treatmentsHeading: string;
+	treatments: { name: string; href: string; body: string }[];
+	stepsHeading: string;
+	steps: { title: string; body: string }[];
+	quote?: string;
+	faqHeading: string;
+	faqs: { q: string; a: string }[];
+	closing: string;
+	closingText: string;
+}
+
+const { name, headline, intro, image, imageAlt, imageFocus, facts, signsHeading, signs, treatmentsHeading, treatments, stepsHeading, steps, quote, faqHeading, faqs, closing, closingText } =
+	Astro.props;
+
+---
+
+<main class="bg-white text-ink">
+	<PageHero
+		crumb={{ label: 'Care for every age', href: '/#treatments' }}
+		{name}
+		{headline}
+		{intro}
+		{image}
+		{imageAlt}
+		{imageFocus}
+		{facts}
+	/>
+
+	<!-- Signs it's time: a numbered grid of the reasons people this age come in -->
+	<section aria-labelledby="signs-heading" class={section}>
+		<div class={sectionInnerFirst}>
+			<h2 id="signs-heading" class:list={[h2, 'max-w-2xl']}>{signsHeading}</h2>
+			<ul class="mt-12 grid gap-x-8 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-x-10">
+				{
+					signs.map((sign, i) => (
+						<li class="border-t border-ink/10 py-6 sm:py-8">
+							<span class="text-xs text-ink/40 tabular-nums" aria-hidden="true">
+								{pad(i + 1)}
+							</span>
+							<h3 class="mt-3 text-lg font-medium tracking-[-0.01em]">{sign.title}</h3>
+							<p class="mt-2 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">{sign.body}</p>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
+	<!-- Treatments for this age: large rows that link to each treatment page -->
+	<section aria-labelledby="treatments-heading" class={section}>
+		<div class={sectionInner}>
+			<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+				<h2 id="treatments-heading" class:list={[h2, 'lg:col-span-4']}>{treatmentsHeading}</h2>
+				<ul class="border-b border-ink/10 lg:col-span-8">
+					{
+						treatments.map((t) => (
+							<li class="group relative grid grid-cols-[1fr_auto] items-center gap-6 border-t border-ink/10 py-6 sm:py-8">
+								<div>
+									<h3 class="text-[1.5rem] leading-tight tracking-[-0.01em] sm:text-[1.875rem]">
+										<a
+											href={url(t.href)}
+											class="after:absolute after:inset-0 focus-visible:outline-none group-has-[a:focus-visible]:underline"
+										>
+											{t.name}
+										</a>
+									</h3>
+									<p class="mt-2 max-w-md text-[0.9375rem] leading-relaxed text-ink/75">{t.body}</p>
+								</div>
+								<!-- Same corner arrow as the homepage treatment cards, in ink for the white page -->
+								<span
+									class="flex size-9 items-center justify-center rounded-lg border border-ink/20 transition-colors duration-300 group-hover:border-ink group-hover:bg-ink group-hover:text-white"
+									aria-hidden="true"
+								>
+									<ArrowIcon
+										size={13}
+										class="-rotate-45 transition-transform duration-300 motion-safe:group-hover:translate-x-px motion-safe:group-hover:-translate-y-px"
+									/>
+								</span>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</div>
+	</section>
+
+	<!-- What to expect -->
+	<section aria-labelledby="steps-heading" class={section}>
+		<div class={sectionInner}>
+			<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+				<h2 id="steps-heading" class:list={[h2, 'lg:sticky lg:top-24 lg:col-span-4 lg:self-start']}>{stepsHeading}</h2>
+				<NumberedSteps {steps} class="lg:col-span-7 lg:col-start-6" />
+			</div>
+		</div>
+	</section>
+
+	{
+		quote && (
+			<section aria-label="A word from Dr. Lee" class={section}>
+				<div class={sectionInner}>
+					<figure class="mx-auto max-w-4xl text-center">
+						<blockquote class="text-[1.75rem] leading-[1.2] tracking-[-0.01em] text-balance sm:text-[2.5rem]">
+							<p>
+								<span class="font-display text-accent" aria-hidden="true">
+									“
+								</span>
+								{quote}
+								<span class="font-display text-accent" aria-hidden="true">
+									”
+								</span>
+							</p>
+						</blockquote>
+						<figcaption class:list={[small, 'mt-8']}>Dr. Judy Lee, Orthodontist</figcaption>
+					</figure>
+				</div>
+			</section>
+		)
+	}
+
+	<section aria-labelledby="faq-heading" class={section}>
+		<div class={sectionInner}>
+			<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
+				<h2 id="faq-heading" class:list={[h2, 'lg:sticky lg:top-24 lg:col-span-4 lg:self-start']}>{faqHeading}</h2>
+				<Accordion items={faqs} openFirst={false} class="lg:col-span-8 lg:col-start-5" />
+			</div>
+		</div>
+	</section>
+
+	<ClosingCta heading={closing} text={closingText} />
+</main>

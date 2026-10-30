@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import { buttonArrow, buttonInk } from '../lib/buttons';
 import { bookHref } from '../lib/nav';
 import { url } from '../lib/url';
 import ArrowIcon from './ArrowIcon.astro';
@@ -74,18 +75,9 @@ import officeImage from '../assets/about-office.jpg';
 							<p class="max-w-[16rem] text-sm leading-snug text-ink/80">
 								Join local families finding their best smile with Dr. Lee.
 							</p>
-							<!--
-								#F28C38, a touch warmer than the site accent #F08A4B. Client design choice: white text,
-								though it's below WCAG AA (about 2.4:1; dark text would be 6.02:1).
-							-->
-							<a
-								href={url(bookHref)}
-								class="group flex w-full items-center justify-between gap-6 rounded-lg bg-[#f28c38] py-1 pr-1 pl-3.5 text-xs font-medium text-white transition-colors hover:bg-accent-dark md:inline-flex md:w-fit md:justify-start"
-							>
+							<a href={url(bookHref)} class:list={[buttonInk, 'w-full md:w-fit']}>
 								Schedule a Free Consultation
-								<span class="flex size-7 items-center justify-center rounded-md bg-white text-accent">
-									<ArrowIcon size={12} class="transition-transform motion-safe:group-hover:translate-x-0.5" />
-								</span>
+								<ArrowIcon size={12} class={buttonArrow} />
 							</a>
 						</div>
 

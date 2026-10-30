@@ -1,0 +1,33 @@
+---
+import { pad } from '../lib/pageStyles';
+
+// Large-numbered steps (01, 02…) with hairline rules, like the homepage's first visit.
+interface Props {
+	steps: { title: string; body: string }[];
+	class?: string;
+}
+
+const { steps, class: className } = Astro.props;
+---
+
+<ol class={className}>
+	{
+		steps.map((step, i) => (
+			<li class="grid grid-cols-[4.5rem_1fr] gap-x-6 border-t border-ink/10 py-8 sm:grid-cols-[6rem_1fr] sm:gap-x-8 sm:py-10">
+				<span class="text-[2.75rem] leading-none font-light tracking-[-0.03em] tabular-nums sm:text-[3.5rem]" aria-hidden="true">
+					{pad(i + 1)}
+				</span>
+				<div class="pt-1 sm:pt-2">
+					<h3 class="text-lg font-medium tracking-[-0.01em]">
+						<span class="sr-only">Step {i + 1}: </span>
+						<span class="mr-1.5 font-light text-accent" aria-hidden="true">
+							/
+						</span>
+						{step.title}
+					</h3>
+					<p class="mt-2 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">{step.body}</p>
+				</div>
+			</li>
+		))
+	}
+</ol>

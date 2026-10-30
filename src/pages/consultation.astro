@@ -1,8 +1,12 @@
 ---
+import { Image } from 'astro:assets';
 import ArrowIcon from '../components/ArrowIcon.astro';
 import Logo from '../components/Logo.astro';
 import Layout from '../layouts/Layout.astro';
+import { buttonArrow, buttonInk as button } from '../lib/buttons';
 import { url } from '../lib/url';
+// TODO: Placeholder photo (same as About). Swap for a warm photo of Dr. Lee with a patient.
+import panelImage from '../assets/about-doctor.jpg';
 
 /*
 	Consultation request, one question per screen. Front end only for now.
@@ -58,6 +62,13 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 const question = 'block text-[1.75rem] leading-[1.15] tracking-[-0.01em] text-balance sm:text-[2.5rem]';
 const eyebrow = 'flex gap-4 text-[11px] tracking-wide text-ink/70 uppercase';
+// TODO: Confirm with the practice what a consultation actually includes.
+const includes = [
+	'A relaxed exam with Dr. Lee',
+	'A digital scan, no messy impressions',
+	'A personalized treatment plan',
+	'Clear pricing and payment options',
+];
 const nextSteps = [
 	'Our team calls you within one business day.',
 	'Together we find a time that works for you.',
@@ -66,137 +77,178 @@ const nextSteps = [
 ---
 
 <Layout title="Schedule a Free Consultation | Torrey Hills Orthodontics" bare>
-	<div class="flex min-h-dvh flex-col bg-white text-ink">
+	<!-- Desktop: questions on the left, a photo panel on the right. Phones: questions only. -->
+	<div class="min-h-dvh bg-white text-ink lg:grid lg:grid-cols-[1fr_minmax(0,42%)]">
 		<!-- Orange progress bar across the top: how far through the questions you are -->
 		<div
 			data-progress
 			role="progressbar"
 			aria-label="Progress"
 			aria-valuemin="0"
-			aria-valuemax={total}
+			aria-valuemax={total + 1}
 			aria-valuenow="0"
 			class="fixed inset-x-0 top-0 z-10 h-1 bg-ink/5"
 		>
 			<div data-progress-bar class="progress-bar h-full bg-accent" style="width: 0%"></div>
 		</div>
 
-		<header class="flex items-center justify-between px-5 pt-7 sm:px-7">
-			<Logo class="w-fit" />
-			<a
-				href={url('/')}
-				class="text-sm text-ink/70 transition-colors hover:text-ink focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-			>
-				Close
-			</a>
-		</header>
+		<div class="flex min-h-dvh flex-col">
+			<header class="flex items-center justify-between px-5 pt-7 sm:px-7">
+				<Logo class="w-fit" />
+				<a
+					href={url('/')}
+					class="text-sm text-ink/70 transition-colors hover:text-ink focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+				>
+					Close
+				</a>
+			</header>
 
-		<form data-intake novalidate class="flex flex-1 flex-col">
-			<!-- overflow-hidden clips the slide; every step shares one grid cell so they overlap mid-slide -->
-			<div class="flex flex-1 items-center overflow-hidden px-5 py-12 sm:px-7">
-				<div class="mx-auto grid w-full max-w-2xl">
-					{
-						steps.map((s, i) => (
-							<div data-step={i} hidden={i !== 0} class="col-start-1 row-start-1">
-								{s.kind === 'text' ? (
-									<>
-										<!-- Text questions: the prompt is a small eyebrow label, so the typed answer is the big thing -->
-										<p class={eyebrow}>
-											<span class="text-ink/40" aria-hidden="true">
-												{pad(i + 1)} / {pad(total)}
-											</span>
-											<label for={s.id}>{s.label}</label>
-										</p>
-										<input
-											id={s.id}
-											name={s.id}
-											type={s.type}
-											autocomplete={s.autocomplete}
-											placeholder={s.placeholder}
-											data-error-message={s.error}
-											required
-											class="mt-5 w-full rounded-none border-0 border-b-2 border-ink bg-transparent px-0 pb-3 text-[1.75rem] tracking-[-0.01em] outline-none placeholder:text-ink/20 sm:text-[2.5rem]"
-										/>
-									</>
-								) : (
-									<fieldset>
-										<p class={eyebrow} aria-hidden="true">
-											<span class="text-ink/40">
-												{pad(i + 1)} / {pad(total)}
-											</span>
-										</p>
-										<legend class:list={[question, 'mt-4']}>{s.label}</legend>
-										<!-- Choices as hairline rows, like the office section's action list -->
-										<div class="mt-8 border-t border-ink/10">
-											{s.options.map((o) => (
-												<label class="group flex cursor-pointer items-center justify-between border-b border-ink/10 py-4 text-xl tracking-[-0.01em] transition-colors hover:text-ink/70 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ink sm:text-2xl">
-													<span>{o}</span>
-													<input type="radio" name={s.id} value={o} class="sr-only" />
-													<span
-														class="size-2.5 rounded-full bg-accent opacity-0 transition-opacity group-has-checked:opacity-100"
-														aria-hidden="true"
-													/>
-												</label>
-											))}
-										</div>
-									</fieldset>
-								)}
-								<p data-error class="field-error mt-4 flex min-h-5 items-center gap-2 text-[13px] text-ink/70" aria-live="polite" />
-							</div>
-						))
-					}
+			<form data-intake novalidate class="flex flex-1 flex-col">
+				<!-- overflow-hidden clips the slide; every step shares one grid cell so they overlap mid-slide -->
+				<div class="flex flex-1 items-center overflow-hidden px-5 py-12 sm:px-7">
+					<div class="mx-auto grid w-full max-w-2xl">
+						<!-- Welcome slide, so the form opens with a hello rather than a question -->
+						<div data-step="0" class="col-start-1 row-start-1">
+							<p class="text-[11px] tracking-wide text-ink/70 uppercase">Free consultation</p>
+							<h1 class="mt-4 text-[2.125rem] leading-[1.08] tracking-[-0.01em] text-balance sm:text-[clamp(2.5rem,4vw,3.5rem)]">
+								Thanks for choosing Torrey Hills Orthodontics.
+							</h1>
+							<p class="mt-6 max-w-md text-base text-ink/70 sm:text-lg">
+								Six quick questions, about a minute. Then our team will call to set up your free consultation
+								with Dr. Lee.
+							</p>
+							<button type="submit" data-start class:list={[button, 'mt-10']}>
+								Start
+								<ArrowIcon size={12} class={buttonArrow} />
+							</button>
+						</div>
 
-					<!-- Done screen -->
-					<div data-step={total} hidden class="col-start-1 row-start-1">
-						<p class="text-[11px] tracking-wide text-ink/60 uppercase">Request sent</p>
-						<h1 class:list={[question, 'mt-4']} tabindex="-1" data-done-heading>
-							Thanks<span data-first-name></span>. We'll be in touch soon.
-						</h1>
-						<ol class="mt-10 border-t border-ink/10">
-							{
-								nextSteps.map((t, i) => (
-									<li class="flex gap-6 border-b border-ink/10 py-4 text-base sm:text-lg">
-										<span class="text-ink/40 tabular-nums">{pad(i + 1)}</span>
-										{t}
-									</li>
-								))
-							}
-						</ol>
-						<a
-							href={url('/')}
-							class="group mt-10 inline-flex items-center gap-2 text-sm font-medium underline decoration-ink/25 underline-offset-[6px] transition-colors hover:decoration-accent focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-						>
-							Back to home
-							<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
-						</a>
+						{
+							steps.map((s, i) => (
+								<div data-step={i + 1} hidden class="col-start-1 row-start-1">
+									{s.kind === 'text' ? (
+										<>
+											<!-- Text questions: the prompt is a small eyebrow label, so the typed answer is the big thing -->
+											<p class={eyebrow}>
+												<span class="text-ink/40" aria-hidden="true">
+													{pad(i + 1)} / {pad(total)}
+												</span>
+												<label for={s.id}>{s.label}</label>
+											</p>
+											<input
+												id={s.id}
+												name={s.id}
+												type={s.type}
+												autocomplete={s.autocomplete}
+												placeholder={s.placeholder}
+												data-error-message={s.error}
+												required
+												class="mt-5 w-full rounded-none border-0 border-b-2 border-ink bg-transparent px-0 pb-3 text-[1.75rem] tracking-[-0.01em] outline-none placeholder:text-ink/20 sm:text-[2.5rem]"
+											/>
+										</>
+									) : (
+										<fieldset>
+											<p class={eyebrow} aria-hidden="true">
+												<span class="text-ink/40">
+													{pad(i + 1)} / {pad(total)}
+												</span>
+											</p>
+											<legend class:list={[question, 'mt-4']}>{s.label}</legend>
+											<!-- Choices as hairline rows, like the office section's action list -->
+											<div class="mt-8 border-t border-ink/10">
+												{s.options.map((o) => (
+													<label class="group flex cursor-pointer items-center justify-between border-b border-ink/10 py-4 text-xl tracking-[-0.01em] transition-colors hover:text-ink/70 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ink sm:text-2xl">
+														<span>{o}</span>
+														<input type="radio" name={s.id} value={o} class="sr-only" />
+														<span
+															class="size-2.5 rounded-full bg-accent opacity-0 transition-opacity group-has-checked:opacity-100"
+															aria-hidden="true"
+														/>
+													</label>
+												))}
+											</div>
+										</fieldset>
+									)}
+									<p data-error class="field-error mt-4 flex min-h-5 items-center gap-2 text-[13px] text-ink/70" aria-live="polite" />
+								</div>
+							))
+						}
+
+						<!-- Done screen -->
+						<div data-step={total + 1} hidden class="col-start-1 row-start-1">
+							<p class="text-[11px] tracking-wide text-ink/60 uppercase">Request sent</p>
+							<h2 class:list={[question, 'mt-4']} tabindex="-1" data-done-heading>
+								Thanks<span data-first-name></span>. We'll be in touch soon.
+							</h2>
+							<ol class="mt-10 border-t border-ink/10">
+								{
+									nextSteps.map((t, i) => (
+										<li class="flex gap-6 border-b border-ink/10 py-4 text-base sm:text-lg">
+											<span class="text-ink/40 tabular-nums">{pad(i + 1)}</span>
+											{t}
+										</li>
+									))
+								}
+							</ol>
+							<a
+								href={url('/')}
+								class="group mt-10 inline-flex items-center gap-2 text-sm font-medium underline decoration-ink/25 underline-offset-[6px] transition-colors hover:decoration-accent focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+							>
+								Back to home
+								<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
+							</a>
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<!-- Back / Next -->
-			<div data-nav class="flex items-center justify-between gap-4 px-5 pt-4 pb-7 sm:px-7">
-				<button
-					type="button"
-					data-back
-					class="invisible inline-flex items-center gap-2 text-sm text-ink/70 transition-colors hover:text-ink focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
-				>
-					<ArrowIcon size={11} class="rotate-180" />
-					Back
-				</button>
-				<div class="flex items-center gap-5">
-					<span class="hidden text-xs text-ink/50 sm:inline" aria-hidden="true">or press Enter ↵</span>
+				<!-- Back / Next -->
+				<div data-nav class="flex items-center justify-between gap-4 px-5 pt-4 pb-7 sm:px-7">
 					<button
-						type="submit"
-						data-next
-						class="group inline-flex items-center gap-8 rounded-lg bg-accent py-1 pr-1 pl-4 text-sm font-medium text-white transition-colors hover:bg-accent-dark focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+						type="button"
+						data-back
+						class="invisible inline-flex items-center gap-2 text-sm text-ink/70 transition-colors hover:text-ink focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
 					>
-						<span data-next-label>Next</span>
-						<span class="flex size-8 items-center justify-center rounded-md bg-white text-accent">
-							<ArrowIcon class="transition-transform motion-safe:group-hover:translate-x-0.5" />
-						</span>
+						<ArrowIcon size={11} class="rotate-180" />
+						Back
 					</button>
+					<div class="flex items-center gap-5">
+						<span class="hidden text-xs text-ink/50 sm:inline" aria-hidden="true">or press Enter ↵</span>
+						<button
+							type="submit"
+							data-next
+							class={button}
+						>
+							<span data-next-label>Next</span>
+							<ArrowIcon size={12} class={buttonArrow} />
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<!-- Photo panel (desktop only): what the consultation includes, over a warm portrait -->
+		<aside class="relative hidden overflow-hidden lg:block" aria-label="What your free consultation includes">
+			<div class="sticky top-0 h-dvh">
+				<Image
+					src={panelImage}
+					alt=""
+					widths={[800, 1200]}
+					sizes="42vw"
+					class="absolute inset-0 size-full object-cover object-[50%_30%]"
+				/>
+				<div class="absolute inset-0 bg-linear-to-t from-black/75 via-black/30 via-45% to-transparent" aria-hidden="true"></div>
+				<div class="absolute inset-x-0 bottom-0 p-10 text-white xl:p-12">
+					<p class="text-[11px] tracking-wide uppercase">Your free consultation includes</p>
+					<ul class="mt-5 border-t border-white/25">
+						{
+							includes.map((item) => (
+								<li class="border-b border-white/25 py-3.5 text-[0.9375rem] tracking-[-0.01em]">{item}</li>
+							))
+						}
+					</ul>
 				</div>
 			</div>
-		</form>
+		</aside>
 	</div>
 </Layout>
 
@@ -279,6 +331,7 @@ const nextSteps = [
 	const textInput = (step: HTMLElement) => step.querySelector<HTMLInputElement>('input:not([type="radio"])');
 
 	const validate = (step: HTMLElement) => {
+		if (!step.querySelector('input')) return true; // the welcome slide has nothing to check
 		const input = textInput(step);
 		let message = '';
 		if (input) {
@@ -312,6 +365,7 @@ const nextSteps = [
 			textInput(step) ??
 			step.querySelector<HTMLInputElement>('input:checked') ??
 			step.querySelector<HTMLInputElement>('input[type="radio"]') ??
+			step.querySelector<HTMLElement>('[data-start]') ??
 			step.querySelector<HTMLElement>('[data-done-heading]');
 		target?.focus({ preventScroll: true });
 	};
@@ -320,7 +374,8 @@ const nextSteps = [
 		bar.style.width = `${(current / done) * 100}%`;
 		progress.setAttribute('aria-valuenow', String(current));
 		back.classList.toggle('invisible', current === 0);
-		nav.hidden = current === done;
+		// The welcome slide has its own Start button; the done screen needs no navigation.
+		nav.hidden = current === 0 || current === done;
 		nextLabel.textContent = current === done - 1 ? 'Send request' : 'Next';
 	};
 

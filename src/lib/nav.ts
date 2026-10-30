@@ -6,8 +6,8 @@ export type Menu = {
 	columns: { heading: string; large?: boolean; links: NavLink[] }[];
 };
 
-// TODO: Treatment pages, the Before & After page, Meet Dr. Lee, Our Team and Office & Tech pages
-// don't exist yet. Gallery and Meet Dr. Lee point at their homepage sections until they're built.
+// TODO: The Before & After page, Meet Dr. Lee, Our Team and Office & Tech pages don't exist yet.
+// Gallery and Meet Dr. Lee point at their homepage sections until they're built.
 export const menus: Menu[] = [
 	{
 		id: 'treatments',
@@ -20,12 +20,14 @@ export const menus: Menu[] = [
 					{ label: 'Invisalign', href: '/treatments/invisalign' },
 					{ label: 'Braces', href: '/treatments/braces' },
 					{ label: 'Jaw Orthopedics', href: '/treatments/jaw-orthopedics' },
+					{ label: 'Retainers', href: '/treatments/retainers' },
 				],
 			},
 			{
 				heading: 'Care for every age',
 				links: [
 					{ label: 'Kids Ortho', href: '/treatments/kids' },
+					{ label: 'Teen Ortho', href: '/treatments/teens' },
 					{ label: 'Adult Ortho', href: '/treatments/adults' },
 				],
 			},
@@ -39,15 +41,15 @@ export const menus: Menu[] = [
 				heading: 'Before you start',
 				large: true,
 				links: [
-					{ label: 'Financial & Insurance', href: '/#financing' },
-					{ label: 'First Visit', href: '/#first-visit-steps' },
+					{ label: 'Financial & Insurance', href: '/financing' },
+					{ label: 'First Visit', href: '/first-visit' },
 				],
 			},
 			{
 				heading: 'Questions',
 				links: [
-					{ label: 'FAQ', href: '/#faq' },
-					{ label: 'Office hours & location', href: '/#contact' },
+					{ label: 'FAQ', href: '/faq' },
+					{ label: 'Office hours & location', href: '/location' },
 				],
 			},
 		],

@@ -1,0 +1,60 @@
+---
+import { Image } from 'astro:assets';
+import { buttonArrow, buttonInk } from '../lib/buttons';
+import { bookHref } from '../lib/nav';
+import { smallLabel } from '../lib/pageStyles';
+import { url } from '../lib/url';
+import ArrowIcon from './ArrowIcon.astro';
+import FactsStrip from './FactsStrip.astro';
+
+// Subpage hero: breadcrumb, headline, one line, consultation button and a photo, with a quick facts
+// strip underneath that answers the usual first questions without a sentence of prose.
+interface Props {
+	crumb: { label: string; href: string };
+	name: string;
+	headline: string;
+	intro: string;
+	image: ImageMetadata;
+	imageAlt: string;
+	imageFocus?: string;
+	facts: { label: string; value: string }[];
+}
+
+const { crumb, name, headline, intro, image, imageAlt, imageFocus, facts } = Astro.props;
+---
+
+<section class="px-5 pt-28 pb-16 sm:px-7 lg:pt-36 lg:pb-20">
+	<div class="mx-auto max-w-7xl">
+		<div class="grid items-end gap-10 lg:grid-cols-12 lg:gap-8">
+			<div class="lg:col-span-6">
+				<nav aria-label="Breadcrumb" class={smallLabel}>
+					<a href={url(crumb.href)} class="transition-colors hover:text-ink">{crumb.label}</a>
+					<span class="mx-2 text-ink/30" aria-hidden="true">/</span>
+					<span aria-current="page" class="text-ink">{name}</span>
+				</nav>
+				<h1
+					class="mt-6 text-[2.5rem] leading-[1.05] font-normal tracking-[-0.015em] text-balance sm:text-[clamp(3rem,5vw,4.5rem)]"
+				>
+					{headline}
+				</h1>
+				<p class="mt-6 max-w-md text-base leading-relaxed text-ink/75 sm:text-lg">{intro}</p>
+				<a href={url(bookHref)} class:list={[buttonInk, 'mt-9']}>
+					Schedule a Free Consultation
+					<ArrowIcon size={12} class={buttonArrow} />
+				</a>
+			</div>
+			<div class="overflow-hidden rounded-2xl lg:col-span-6">
+				<Image
+					src={image}
+					alt={imageAlt}
+					widths={[640, 1024, 1400]}
+					sizes="(min-width: 1024px) 50vw, 100vw"
+					loading="eager"
+					class:list={['aspect-[4/3] w-full object-cover', imageFocus]}
+				/>
+			</div>
+		</div>
+
+		<FactsStrip {facts} class="mt-14 lg:mt-20" />
+	</div>
+</section>

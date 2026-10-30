@@ -1,0 +1,194 @@
+---
+import Accordion from '../components/Accordion.astro';
+import ClosingCta from '../components/ClosingCta.astro';
+import Layout from '../layouts/Layout.astro';
+import { phone } from '../lib/contact';
+import { h2, section, sectionInner, sectionInnerFirst, smallLabel } from '../lib/pageStyles';
+
+/*
+	Every question, grouped by topic, in the same accordion as the rest of the site.
+	TODO: Placeholder answers. Dr. Lee should review every one for accuracy (timelines, policies,
+	insurance and payment details) before launch.
+*/
+const groups = [
+	{
+		id: 'getting-started',
+		title: 'Getting started',
+		faqs: [
+			{ q: 'Is the first consultation really free?', a: 'Yes. Your first visit, including the 3D scan, an exam with Dr. Lee, and your written quote, costs nothing and comes with no obligation.' },
+			{ q: 'Do I need a referral from my dentist?', a: 'No. You can book directly. We are happy to work alongside your family dentist and keep them updated.' },
+			{ q: 'How long does the first visit take?', a: 'About an hour. That covers photos, the scan, time with Dr. Lee, your plan, and your costs.' },
+			{ q: 'What should I bring to my first visit?', a: 'Your insurance card, a photo ID, a list of any medications, and your dentist’s name. We’ll send your forms ahead of time so you can fill them out online.' },
+			{ q: 'Will I see Dr. Lee at my first visit?', a: 'Yes. Dr. Lee examines every new patient herself and walks you through your options.' },
+			{ q: 'Is there any pressure to start treatment?', a: 'None. You leave with your plan and quote, and you decide when, or whether, to begin.' },
+			{ q: 'How do I book a consultation?', a: `Use the Schedule a Free Consultation button anywhere on the site, or call us at ${phone.display}.` },
+		],
+	},
+	{
+		id: 'cost',
+		title: 'Cost and insurance',
+		faqs: [
+			{ q: 'How much does treatment cost?', a: 'It depends on the treatment you choose and how long it takes. At your free consultation you’ll get a clear, all-inclusive quote with no hidden fees.' },
+			{ q: 'What does the quote include?', a: 'Your treatment plan, braces or aligners, every adjustment visit, emergency visits during treatment, and your first set of retainers.' },
+			{ q: 'Will my price go up if treatment takes longer?', a: 'No. Your quote is all-inclusive. If treatment runs longer than planned, the extra visits are on us.' },
+			{ q: 'Do you offer payment plans?', a: 'Yes. Our in-house plans are 0% interest with no hidden fees, so you can spread the cost across your treatment.' },
+			{ q: 'Do you accept insurance?', a: 'We accept most major PPO plans. We check your benefits before treatment begins and file the claims for you.' },
+			{ q: 'How much will my insurance cover?', a: 'It depends on your plan’s orthodontic benefit and lifetime maximum. We’ll confirm your coverage and show your exact share in your quote.' },
+			{ q: 'Does insurance cover adult orthodontics?', a: 'Some plans do and some only cover children. We’ll check your plan and tell you before anything begins.' },
+			{ q: 'Can I use my HSA or FSA?', a: 'Yes. Orthodontic treatment is generally a qualified medical expense, and we can provide the receipts you need.' },
+			{ q: 'What forms of payment do you accept?', a: 'All major credit and debit cards, HSA and FSA cards, and our 0% interest monthly plans.' },
+			{ q: 'What if I don’t have insurance?', a: 'Many patients start without coverage. A 0% interest plan spreads the cost, and you have the right to a Good Faith Estimate of your costs before treatment.' },
+		],
+	},
+	{
+		id: 'options',
+		title: 'Choosing a treatment',
+		faqs: [
+			{ q: 'Braces or Invisalign: which is right for me?', a: 'Both can create excellent results. Invisalign is nearly invisible and removable; braces work around the clock and suit some complex cases better. Dr. Lee will help you choose.' },
+			{ q: 'Is one treatment faster than the other?', a: 'It depends on what needs to move. For many cases they take a similar amount of time. Dr. Lee will give you a timeline for each option.' },
+			{ q: 'Can I switch from braces to Invisalign, or back?', a: 'Sometimes. It depends on your progress and your bite. Ask Dr. Lee at any check-in.' },
+			{ q: 'What are clear ceramic braces?', a: 'Braces with tooth-colored brackets that blend in with your teeth. They work like metal braces but are much less noticeable.' },
+			{ q: 'What is jaw orthopedics?', a: 'Early treatment that uses gentle appliances to guide how a child’s jaw grows, which can make later treatment simpler or unnecessary.' },
+			{ q: 'Do you offer treatment for TMJ or jaw pain?', a: 'Dr. Lee can check whether your bite is contributing to jaw discomfort and talk through options at your consultation.' },
+		],
+	},
+	{
+		id: 'braces',
+		title: 'Braces',
+		faqs: [
+			{ q: 'How long will I need braces?', a: 'Most patients wear braces for 18 to 24 months, depending on what needs to be corrected.' },
+			{ q: 'Does getting braces hurt?', a: 'Putting braces on doesn’t hurt. Your teeth may feel sore for a few days afterward and after adjustments.' },
+			{ q: 'How often are adjustment visits?', a: 'Every 6 to 8 weeks, for a short visit with Dr. Lee.' },
+			{ q: 'What can’t I eat with braces?', a: 'Avoid hard, sticky, and chewy foods like popcorn, gum, caramel, hard candy, and nuts. Cut crunchy foods like apples into small pieces.' },
+			{ q: 'How do I clean my teeth with braces?', a: 'Brush after meals and floss daily with a floss threader or water flosser. We’ll show you how and give you a care kit.' },
+			{ q: 'What if a bracket or wire comes loose?', a: 'Call us. It is rarely urgent. Orthodontic wax can cover anything poking until we fix it, usually at a quick visit.' },
+			{ q: 'Can I choose colors for my braces?', a: 'Yes. With metal braces you can pick colored bands at each visit, or keep them clear.' },
+		],
+	},
+	{
+		id: 'invisalign',
+		title: 'Invisalign',
+		faqs: [
+			{ q: 'How long does Invisalign take?', a: 'Most cases take 12 to 18 months. Dr. Lee will give you a personal timeline after your scan.' },
+			{ q: 'How many hours a day do I wear aligners?', a: 'About 20 to 22. Take them out only to eat, drink anything other than water, and brush.' },
+			{ q: 'Will people notice my aligners?', a: 'Most people won’t. Some teeth need small tooth-colored attachments to help them move, and those blend in too.' },
+			{ q: 'How often do I switch aligners?', a: 'Usually every one to two weeks, at home, following Dr. Lee’s plan.' },
+			{ q: 'What if I lose or break an aligner?', a: 'Call us. Depending on timing, we’ll have you move to your next set or order a replacement so treatment stays on track.' },
+			{ q: 'Can I drink coffee with my aligners in?', a: 'It’s best to take them out for anything other than water. Hot drinks can warp aligners and colored drinks can stain them.' },
+			{ q: 'Is Invisalign right for teenagers?', a: 'Many teens do very well with aligners. Dr. Lee will help you decide whether they suit your teen’s habits.' },
+		],
+	},
+	{
+		id: 'kids',
+		title: 'Kids and early treatment',
+		faqs: [
+			{ q: 'When should my child first see an orthodontist?', a: 'The American Association of Orthodontists recommends a first check by age 7, when Dr. Lee can see how the jaw is growing and where adult teeth are headed.' },
+			{ q: 'Will my child need treatment at age 7?', a: 'Most kids won’t. Usually we simply check in every 6 to 12 months while they grow.' },
+			{ q: 'What is two-phase treatment?', a: 'An early first phase guides jaw growth while a child is young, and a shorter second phase with braces or aligners finishes the job later, if needed.' },
+			{ q: 'Is early treatment painful for kids?', a: 'Kids usually feel some pressure for a few days when an appliance is placed or adjusted, not pain.' },
+			{ q: 'Can I stay with my child during visits?', a: 'Yes. Parents are always welcome in the room.' },
+			{ q: 'My child sucks their thumb. Should I be worried?', a: 'Habits that continue past about age 5 can affect how teeth and the jaw develop. An early check lets Dr. Lee advise you.' },
+		],
+	},
+	{
+		id: 'teens-adults',
+		title: 'Teens and adults',
+		faqs: [
+			{ q: 'What age is best for braces?', a: 'Most treatment starts between 11 and 14, once adult teeth are in. But there’s no upper age limit.' },
+			{ q: 'Am I too old for orthodontics?', a: 'No. Healthy teeth can be moved at any age, and many of our patients are adults.' },
+			{ q: 'Does adult treatment take longer?', a: 'Sometimes a little, but many adult cases take 12 to 18 months.' },
+			{ q: 'My teeth shifted after braces as a kid. Can that be fixed?', a: 'Yes, and it’s very common. Often a short course of Invisalign is all it takes.' },
+			{ q: 'Can my teen play sports with braces?', a: 'Yes. A mouthguard is all that’s needed for contact sports, and aligners can come out for games.' },
+			{ q: 'Can I get orthodontic treatment while pregnant?', a: 'Often, yes. Let us know, and Dr. Lee will adjust things like X-rays and timing as needed.' },
+		],
+	},
+	{
+		id: 'during',
+		title: 'During treatment',
+		faqs: [
+			{ q: 'Does treatment hurt?', a: 'You may feel pressure or tenderness for a few days after starting and after adjustments. It usually settles quickly with soft foods and an over-the-counter pain reliever.' },
+			{ q: 'What counts as an orthodontic emergency?', a: 'True emergencies are rare. Call us for anything that is painful, a loose appliance, or a wire that is poking. We’ll tell you whether it can wait.' },
+			{ q: 'Do I still need to see my regular dentist?', a: 'Yes. Keep your usual cleanings and checkups every six months during treatment.' },
+			{ q: 'Will treatment affect how I speak?', a: 'Some appliances and aligners can change speech for a few days. Most people adjust quickly.' },
+			{ q: 'Can I play an instrument during treatment?', a: 'Yes. Wind and brass players may need a week or two to adjust, and wax can help with comfort.' },
+			{ q: 'What if I miss an appointment?', a: 'Call us to reschedule. One missed visit won’t ruin your progress, but regular check-ins keep treatment on track.' },
+		],
+	},
+	{
+		id: 'after',
+		title: 'Retainers and after treatment',
+		faqs: [
+			{ q: 'Why do I need a retainer?', a: 'Teeth naturally try to drift back after treatment. A retainer keeps them in their new positions.' },
+			{ q: 'How long do I wear a retainer?', a: 'Full-time at first as Dr. Lee advises, then every night for the long term.' },
+			{ q: 'What kinds of retainers are there?', a: 'Clear removable retainers you wear at night, and fixed retainers, a thin wire bonded behind your teeth. Dr. Lee will recommend what suits you.' },
+			{ q: 'What if I lose my retainer?', a: 'Call us soon, before your teeth have a chance to move. We’ll scan your teeth and make a new one.' },
+			{ q: 'How do I clean my retainer?', a: 'Brush it gently with cool water every day. Hot water can warp clear retainers.' },
+			{ q: 'Can you make a retainer if I was treated elsewhere?', a: 'Yes. We’ll scan your teeth and make a new one, even if you weren’t treated here.' },
+		],
+	},
+	{
+		id: 'visits',
+		title: 'Visits and scheduling',
+		faqs: [
+			{ q: 'What are your office hours?', a: 'Monday through Thursday 9 to 5 and Friday 12 to 5. Monday, Tuesday, and Friday follow a rotating schedule, so please call to confirm.' },
+			{ q: 'Do you offer early or late appointments?', a: 'We try to keep early and late times available for school and work schedules. Ask when you book.' },
+			{ q: 'Where are you located?', a: 'At 4765 Carmel Mountain Road, Suite 200, in San Diego’s Carmel Valley.' },
+			{ q: 'Is there parking?', a: 'Yes, there is free parking at the building.' },
+			{ q: 'How do I reschedule or cancel?', a: `Call us at ${phone.display} and we’ll find a new time that works.` },
+			{ q: 'Do I need to come with my child to every visit?', a: 'For younger kids, yes. For teens, a parent is welcome but doesn’t always need to stay. Just let us know your preference.' },
+		],
+	},
+];
+const total = groups.reduce((n, g) => n + g.faqs.length, 0);
+---
+
+<Layout title="FAQ | Torrey Hills Orthodontics" solidHeader>
+	<main class="bg-white text-ink">
+		<section class="px-5 pt-28 pb-12 sm:px-7 lg:pt-36 lg:pb-16">
+			<div class="mx-auto max-w-7xl">
+				<nav aria-label="Breadcrumb" class={smallLabel}>
+					<span>Patient info</span>
+					<span class="mx-2 text-ink/30" aria-hidden="true">/</span>
+					<span aria-current="page" class="text-ink">FAQ</span>
+				</nav>
+				<h1 class="mt-6 text-[2.75rem] leading-[1.02] font-normal tracking-[-0.02em] sm:text-[clamp(3.5rem,6vw,5.5rem)]">
+					Questions, answered.
+				</h1>
+				<p class="mt-6 max-w-lg text-base leading-relaxed text-ink/75 sm:text-lg">
+					{total} answers to the questions patients ask us most. Can't find yours? Call us at{' '}
+					<a href={phone.href} class="text-ink underline decoration-ink/25 underline-offset-4 transition-colors hover:decoration-accent">{phone.display}</a>.
+				</p>
+				<!-- Jump to a topic -->
+				<nav aria-label="FAQ topics" class="mt-10 flex flex-wrap gap-x-6 gap-y-3 border-t border-ink/10 pt-6">
+					{
+						groups.map((g) => (
+							<a href={`#${g.id}`} class="py-1 text-sm text-ink/70 transition-colors hover:text-ink focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink">
+								{g.title}
+							</a>
+						))
+					}
+				</nav>
+			</div>
+		</section>
+
+		{
+			groups.map((g, i) => (
+				<section id={g.id} aria-labelledby={`${g.id}-heading`} class:list={[section, 'scroll-mt-16']}>
+					<div class={i === 0 ? sectionInnerFirst : sectionInner}>
+						<div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+							<h2 id={`${g.id}-heading`} class:list={[h2, 'lg:sticky lg:top-24 lg:col-span-4 lg:self-start']}>
+								{g.title}
+							</h2>
+							<Accordion items={g.faqs} openFirst={false} class="lg:col-span-8 lg:col-start-5" />
+						</div>
+					</div>
+				</section>
+			))
+		}
+
+		<ClosingCta
+			heading="Still have a question?"
+			text="Ask Dr. Lee in person at your free consultation, or call us anytime."
+		/>
+	</main>
+</Layout>

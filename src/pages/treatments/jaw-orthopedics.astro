@@ -1,0 +1,104 @@
+---
+import TreatmentPage from '../../components/TreatmentPage.astro';
+import Layout from '../../layouts/Layout.astro';
+// TODO: Placeholder photo. Swap for a real photo from the practice (1400px+ wide).
+import heroImage from '../../assets/treatment-jaw.jpg';
+
+/*
+	TODO: Placeholder content. Dr. Lee should review every line, especially the age range, treatment
+	length, the appliances she uses and what insurance typically covers. No comparison table or
+	results section yet; add them once there's real material.
+*/
+---
+
+<Layout title="Jaw Orthopedics | Torrey Hills Orthodontics" solidHeader>
+	<TreatmentPage
+		name="Jaw Orthopedics"
+		headline="Guiding jaw growth while kids are still growing."
+		intro="Early treatment uses gentle appliances to guide how the jaw develops, which can make later treatment shorter, simpler, or unnecessary."
+		image={heroImage}
+		imageAlt="Gloved hand holding a dental model of a patient's teeth"
+		imageFocus="object-[50%_62%]"
+		facts={[
+			{ label: 'Typical age', value: '7 to 11' },
+			{ label: 'Typical length', value: '9–18 months' },
+			{ label: 'Check-ins', value: 'Every 6–8 weeks' },
+			{ label: 'The goal', value: 'Room for adult teeth' },
+		]}
+		goodFor={[
+			"Your child's upper and lower jaws don't line up, like an underbite or crossbite",
+			"Adult teeth look like they won't have enough room",
+			'Your child is between about 7 and 11 and still growing',
+			'A habit like thumb sucking has affected the bite',
+		]}
+		notIdeal={[
+			'Growth is mostly finished, as in most teens and adults, where braces or Invisalign fit better',
+			'The only concern is mild crowding, which can usually wait',
+			"Dr. Lee's check shows growth is on track, so we simply keep watching",
+		]}
+		steps={[
+			{
+				title: 'The age-7 check',
+				body: 'A quick, free visit where Dr. Lee looks at jaw growth and how the adult teeth are coming in.',
+			},
+			{
+				title: 'A plan for growth',
+				body: "If treating now will help, Dr. Lee explains why, which appliance, and for how long. If not, we keep watching.",
+			},
+			{
+				title: 'Gentle appliances',
+				body: 'An expander or similar appliance guides growth over several months, with short check-ins along the way.',
+			},
+			{
+				title: 'Watch and wait',
+				body: 'After this first phase we keep an eye on growth. Any later braces or aligners are usually simpler.',
+			},
+		]}
+		dayToDay={[
+			{
+				title: 'Eating',
+				body: 'Most foods are fine. Avoid very sticky or hard foods that could loosen the appliance.',
+			},
+			{
+				title: 'Cleaning',
+				body: 'Brush around the appliance twice a day. A water flosser makes it much easier for kids.',
+			},
+			{
+				title: 'Speech',
+				body: 'Some appliances change speech for a few days. Kids usually adjust quickly.',
+			},
+			{
+				title: 'Comfort',
+				body: 'Expect mild pressure when an appliance is placed or adjusted. It eases within a few days.',
+			},
+		]}
+		cost="Early treatment is usually shorter and less involved than full braces. You'll get a clear, all-inclusive quote at your free consultation, and we'll check what your insurance covers before anything begins."
+		faqs={[
+			{
+				q: 'Why see an orthodontist at age 7?',
+				a: "By around 7, Dr. Lee can spot jaw and bite problems while they're easiest to guide. Most kids won't need treatment yet, and that's good to know too.",
+			},
+			{
+				q: 'Will my child still need braces later?',
+				a: 'Often, yes, but early treatment can make later braces shorter and simpler, and sometimes avoid them altogether.',
+			},
+			{
+				q: 'Does an expander hurt?',
+				a: 'Kids usually feel pressure for a few days, not pain, and it eases quickly.',
+			},
+			{
+				q: 'How long does early treatment take?',
+				a: 'Typically 9 to 18 months, depending on what needs to be corrected.',
+			},
+		]}
+		headings={{
+			fit: 'Is early treatment right for your child?',
+			steps: 'How early treatment works, step by step.',
+			day: 'Life with an appliance.',
+			faq: 'Early treatment questions, answered.',
+			closing: 'Not sure if your child needs early treatment?',
+			closingText:
+				"That's exactly what the free consultation is for. Dr. Lee will check your child's growth and tell you honestly whether treatment would help now.",
+		}}
+	/>
+</Layout>

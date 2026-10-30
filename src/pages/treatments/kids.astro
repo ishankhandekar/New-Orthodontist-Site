@@ -1,0 +1,76 @@
+---
+import AgePage from '../../components/AgePage.astro';
+import Layout from '../../layouts/Layout.astro';
+// TODO: Placeholder photo (a gallery stock portrait). Swap for a real photo of a young patient.
+import heroImage from '../../assets/gallery-priya.png';
+
+// TODO: Placeholder content, including Dr. Lee's quote. She should review every line before launch.
+---
+
+<Layout title="Kids Orthodontics | Torrey Hills Orthodontics" solidHeader>
+	<AgePage
+		name="Kids"
+		headline="The right time to check is earlier than you think."
+		intro="A gentle first visit by age 7 lets Dr. Lee spot growth and bite issues while they're easiest to guide. Most kids won't need treatment yet, and that's good to know too."
+		image={heroImage}
+		imageAlt="Smiling child outdoors"
+		imageFocus="object-[50%_35%]"
+		facts={[
+			{ label: 'First visit', value: 'By age 7' },
+			{ label: 'Most common', value: 'Watching, not treating' },
+			{ label: 'If needed', value: 'Short early treatment' },
+			{ label: 'The visit', value: 'Free, about 30 minutes' },
+		]}
+		signsHeading="Signs it's worth an early visit."
+		signs={[
+			{ title: 'Crowded or crooked teeth', body: 'Adult teeth coming in sideways, overlapped, or without enough room.' },
+			{ title: 'A bite that doesn’t line up', body: 'An underbite, crossbite, or top teeth that cover the bottom ones a lot.' },
+			{ title: 'Early or late tooth loss', body: 'Baby teeth falling out much earlier or later than usual.' },
+			{ title: 'Thumb or finger sucking', body: 'Habits past age 5 or so can change how the jaw and teeth develop.' },
+			{ title: 'Mouth breathing', body: 'Breathing mostly through the mouth can affect how the jaw grows.' },
+			{ title: 'Jaw shifting or clicking', body: 'A jaw that moves to one side, clicks, or feels sore when chewing.' },
+		]}
+		treatmentsHeading="Treatments for growing smiles."
+		treatments={[
+			{
+				name: 'Jaw Orthopedics',
+				href: '/treatments/jaw-orthopedics',
+				body: 'Gentle appliances that guide jaw growth while kids are still growing.',
+			},
+			{
+				name: 'Braces',
+				href: '/treatments/braces',
+				body: 'Reliable, around-the-clock treatment once most adult teeth are in.',
+			},
+		]}
+		stepsHeading="What to expect, from the first check-up on."
+		steps={[
+			{ title: 'The age-7 check', body: 'A quick, friendly visit. Dr. Lee looks at growth, the bite, and how adult teeth are coming in.' },
+			{ title: 'Watch and wait', body: "Most kids just come back for a short check every 6–12 months while they grow." },
+			{ title: 'Early treatment, if it helps', body: 'When guiding growth now will make later treatment simpler, Dr. Lee explains exactly why.' },
+			{ title: 'Braces later, if needed', body: 'Any later treatment is usually shorter and simpler thanks to the early start.' },
+		]}
+		quote="Most of the kids I see at seven don't need anything yet. The visit is about catching the few things that are much easier to fix while they're still growing."
+		faqHeading="Questions parents ask."
+		faqs={[
+			{
+				q: 'Why age 7?',
+				a: 'By 7, a mix of baby and adult teeth lets Dr. Lee see how the jaw is growing and where adult teeth are headed. The American Association of Orthodontists recommends a first check by then.',
+			},
+			{
+				q: 'Does my child need a referral from our dentist?',
+				a: 'No. You can book the free consultation directly, and we’re happy to work alongside your family dentist.',
+			},
+			{
+				q: 'Will the visit be scary?',
+				a: 'Not at all. There are no needles or shots. Dr. Lee takes a look, a few photos, and explains what she sees in kid-friendly terms.',
+			},
+			{
+				q: 'Is early treatment covered by insurance?',
+				a: "Many plans cover part of orthodontic treatment for kids. We'll check your benefits before anything begins.",
+			},
+		]}
+		closing="Is your child due for a check?"
+		closingText="Book the free age-7 visit. If everything looks on track, you'll leave with peace of mind."
+	/>
+</Layout>

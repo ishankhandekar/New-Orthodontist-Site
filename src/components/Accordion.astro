@@ -1,0 +1,54 @@
+---
+// Question-and-answer accordion with hairline rows and a +/- toggle. Native <details>, so it's
+// keyboard and screen-reader friendly with no JS. Used by the homepage FAQ and treatment pages.
+interface Props {
+	items: { q: string; a: string }[];
+	/** Open the first answer on load. */
+	openFirst?: boolean;
+	class?: string;
+}
+
+const { items, openFirst = true, class: className } = Astro.props;
+---
+
+<div class:list={['accordion border-b border-ink/10', className]}>
+	{
+		items.map((item, i) => (
+			<details class="group border-t border-ink/10" open={openFirst && i === 0}>
+				<summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-6 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink sm:py-7 [&::-webkit-details-marker]:hidden">
+					<h3 class="text-lg leading-snug tracking-[-0.01em] sm:text-xl">{item.q}</h3>
+					<span
+						class="relative flex size-9 shrink-0 items-center justify-center rounded-full border border-ink/20 transition-colors group-hover:border-ink/40 group-open:border-accent group-open:bg-accent"
+						aria-hidden="true"
+					>
+						<span class="absolute h-px w-3.5 bg-current transition-colors group-open:bg-white" />
+						<span class="absolute h-3.5 w-px bg-current transition-transform duration-300 group-open:scale-y-0" />
+					</span>
+				</summary>
+				<p class="max-w-2xl pr-12 pb-7 text-[0.9375rem] leading-relaxed text-ink/75">{item.a}</p>
+			</details>
+		))
+	}
+</div>
+
+<style>
+	/* Answers glide open where the browser supports animating <details>; elsewhere they snap. */
+	.accordion {
+		interpolate-size: allow-keywords;
+	}
+	details::details-content {
+		block-size: 0;
+		overflow: hidden;
+		transition:
+			block-size 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+			content-visibility 0.45s allow-discrete;
+	}
+	details[open]::details-content {
+		block-size: auto;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		details::details-content {
+			transition: none;
+		}
+	}
+</style>

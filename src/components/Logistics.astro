@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import ArrowIcon from './ArrowIcon.astro';
 
 // TODO: Confirm the financing details (0% interest, in-house plans) and which PPO plans are
@@ -65,10 +66,10 @@ const steps = [
 				</dl>
 
 				<a
-					href="#contact"
+					href={url('/financing')}
 					class="group mt-10 inline-flex items-center gap-2 text-sm font-medium underline decoration-ink/25 underline-offset-[6px] transition-colors hover:decoration-accent focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
 				>
-					Ask about your coverage
+					See exactly how pricing works
 					<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
 				</a>
 			</div>

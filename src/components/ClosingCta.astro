@@ -1,0 +1,26 @@
+---
+import { buttonArrow, buttonInk } from '../lib/buttons';
+import { bookHref } from '../lib/nav';
+import { h2 } from '../lib/pageStyles';
+import { url } from '../lib/url';
+import ArrowIcon from './ArrowIcon.astro';
+
+// Closing line and consultation button at the end of a subpage.
+interface Props {
+	heading: string;
+	text: string;
+}
+
+const { heading, text } = Astro.props;
+---
+
+<section class="px-5 pt-8 pb-24 sm:px-7 lg:pb-32">
+	<div class="mx-auto max-w-3xl border-t border-ink/10 pt-20 text-center lg:pt-28">
+		<h2 class={h2}>{heading}</h2>
+		<p class="mx-auto mt-5 max-w-md text-base leading-relaxed text-ink/75">{text}</p>
+		<a href={url(bookHref)} class:list={[buttonInk, 'mt-9']}>
+			Schedule a Free Consultation
+			<ArrowIcon size={12} class={buttonArrow} />
+		</a>
+	</div>
+</section>

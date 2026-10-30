@@ -1,18 +1,10 @@
 ---
-import { address, phone, socials } from '../lib/contact';
+import { address, directionsUrl as directions, hours, phone, socials } from '../lib/contact';
 import { bookHref } from '../lib/nav';
 import { url } from '../lib/url';
 import ArrowIcon from './ArrowIcon.astro';
 import Logo from './Logo.astro';
 
-const directions =
-	'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(address.join(', '));
-const hours = [
-	{ days: 'Mon, Tue', time: '9–5', rotational: true },
-	{ days: 'Wed, Thu', time: '9–5', rotational: false },
-	{ days: 'Fri', time: '12–5', rotational: true },
-	{ days: 'Sat, Sun', time: 'Closed', rotational: false },
-];
 
 // Repeated twice: at 32px with 0.2em tracking this runs almost exactly one lap (2765 units),
 // so textLength only nudges it to close the loop instead of stretching the letters apart.
