@@ -78,8 +78,8 @@ export const galleryLink: NavLink = { label: 'Gallery', href: '/#gallery' };
 // Top-level order in the bar and the phone menu: dropdowns and plain links mixed.
 export const topLevel: (Menu | NavLink)[] = [treatments, patientInfo, galleryLink, aboutUs];
 export const isMenu = (item: Menu | NavLink): item is Menu => 'columns' in item;
-// TODO: Point to the scheduling software or booking form once it's chosen.
-export const bookHref = '/#contact';
+// Every "Book consult" / "Schedule a Free Consultation" button goes to the intake page.
+export const bookHref = '/consultation';
 
 /*
 	Pages a US (California) healthcare practice site needs. None exist yet, and their text must come

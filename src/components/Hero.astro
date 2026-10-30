@@ -2,6 +2,8 @@
 import { Image } from 'astro:assets';
 import ArrowIcon from './ArrowIcon.astro';
 import { phone } from '../lib/contact';
+import { bookHref } from '../lib/nav';
+import { url } from '../lib/url';
 // TODO: Placeholder stock photo. Swap for a real photo of Dr. Lee with a patient.
 import heroImage from '../assets/hero-patient.jpg';
 ---
@@ -62,7 +64,7 @@ import heroImage from '../assets/hero-patient.jpg';
 			<!-- The entrance animation sits on a wrapper so it doesn't override the button's hover lift. -->
 			<div class="motion-safe:animate-fade-rise motion-safe:[animation-delay:200ms]">
 				<a
-					href="#contact"
+					href={url(bookHref)}
 					class="group inline-flex w-fit items-center gap-8 rounded-lg bg-white py-1 pr-1 pl-4 text-sm font-medium text-ink transition motion-safe:hover:-translate-y-0.5"
 				>
 					Schedule a Free Consultation

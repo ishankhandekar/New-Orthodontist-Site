@@ -1,5 +1,7 @@
 ---
 import { address, phone, socials } from '../lib/contact';
+import { bookHref } from '../lib/nav';
+import { url } from '../lib/url';
 import ArrowIcon from './ArrowIcon.astro';
 import Logo from './Logo.astro';
 
@@ -50,8 +52,7 @@ const actionRow =
 			<p class="mt-6 max-w-sm text-base text-ink/60">Visits are by appointment only, so please book ahead.</p>
 			<!-- The three actions as a short list of hairline rows rather than competing buttons. -->
 			<div class="mt-8 max-w-sm border-t border-ink/10">
-				<!-- TODO: Every consultation button links to #contact (this section), which has no booking form. Point them all at the practice's booking page once there is one; until then this one calls. -->
-				<a href={phone.href} class={actionRow}>
+				<a href={url(bookHref)} class={actionRow}>
 					Schedule a Free Consultation
 					<ArrowIcon size={12} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
 				</a>

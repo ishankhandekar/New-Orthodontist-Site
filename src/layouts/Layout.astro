@@ -6,9 +6,11 @@ import SiteHeader from '../components/SiteHeader.astro';
 
 interface Props {
 	title?: string;
+	/** Focused pages (like the consultation intake) skip the site header and footer. */
+	bare?: boolean;
 }
 
-const { title = 'Torrey Hills Orthodontics' } = Astro.props;
+const { title = 'Torrey Hills Orthodontics', bare = false } = Astro.props;
 ---
 
 <html lang="en">
@@ -26,8 +28,8 @@ const { title = 'Torrey Hills Orthodontics' } = Astro.props;
 		<title>{title}</title>
 	</head>
 	<body class="bg-white font-sans text-ink antialiased">
-		<SiteHeader />
+		{!bare && <SiteHeader />}
 		<slot />
-		<SiteFooter />
+		{!bare && <SiteFooter />}
 	</body>
 </html>

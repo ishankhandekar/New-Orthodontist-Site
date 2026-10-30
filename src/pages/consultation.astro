@@ -1,0 +1,400 @@
+---
+import ArrowIcon from '../components/ArrowIcon.astro';
+import Logo from '../components/Logo.astro';
+import Layout from '../layouts/Layout.astro';
+import { url } from '../lib/url';
+
+/*
+	Consultation request, one question per screen. Front end only for now.
+	TODO: Send the answers to the practice (form service or scheduling software) on the last step,
+	and confirm the "within one business day" call-back promise with the office.
+*/
+type Step =
+	| {
+			id: string;
+			kind: 'text';
+			label: string;
+			type: 'text' | 'email' | 'tel';
+			autocomplete: string;
+			placeholder: string;
+			error: string;
+	  }
+	| { id: string; kind: 'choice'; label: string; options: string[] };
+
+const steps: Step[] = [
+	{
+		id: 'name',
+		kind: 'text',
+		label: 'Enter your full name',
+		type: 'text',
+		autocomplete: 'name',
+		placeholder: 'Jane Smith',
+		error: 'Please enter your name.',
+	},
+	{
+		id: 'email',
+		kind: 'text',
+		label: 'Enter your email',
+		type: 'email',
+		autocomplete: 'email',
+		placeholder: 'name@example.com',
+		error: 'Please enter a valid email address.',
+	},
+	{
+		id: 'phone',
+		kind: 'text',
+		label: 'Enter your phone number',
+		type: 'tel',
+		autocomplete: 'tel',
+		placeholder: '(858) 555-0123',
+		error: 'Please enter a phone number we can call.',
+	},
+	{ id: 'patient', kind: 'choice', label: 'Who is the consultation for?', options: ['Myself', 'My child', 'Someone else'] },
+	{ id: 'interest', kind: 'choice', label: 'What are you interested in?', options: ['Invisalign', 'Braces', 'Not sure yet'] },
+	{ id: 'time', kind: 'choice', label: 'When should we call you?', options: ['Mornings', 'Afternoons', 'Anytime'] },
+];
+const total = steps.length;
+const pad = (n: number) => String(n).padStart(2, '0');
+
+const question = 'block text-[1.75rem] leading-[1.15] tracking-[-0.01em] text-balance sm:text-[2.5rem]';
+const eyebrow = 'flex gap-4 text-[11px] tracking-wide text-ink/70 uppercase';
+const nextSteps = [
+	'Our team calls you within one business day.',
+	'Together we find a time that works for you.',
+	'You meet Dr. Lee for your free consultation.',
+];
+---
+
+<Layout title="Schedule a Free Consultation | Torrey Hills Orthodontics" bare>
+	<div class="flex min-h-dvh flex-col bg-white text-ink">
+		<!-- Orange progress bar across the top: how far through the questions you are -->
+		<div
+			data-progress
+			role="progressbar"
+			aria-label="Progress"
+			aria-valuemin="0"
+			aria-valuemax={total}
+			aria-valuenow="0"
+			class="fixed inset-x-0 top-0 z-10 h-1 bg-ink/5"
+		>
+			<div data-progress-bar class="progress-bar h-full bg-accent" style="width: 0%"></div>
+		</div>
+
+		<header class="flex items-center justify-between px-5 pt-7 sm:px-7">
+			<Logo class="w-fit" />
+			<a
+				href={url('/')}
+				class="text-sm text-ink/70 transition-colors hover:text-ink focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+			>
+				Close
+			</a>
+		</header>
+
+		<form data-intake novalidate class="flex flex-1 flex-col">
+			<!-- overflow-hidden clips the slide; every step shares one grid cell so they overlap mid-slide -->
+			<div class="flex flex-1 items-center overflow-hidden px-5 py-12 sm:px-7">
+				<div class="mx-auto grid w-full max-w-2xl">
+					{
+						steps.map((s, i) => (
+							<div data-step={i} hidden={i !== 0} class="col-start-1 row-start-1">
+								{s.kind === 'text' ? (
+									<>
+										<!-- Text questions: the prompt is a small eyebrow label, so the typed answer is the big thing -->
+										<p class={eyebrow}>
+											<span class="text-ink/40" aria-hidden="true">
+												{pad(i + 1)} / {pad(total)}
+											</span>
+											<label for={s.id}>{s.label}</label>
+										</p>
+										<input
+											id={s.id}
+											name={s.id}
+											type={s.type}
+											autocomplete={s.autocomplete}
+											placeholder={s.placeholder}
+											data-error-message={s.error}
+											required
+											class="mt-5 w-full rounded-none border-0 border-b-2 border-ink bg-transparent px-0 pb-3 text-[1.75rem] tracking-[-0.01em] outline-none placeholder:text-ink/20 sm:text-[2.5rem]"
+										/>
+									</>
+								) : (
+									<fieldset>
+										<p class={eyebrow} aria-hidden="true">
+											<span class="text-ink/40">
+												{pad(i + 1)} / {pad(total)}
+											</span>
+										</p>
+										<legend class:list={[question, 'mt-4']}>{s.label}</legend>
+										<!-- Choices as hairline rows, like the office section's action list -->
+										<div class="mt-8 border-t border-ink/10">
+											{s.options.map((o) => (
+												<label class="group flex cursor-pointer items-center justify-between border-b border-ink/10 py-4 text-xl tracking-[-0.01em] transition-colors hover:text-ink/70 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ink sm:text-2xl">
+													<span>{o}</span>
+													<input type="radio" name={s.id} value={o} class="sr-only" />
+													<span
+														class="size-2.5 rounded-full bg-accent opacity-0 transition-opacity group-has-checked:opacity-100"
+														aria-hidden="true"
+													/>
+												</label>
+											))}
+										</div>
+									</fieldset>
+								)}
+								<p data-error class="field-error mt-4 flex min-h-5 items-center gap-2 text-[13px] text-ink/70" aria-live="polite" />
+							</div>
+						))
+					}
+
+					<!-- Done screen -->
+					<div data-step={total} hidden class="col-start-1 row-start-1">
+						<p class="text-[11px] tracking-wide text-ink/60 uppercase">Request sent</p>
+						<h1 class:list={[question, 'mt-4']} tabindex="-1" data-done-heading>
+							Thanks<span data-first-name></span>. We'll be in touch soon.
+						</h1>
+						<ol class="mt-10 border-t border-ink/10">
+							{
+								nextSteps.map((t, i) => (
+									<li class="flex gap-6 border-b border-ink/10 py-4 text-base sm:text-lg">
+										<span class="text-ink/40 tabular-nums">{pad(i + 1)}</span>
+										{t}
+									</li>
+								))
+							}
+						</ol>
+						<a
+							href={url('/')}
+							class="group mt-10 inline-flex items-center gap-2 text-sm font-medium underline decoration-ink/25 underline-offset-[6px] transition-colors hover:decoration-accent focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+						>
+							Back to home
+							<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<!-- Back / Next -->
+			<div data-nav class="flex items-center justify-between gap-4 px-5 pt-4 pb-7 sm:px-7">
+				<button
+					type="button"
+					data-back
+					class="invisible inline-flex items-center gap-2 text-sm text-ink/70 transition-colors hover:text-ink focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+				>
+					<ArrowIcon size={11} class="rotate-180" />
+					Back
+				</button>
+				<div class="flex items-center gap-5">
+					<span class="hidden text-xs text-ink/50 sm:inline" aria-hidden="true">or press Enter ↵</span>
+					<button
+						type="submit"
+						data-next
+						class="group inline-flex items-center gap-8 rounded-lg bg-accent py-1 pr-1 pl-4 text-sm font-medium text-white transition-colors hover:bg-accent-dark focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
+					>
+						<span data-next-label>Next</span>
+						<span class="flex size-8 items-center justify-center rounded-md bg-white text-accent">
+							<ArrowIcon class="transition-transform motion-safe:group-hover:translate-x-0.5" />
+						</span>
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</Layout>
+
+<style>
+	.progress-bar {
+		transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	/* Errors: the input's line turns brick red, and a quiet ink message follows a small red dot. */
+	input {
+		transition: border-color 0.3s ease;
+	}
+	[data-invalid] input:not([type='radio']) {
+		border-color: var(--color-error);
+	}
+	.field-error:not(:empty)::before {
+		content: '';
+		flex: none;
+		width: 6px;
+		height: 6px;
+		border-radius: 9999px;
+		background: var(--color-error);
+	}
+	.field-error:not(:empty) {
+		animation: error-in 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	@keyframes error-in {
+		from {
+			opacity: 0;
+			transform: translateY(-4px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.progress-bar,
+		input {
+			transition: none;
+		}
+		.field-error:not(:empty) {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	const form = document.querySelector<HTMLFormElement>('[data-intake]')!;
+	const steps = [...form.querySelectorAll<HTMLElement>('[data-step]')];
+	const done = steps.length - 1; // the thank-you screen
+	const back = form.querySelector<HTMLButtonElement>('[data-back]')!;
+	const nav = form.querySelector<HTMLElement>('[data-nav]')!;
+	const nextLabel = form.querySelector<HTMLElement>('[data-next-label]')!;
+	const progress = document.querySelector<HTMLElement>('[data-progress]')!;
+	const bar = progress.querySelector<HTMLElement>('[data-progress-bar]')!;
+	const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	let current = 0;
+	// Ends the slide in flight, if any (so a quick second click is never swallowed).
+	let settle: (() => void) | null = null;
+
+	// US phone numbers format as you type: (858) 555-0123. Separators only appear once the next
+	// digit is typed, so backspacing never gets stuck on them, and the caret keeps its place.
+	const formatPhone = (digits: string) => {
+		if (digits.length <= 3) return digits && `(${digits}`;
+		if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+		return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+	};
+	const phone = form.querySelector<HTMLInputElement>('input[type="tel"]')!;
+	phone.addEventListener('input', () => {
+		const caret = phone.selectionStart ?? phone.value.length;
+		const digitsBeforeCaret = phone.value.slice(0, caret).replace(/\D/g, '').length;
+		let digits = phone.value.replace(/\D/g, '');
+		if (digits.length === 11 && digits.startsWith('1')) digits = digits.slice(1); // drop a +1 country code
+		phone.value = formatPhone(digits.slice(0, 10));
+		let pos = 0;
+		for (let seen = 0; pos < phone.value.length && seen < digitsBeforeCaret; pos++) {
+			if (/\d/.test(phone.value[pos])) seen++;
+		}
+		phone.setSelectionRange(pos, pos);
+	});
+
+	const textInput = (step: HTMLElement) => step.querySelector<HTMLInputElement>('input:not([type="radio"])');
+
+	const validate = (step: HTMLElement) => {
+		const input = textInput(step);
+		let message = '';
+		if (input) {
+			input.value = input.value.trim();
+			const shortPhone = input.type === 'tel' && input.value.replace(/\D/g, '').length < 10;
+			if (!input.checkValidity() || shortPhone) message = input.dataset.errorMessage!;
+		} else if (!step.querySelector('input:checked')) {
+			message = 'Please choose one.';
+		}
+		step.querySelector('[data-error]')!.textContent = message;
+		step.toggleAttribute('data-invalid', !!message);
+		// A small sideways nudge, so pressing Next on a wrong answer clearly registers.
+		if (message && !reduceMotion) {
+			(input ?? step.querySelector('fieldset > div'))!.animate(
+				[
+					{ transform: 'translateX(0)' },
+					{ transform: 'translateX(-6px)' },
+					{ transform: 'translateX(5px)' },
+					{ transform: 'translateX(-2px)' },
+					{ transform: 'translateX(0)' },
+				],
+				{ duration: 380, easing: 'ease-out' },
+			);
+		}
+		return !message;
+	};
+
+	const focusStep = () => {
+		const step = steps[current];
+		const target =
+			textInput(step) ??
+			step.querySelector<HTMLInputElement>('input:checked') ??
+			step.querySelector<HTMLInputElement>('input[type="radio"]') ??
+			step.querySelector<HTMLElement>('[data-done-heading]');
+		target?.focus({ preventScroll: true });
+	};
+
+	const update = () => {
+		bar.style.width = `${(current / done) * 100}%`;
+		progress.setAttribute('aria-valuenow', String(current));
+		back.classList.toggle('invisible', current === 0);
+		nav.hidden = current === done;
+		nextLabel.textContent = current === done - 1 ? 'Send request' : 'Next';
+	};
+
+	// Slide the current question out and the next one in (direction follows Next/Back).
+	const go = (to: number) => {
+		if (to < 0 || to > done || to === current) return;
+		settle?.();
+		const from = steps[current];
+		const target = steps[to];
+		const dir = to > current ? 1 : -1;
+		current = to;
+		update();
+		target.hidden = false;
+		// Focus the new question right away, so typing during the slide lands in the right field.
+		focusStep();
+		if (reduceMotion) {
+			from.hidden = true;
+			return;
+		}
+		const timing = { duration: 650, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' };
+		const slides = [
+			from.animate(
+				[
+					{ transform: 'translateX(0)', opacity: 1 },
+					{ transform: `translateX(${-dir * 35}%)`, opacity: 0 },
+				],
+				timing,
+			),
+			target.animate(
+				[
+					{ transform: `translateX(${dir * 35}%)`, opacity: 0 },
+					{ transform: 'translateX(0)', opacity: 1 },
+				],
+				timing,
+			),
+		];
+		const finish = () => {
+			if (settle !== finish) return;
+			settle = null;
+			slides.forEach((a) => a.cancel());
+			from.hidden = true;
+		};
+		settle = finish;
+		slides[1].finished.then(finish, () => {});
+		// Backup in case the animation's finish event is delayed (e.g. in a background tab).
+		setTimeout(finish, timing.duration + 100);
+	};
+
+	// Next button and the Enter key both submit the form.
+	form.addEventListener('submit', (e) => {
+		e.preventDefault();
+		if (current >= done || !validate(steps[current])) return;
+		if (current === done - 1) {
+			const first = (form.elements.namedItem('name') as HTMLInputElement).value.split(' ')[0];
+			document.querySelector('[data-first-name]')!.textContent = first ? `, ${first}` : '';
+		}
+		go(current + 1);
+	});
+	back.addEventListener('click', () => go(current - 1));
+
+	// Clear errors as people fix them. Tapping a choice moves on by itself (except on the last
+	// question); arrow-key picks don't, so keyboard users can look through the options first.
+	let tapped = false;
+	form.addEventListener('pointerdown', (e) => (tapped = !!(e.target as Element).closest('label')));
+	form.addEventListener('input', (e) => {
+		const step = (e.target as Element).closest<HTMLElement>('[data-step]')!;
+		step.querySelector('[data-error]')!.textContent = '';
+		step.removeAttribute('data-invalid');
+		if ((e.target as HTMLInputElement).type === 'radio' && tapped && current < done - 1) {
+			const at = current;
+			setTimeout(() => current === at && go(current + 1), 350);
+		}
+	});
+
+	update();
+	focusStep();
+</script>

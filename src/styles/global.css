@@ -23,6 +23,8 @@ html {
 	/* Very light grey for the footer. */
 	--color-mist: #fafafa;
 	--color-ink: #1b2b2a;
+	/* Form errors: a warm brick red that sits with the tangerine rather than a stock red (6.6:1 on white). */
+	--color-error: #b42318;
 
 	/* Motion. Use with `motion-safe:` so prefers-reduced-motion turns it off. */
 	--animate-hero-zoom: hero-zoom 20s ease-out both;
