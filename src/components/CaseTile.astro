@@ -1,0 +1,56 @@
+---
+import { Image } from 'astro:assets';
+import type { Case } from '../lib/cases';
+import { url } from '../lib/url';
+
+// One square "after" photo linking to its case page. On hover the square contracts slightly and
+// the patient's name and treatment fade in.
+interface Props {
+	item: Case;
+	sizes?: string;
+}
+
+const { item: c, sizes = '(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw' } = Astro.props;
+---
+
+<a href={url(`/smile-gallery/${c.slug}`)} class="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink">
+	<div
+		class:list={[
+			'tile relative aspect-square overflow-hidden rounded-xl bg-linear-to-br',
+			c.tone,
+		]}
+	>
+		<Image src={c.image} alt={`${c.name} after ${c.treatment}`} widths={[400, 700]} {sizes} class:list={['size-full object-cover', c.focus]} />
+		<div
+			class="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/55 to-transparent p-4 pt-10 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+			aria-hidden="true"
+		>
+			<p class="text-base font-medium tracking-[-0.01em]">{c.name}</p>
+			<p class="text-xs text-white/85">{c.treatment}</p>
+		</div>
+	</div>
+</a>
+
+<style>
+	/* The square contracts a little on hover, with the site's long ease-out. */
+	.tile {
+		transition: scale 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	@media (hover: hover) {
+		:global(.group:hover) .tile {
+			scale: 0.96;
+		}
+	}
+	:global(.group:active) .tile {
+		scale: 0.94;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.tile {
+			transition: none;
+		}
+		:global(.group:hover) .tile,
+		:global(.group:active) .tile {
+			scale: 1;
+		}
+	}
+</style>

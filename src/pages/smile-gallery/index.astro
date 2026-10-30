@@ -1,0 +1,188 @@
+---
+import CaseTile from '../../components/CaseTile.astro';
+import ClosingCta from '../../components/ClosingCta.astro';
+import Layout from '../../layouts/Layout.astro';
+import { cases, categoryLabels, type Category } from '../../lib/cases';
+import { smallLabel } from '../../lib/pageStyles';
+
+// The full Smile Gallery: a headline, one Filter button (a menu of preset filters, starting with
+// All), and a grid of square after photos. Each square opens its case page.
+const filters: { id: 'all' | Category; label: string; count: number }[] = [
+	{ id: 'all', label: 'All', count: cases.length },
+	...(Object.entries(categoryLabels) as [Category, string][]).map(([id, label]) => ({
+		id,
+		label,
+		count: cases.filter((c) => c.categories.includes(id)).length,
+	})),
+];
+const smiles = (n: number) => `${n} ${n === 1 ? 'smile' : 'smiles'}`;
+---
+
+<Layout title="Smile Gallery | Torrey Hills Orthodontics" solidHeader>
+	<main class="bg-white text-ink" data-gallery-page>
+		<section class="px-5 pt-28 pb-24 sm:px-7 lg:pt-36 lg:pb-32">
+			<div class="mx-auto max-w-7xl">
+				<p class={smallLabel}>Smile gallery</p>
+				<h1 class="mt-6 max-w-4xl text-[2.75rem] leading-[1.02] font-normal tracking-[-0.02em] text-balance sm:text-[clamp(3.5rem,6.5vw,6rem)]">
+					Real smiles, finished by Dr.&nbsp;Lee.
+				</h1>
+
+				<!-- Count on the left, the Filter button on the right -->
+				<div class="mt-10 flex items-center justify-between gap-4 border-b border-ink/10 pb-4 lg:mt-14">
+					<p data-count class="text-sm text-ink/60" aria-live="polite">{smiles(cases.length)}</p>
+
+					<!-- Revealed by the script, so visitors without JS just see every case. -->
+					<div data-filter-menu hidden class="relative">
+						<button
+							type="button"
+							data-filter-button
+							aria-haspopup="menu"
+							aria-expanded="false"
+							aria-controls="filter-options"
+							class="group inline-flex items-center gap-2.5 rounded-lg border border-ink px-4 py-2.5 text-sm font-medium transition-colors duration-200 hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink aria-expanded:bg-ink aria-expanded:text-white"
+						>
+							<span>Filter: <span data-filter-label>All</span></span>
+							<svg class="size-3 transition-transform duration-300 group-aria-expanded:rotate-180" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+								<path d="M3 4.5 6 7.5 9 4.5" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</button>
+
+						<ul
+							id="filter-options"
+							role="menu"
+							aria-label="Filter smiles"
+							data-filter-options
+							class="filter-panel absolute top-full right-0 z-20 mt-2 w-60 rounded-xl border border-ink/10 bg-white p-1.5"
+						>
+							{
+								filters.map((f, i) => (
+									<li role="none">
+										<button
+											type="button"
+											role="menuitemradio"
+											aria-checked={i === 0 ? 'true' : 'false'}
+											data-filter={f.id}
+											data-label={f.label}
+											data-count={f.count}
+											tabindex="-1"
+											class="group/item flex w-full items-center justify-between gap-4 rounded-lg px-3 py-2.5 text-left text-sm transition-colors hover:bg-ink/5 focus-visible:bg-ink/5 focus-visible:outline-none aria-checked:font-medium"
+										>
+											<span class="flex items-center gap-2.5">
+												<svg class="size-3.5 text-accent opacity-0 group-aria-checked/item:opacity-100" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+													<path d="M2.5 6.2 5 8.5l4.5-5" />
+												</svg>
+												{f.label}
+											</span>
+											<span class="text-xs text-ink/50 tabular-nums">{f.count}</span>
+										</button>
+									</li>
+								))
+							}
+						</ul>
+					</div>
+				</div>
+
+				<ul class="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:mt-12 lg:grid-cols-4 lg:gap-5">
+					{
+						cases.map((c) => (
+							<li data-categories={c.categories.join(' ')}>
+								<CaseTile item={c} />
+							</li>
+						))
+					}
+				</ul>
+				<p data-empty hidden class="mt-10 text-[0.9375rem] text-ink/60">No smiles in this category yet. Check back soon.</p>
+			</div>
+		</section>
+
+		<ClosingCta heading="Your smile could be next." text="Every result here started with a free consultation with Dr. Lee." />
+	</main>
+</Layout>
+
+<style>
+	/* The menu fades and drops in; hidden menus are also removed from the tab order (visibility).
+	   Visibility flips instantly on open, so focus can move into the menu right away, and only
+	   waits for the fade on close. */
+	.filter-panel {
+		opacity: 0;
+		visibility: hidden;
+		translate: 0 -4px;
+		transition:
+			opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+			translate 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+			visibility 0s linear 0.2s;
+	}
+	[aria-expanded='true'] + .filter-panel {
+		opacity: 1;
+		visibility: visible;
+		translate: 0 0;
+		transition-delay: 0s;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.filter-panel {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	const root = document.querySelector<HTMLElement>('[data-gallery-page]')!;
+	const menu = root.querySelector<HTMLElement>('[data-filter-menu]')!;
+	const button = root.querySelector<HTMLButtonElement>('[data-filter-button]')!;
+	const label = root.querySelector<HTMLElement>('[data-filter-label]')!;
+	const options = [...root.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+	const items = [...root.querySelectorAll<HTMLElement>('[data-categories]')];
+	const count = root.querySelector<HTMLElement>('[data-count]')!;
+	const empty = root.querySelector<HTMLElement>('[data-empty]')!;
+
+	const isOpen = () => button.getAttribute('aria-expanded') === 'true';
+	const open = (focusIndex?: number) => {
+		button.setAttribute('aria-expanded', 'true');
+		const current = options.findIndex((o) => o.getAttribute('aria-checked') === 'true');
+		options[focusIndex ?? Math.max(current, 0)].focus();
+	};
+	const close = (returnFocus = true) => {
+		button.setAttribute('aria-expanded', 'false');
+		if (returnFocus) button.focus();
+	};
+
+	const choose = (option: HTMLButtonElement) => {
+		const filter = option.dataset.filter!;
+		for (const o of options) o.setAttribute('aria-checked', String(o === option));
+		label.textContent = option.dataset.label!;
+		let shown = 0;
+		for (const item of items) {
+			const match = filter === 'all' || item.dataset.categories!.split(' ').includes(filter);
+			item.hidden = !match;
+			if (match) shown++;
+		}
+		empty.hidden = shown > 0;
+		count.textContent = `${shown} ${shown === 1 ? 'smile' : 'smiles'}`;
+		close();
+	};
+
+	menu.hidden = false;
+	button.addEventListener('click', () => (isOpen() ? close() : open()));
+	button.addEventListener('keydown', (e) => {
+		if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+			e.preventDefault();
+			open(e.key === 'ArrowUp' ? options.length - 1 : undefined);
+		}
+	});
+	options.forEach((option, i) => {
+		option.addEventListener('click', () => choose(option));
+		option.addEventListener('keydown', (e) => {
+			const move = (to: number) => options[(to + options.length) % options.length].focus();
+			if (e.key === 'ArrowDown') (e.preventDefault(), move(i + 1));
+			else if (e.key === 'ArrowUp') (e.preventDefault(), move(i - 1));
+			else if (e.key === 'Home') (e.preventDefault(), move(0));
+			else if (e.key === 'End') (e.preventDefault(), move(options.length - 1));
+			else if (e.key === 'Escape') (e.preventDefault(), close());
+			else if (e.key === 'Tab') close(false);
+		});
+	});
+	// Clicking anywhere else closes it.
+	document.addEventListener('click', (e) => {
+		if (isOpen() && !menu.contains(e.target as Node)) close(false);
+	});
+</script>

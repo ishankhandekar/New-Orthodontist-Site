@@ -26,6 +26,10 @@ jobs:
       # set SITE_URL to it and BASE_PATH to "/".
       SITE_URL: https://ishankhandekar.github.io
       BASE_PATH: /New-Orthodontist-Site
+      # Cloudflare Web Analytics token (public, it appears in the page source). Set it under
+      # repo Settings -> Secrets and variables -> Actions -> Variables as CF_ANALYTICS_TOKEN.
+      # Until it's set, analytics stays off.
+      PUBLIC_CF_ANALYTICS_TOKEN: ${{ vars.CF_ANALYTICS_TOKEN }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v7

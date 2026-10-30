@@ -6,8 +6,6 @@ export type Menu = {
 	columns: { heading: string; large?: boolean; links: NavLink[] }[];
 };
 
-// TODO: The Before & After (Smile Gallery case) pages don't exist yet.
-// Gallery points at its homepage section until it's built.
 export const menus: Menu[] = [
 	{
 		id: 'treatments',
@@ -75,7 +73,7 @@ export const menus: Menu[] = [
 	},
 ];
 const [treatments, patientInfo, aboutUs] = menus;
-export const galleryLink: NavLink = { label: 'Gallery', href: '/#gallery' };
+export const galleryLink: NavLink = { label: 'Gallery', href: '/smile-gallery' };
 
 // Top-level order in the bar and the phone menu: dropdowns and plain links mixed.
 export const topLevel: (Menu | NavLink)[] = [treatments, patientInfo, galleryLink, aboutUs];

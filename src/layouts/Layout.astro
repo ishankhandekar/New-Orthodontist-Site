@@ -13,6 +13,10 @@ interface Props {
 }
 
 const { title = 'Torrey Hills Orthodontics', bare = false, solidHeader = false } = Astro.props;
+// Cloudflare Web Analytics: free, cookie-free, and collects no personal data, so it's safe on every
+// page of a medical site. It only loads once the practice's token is set (PUBLIC_CF_ANALYTICS_TOKEN,
+// passed in by the deploy workflow), so nothing is tracked during development.
+const cfAnalyticsToken = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN;
 ---
 
 <html lang="en">
@@ -28,6 +32,16 @@ const { title = 'Torrey Hills Orthodontics', bare = false, solidHeader = false }
 			rel="stylesheet"
 		/>
 		<title>{title}</title>
+		{
+			cfAnalyticsToken && (
+				<script
+					is:inline
+					defer
+					src="https://static.cloudflareinsights.com/beacon.min.js"
+					data-cf-beacon={JSON.stringify({ token: cfAnalyticsToken })}
+				/>
+			)
+		}
 	</head>
 	<body class="bg-white font-sans text-ink antialiased">
 		{!bare && <SiteHeader solid={solidHeader} />}

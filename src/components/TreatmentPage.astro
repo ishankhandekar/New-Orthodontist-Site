@@ -54,7 +54,7 @@ const heading = {
 	...Astro.props.headings,
 };
 
-const resultCases = results ? cases.filter((c) => c.categories.includes(results)) : [];
+const resultCases = results ? cases.filter((c) => c.categories.includes(results)).slice(0, 3) : [];
 
 ---
 
@@ -196,7 +196,7 @@ const resultCases = results ? cases.filter((c) => c.categories.includes(results)
 						<h2 id="results-heading" class={h2}>
 							{heading.results}
 						</h2>
-						<a href={url('/#gallery')} class:list={[textLink, 'shrink-0']}>
+						<a href={url('/smile-gallery')} class:list={[textLink, 'shrink-0']}>
 							See the full gallery
 							<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
 						</a>

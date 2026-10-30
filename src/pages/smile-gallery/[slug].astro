@@ -1,0 +1,129 @@
+---
+import { Image } from 'astro:assets';
+import ArrowIcon from '../../components/ArrowIcon.astro';
+import CaseTile from '../../components/CaseTile.astro';
+import ClosingCta from '../../components/ClosingCta.astro';
+import Layout from '../../layouts/Layout.astro';
+import { cases, type Case } from '../../lib/cases';
+import { smallLabel } from '../../lib/pageStyles';
+import { url } from '../../lib/url';
+
+// One page per case: a large before/after slider, tags, then the story.
+export function getStaticPaths() {
+	return cases.map((c) => ({ params: { slug: c.slug }, props: { item: c } }));
+}
+
+const { item: c } = Astro.props as { item: Case };
+const tags = [c.treatment, c.duration, c.age];
+// Up to three other cases, preferring ones that share a category.
+const more = [...cases.filter((o) => o.slug !== c.slug)]
+	.sort((a, b) => Number(b.categories.some((k) => c.categories.includes(k))) - Number(a.categories.some((k) => c.categories.includes(k))))
+	.slice(0, 3);
+---
+
+<Layout title={`${c.name}'s Smile | Torrey Hills Orthodontics`} solidHeader>
+	<main class="bg-white text-ink">
+		<section class="px-5 pt-28 pb-16 sm:px-7 lg:pt-36 lg:pb-24">
+			<div class="mx-auto max-w-7xl">
+				<a href={url('/smile-gallery')} class:list={[smallLabel, 'group inline-flex items-center gap-2 transition-colors hover:text-ink']}>
+					<ArrowIcon size={10} class="rotate-180 transition-transform motion-safe:group-hover:-translate-x-0.5" />
+					Smile gallery
+				</a>
+				<h1 class="mt-6 text-[2.75rem] leading-[1.02] font-normal tracking-[-0.02em] sm:text-[clamp(3.5rem,6vw,5rem)]">{c.name}'s smile</h1>
+
+				<!--
+					Before/after slider: the before photo sits over the after photo, clipped to the handle's
+					position. A full-size transparent range input drives it, so it works with a finger, a mouse,
+					or the arrow keys.
+				-->
+				<figure data-ba class="relative mt-10 aspect-[4/5] overflow-hidden rounded-2xl bg-mist select-none sm:aspect-[16/9] lg:mt-12" style="--pos: 50%">
+					<Image src={c.image} alt={`${c.name} after treatment`} widths={[800, 1400, 2000]} sizes="(min-width: 1280px) 1216px, 100vw" loading="eager" class:list={['absolute inset-0 size-full object-cover', c.focus]} />
+					<div class="ba-before absolute inset-0">
+						{
+							c.before ? (
+								<Image src={c.before} alt={`${c.name} before treatment`} widths={[800, 1400, 2000]} sizes="(min-width: 1280px) 1216px, 100vw" loading="eager" class:list={['absolute inset-0 size-full object-cover', c.focus]} />
+							) : (
+								<>
+									<Image src={c.image} alt="" widths={[800, 1400]} sizes="(min-width: 1280px) 1216px, 100vw" loading="eager" class:list={['absolute inset-0 size-full object-cover opacity-60 grayscale', c.focus]} />
+									<span class="absolute top-1/2 left-6 max-w-[40%] -translate-y-1/2 text-sm font-medium text-ink sm:left-10 sm:text-base">Before photo coming soon</span>
+								</>
+							)
+						}
+					</div>
+					<span class="pointer-events-none absolute top-4 left-4 rounded-md bg-black/45 px-2.5 py-1 text-[11px] tracking-wide text-white uppercase backdrop-blur-sm" aria-hidden="true">Before</span>
+					<span class="pointer-events-none absolute top-4 right-4 rounded-md bg-black/45 px-2.5 py-1 text-[11px] tracking-wide text-white uppercase backdrop-blur-sm" aria-hidden="true">After</span>
+					<!-- Handle -->
+					<div class="ba-handle pointer-events-none absolute inset-y-0 w-px bg-white" aria-hidden="true">
+						<span class="absolute top-1/2 left-1/2 flex size-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-1 rounded-full bg-white text-ink">
+							<ArrowIcon size={10} class="rotate-180" />
+							<ArrowIcon size={10} />
+						</span>
+					</div>
+					<input
+						type="range"
+						min="0"
+						max="100"
+						value="50"
+						aria-label={`Compare ${c.name}'s smile before and after treatment`}
+						class="ba-range absolute inset-0 size-full cursor-ew-resize opacity-0"
+					/>
+				</figure>
+
+				<!-- Tags -->
+				<ul class="mt-6 flex flex-wrap gap-2" aria-label="Treatment details">
+					{tags.map((t) => <li class="rounded-md border border-ink/15 px-3 py-1.5 text-xs tracking-wide text-ink/80 uppercase">{t}</li>)}
+				</ul>
+
+				<!-- Story -->
+				<div class="mt-10 max-w-2xl space-y-5 text-base leading-relaxed text-ink/80 sm:text-lg lg:mt-14">
+					{c.blurb.map((p) => <p>{p}</p>)}
+				</div>
+			</div>
+		</section>
+
+		<!-- More smiles -->
+		<section aria-labelledby="more-heading" class="px-5 pb-8 sm:px-7">
+			<div class="mx-auto max-w-7xl border-t border-ink/10 pt-14 lg:pt-20">
+				<div class="flex items-end justify-between gap-6">
+					<h2 id="more-heading" class="text-[2rem] leading-[1.1] tracking-[-0.01em] sm:text-[clamp(2.25rem,3.6vw,3.25rem)]">More smiles.</h2>
+					<a href={url('/smile-gallery')} class="group mb-2 inline-flex shrink-0 items-center gap-2 text-sm font-medium underline decoration-ink/25 underline-offset-[6px] transition-colors hover:decoration-accent">
+						View all
+						<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
+					</a>
+				</div>
+				<ul class="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:gap-5">
+					{
+						more.map((o, i) => (
+							<li class:list={[i === 2 && 'hidden sm:block']}>
+								<CaseTile item={o} sizes="(min-width: 640px) 33vw, 50vw" />
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</section>
+
+		<ClosingCta heading="Your smile could be next." text="Every result here started with a free consultation with Dr. Lee." />
+	</main>
+</Layout>
+
+<style>
+	.ba-before {
+		clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+	}
+	.ba-handle {
+		left: var(--pos);
+	}
+	/* Show the keyboard focus on the handle, since the range input itself is invisible. */
+	[data-ba]:has(.ba-range:focus-visible) {
+		outline: 2px solid var(--color-ink);
+		outline-offset: 4px;
+	}
+</style>
+
+<script>
+	for (const figure of document.querySelectorAll<HTMLElement>('[data-ba]')) {
+		const range = figure.querySelector<HTMLInputElement>('.ba-range')!;
+		range.addEventListener('input', () => figure.style.setProperty('--pos', `${range.value}%`));
+	}
+</script>
