@@ -1,18 +1,73 @@
 ---
+import { getImage } from 'astro:assets';
 import { url } from '../lib/url';
+import { hours, phone, postalAddress } from '../lib/contact';
 import '../styles/global.css';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+// Default share image for link previews. TODO: Swap for a real photo from the practice.
+import defaultShareImage from '../assets/hero-patient.jpg';
 
 interface Props {
 	title?: string;
+	/** Search result snippet and link-preview text (about 150 characters). */
+	description?: string;
+	/** Link-preview image; cropped to 1200×630. Defaults to the homepage hero photo. */
+	image?: ImageMetadata;
 	/** Focused pages (like the consultation intake) skip the site header and footer. */
 	bare?: boolean;
 	/** Pages without a photo hero start with the solid white header. */
 	solidHeader?: boolean;
 }
 
-const { title = 'Torrey Hills Orthodontics', bare = false, solidHeader = false } = Astro.props;
+const siteName = 'Torrey Hills Orthodontics';
+const defaultDescription =
+	'Braces, Invisalign, and early orthodontic care for kids, teens, and adults in Carmel Valley, San Diego, with Dr. Judy Lee at every visit. Free consultations.';
+const {
+	title = `${siteName} | Braces & Invisalign in Carmel Valley, San Diego`,
+	description = defaultDescription,
+	image = defaultShareImage,
+	bare = false,
+	solidHeader = false,
+} = Astro.props;
+
+// Absolute URLs need the site address (set by the deploy workflow); locally they fall back to relative.
+const site = Astro.site;
+const absolute = (path: string) => (site ? new URL(path, site).href : path);
+const canonical = site ? absolute(Astro.url.pathname) : undefined;
+const share = await getImage({ src: image, width: 1200, height: 630, fit: 'cover', format: 'jpg' });
+const shareUrl = absolute(share.src);
+
+/*
+	Search indexing stays OFF until launch: the preview is full of placeholder copy and stock photos
+	that shouldn't appear in Google. At launch, set the INDEXABLE repo variable to "true" (read by the
+	deploy workflow as PUBLIC_INDEXABLE); robots.txt follows the same switch.
+*/
+const indexable = import.meta.env.PUBLIC_INDEXABLE === 'true';
+
+// Structured data describing the practice, for Google's local results and Maps.
+const structuredData = {
+	'@context': 'https://schema.org',
+	'@type': 'Dentist',
+	name: siteName,
+	description: defaultDescription,
+	url: absolute(url('/')),
+	image: shareUrl,
+	telephone: phone.href.replace('tel:', ''),
+	address: {
+		'@type': 'PostalAddress',
+		streetAddress: postalAddress.street,
+		addressLocality: postalAddress.city,
+		addressRegion: postalAddress.region,
+		postalCode: postalAddress.postalCode,
+		addressCountry: 'US',
+	},
+	openingHoursSpecification: hours
+		.filter((h) => h.schema)
+		.map((h) => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: h.schema!.days, opens: h.schema!.opens, closes: h.schema!.closes })),
+	employee: { '@type': 'Person', name: 'Dr. Judy Lee', jobTitle: 'Orthodontist' },
+};
+
 // Cloudflare Web Analytics: free, cookie-free, and collects no personal data, so it's safe on every
 // page of a medical site. It only loads once the practice's token is set (PUBLIC_CF_ANALYTICS_TOKEN,
 // passed in by the deploy workflow), so nothing is tracked during development.
@@ -22,16 +77,37 @@ const cfAnalyticsToken = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN;
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
 		<meta name="viewport" content="width=device-width" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		{canonical && <link rel="canonical" href={canonical} />}
+		{!indexable && <meta name="robots" content="noindex, nofollow" />}
+		<link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
+		<meta name="theme-color" content="#ffffff" />
 		<meta name="generator" content={Astro.generator} />
+
+		<!-- Link previews (messages, social media) -->
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={siteName} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		{canonical && <meta property="og:url" content={canonical} />}
+		<meta property="og:image" content={shareUrl} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={shareUrl} />
+
+		<script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
+
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
 			href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=Playfair+Display:wght@400&display=swap"
 			rel="stylesheet"
 		/>
-		<title>{title}</title>
 		{
 			cfAnalyticsToken && (
 				<script

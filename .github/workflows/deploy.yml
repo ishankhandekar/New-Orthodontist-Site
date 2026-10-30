@@ -30,6 +30,9 @@ jobs:
       # repo Settings -> Secrets and variables -> Actions -> Variables as CF_ANALYTICS_TOKEN.
       # Until it's set, analytics stays off.
       PUBLIC_CF_ANALYTICS_TOKEN: ${{ vars.CF_ANALYTICS_TOKEN }}
+      # Search engine indexing: off until launch (the preview is full of placeholders). At launch,
+      # add an INDEXABLE repo variable set to "true" (same Variables page as above).
+      PUBLIC_INDEXABLE: ${{ vars.INDEXABLE }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v7

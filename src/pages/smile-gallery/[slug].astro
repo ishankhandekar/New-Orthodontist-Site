@@ -21,7 +21,12 @@ const more = [...cases.filter((o) => o.slug !== c.slug)]
 	.slice(0, 3);
 ---
 
-<Layout title={`${c.name}'s Smile | Torrey Hills Orthodontics`} solidHeader>
+<Layout
+	title={`${c.name}'s Smile | Torrey Hills Orthodontics`}
+	description={`${c.name}'s ${c.treatment.toLowerCase()} results (${c.duration}) at Torrey Hills Orthodontics in Carmel Valley, San Diego, planned and finished by Dr. Judy Lee.`}
+	image={c.image}
+	solidHeader
+>
 	<main class="bg-white text-ink">
 		<section class="px-5 pt-28 pb-16 sm:px-7 lg:pt-36 lg:pb-24">
 			<div class="mx-auto max-w-7xl">
