@@ -1,0 +1,51 @@
+---
+import LegalPage from '../components/LegalPage.astro';
+import Layout from '../layouts/Layout.astro';
+import { phone } from '../lib/contact';
+
+/*
+	DRAFT accessibility statement. The "Known limitations" section is honest about the current site:
+	white text on the tangerine testimonials band (and a few other orange spots) is below WCAG AA
+	contrast by client choice. Update it whenever that changes, and review the whole page after an
+	accessibility audit.
+*/
+const toc = [
+	{ id: 'commitment', title: 'Our commitment' },
+	{ id: 'measures', title: 'What we do' },
+	{ id: 'limitations', title: 'Known limitations' },
+	{ id: 'third-party', title: 'Third-party content' },
+	{ id: 'feedback', title: 'Feedback and help' },
+	{ id: 'contact', title: 'Contact us' },
+];
+---
+
+<Layout title="Accessibility | Torrey Hills Orthodontics" solidHeader>
+	<LegalPage
+		title="Accessibility Statement"
+		intro="We want everyone to be able to learn about our care, find us, and book a visit, including people who use assistive technology."
+		{toc}
+	>
+		<h2 id="commitment">Our commitment</h2>
+		<p>Torrey Hills Orthodontics is working to make this website accessible to people with disabilities. We aim to meet the Web Content Accessibility Guidelines (WCAG) 2.1 at Level AA.</p>
+
+		<h2 id="measures">What we do</h2>
+		<ul>
+			<li>Structure pages with clear headings and landmarks so screen readers can navigate them</li>
+			<li>Make every link, button, menu, and form usable with a keyboard, with a visible focus outline</li>
+			<li>Provide text alternatives for meaningful images</li>
+			<li>Turn off animations for visitors who have asked their device to reduce motion</li>
+			<li>Label form fields and announce form errors to screen readers</li>
+			<li>Design pages to work when zoomed and on small screens</li>
+		</ul>
+
+		<h2 id="limitations">Known limitations</h2>
+		<p>Some white text on our orange backgrounds, such as the patient reviews section on our homepage, does not yet meet the WCAG AA contrast ratio. We are reviewing these areas. <mark>[Update or remove this note as the site changes, and list any other known issues found in an accessibility review.]</mark></p>
+
+		<h2 id="third-party">Third-party content</h2>
+		<p>Some content comes from other services, such as the embedded Google Map on our location page. We can't fully control the accessibility of that content, but our address, hours, and directions are always available as plain text on the same page.</p>
+
+		<h2 id="feedback">Feedback and help</h2>
+		<p>If you have trouble using any part of this website, please let us know. Call us at {phone.display} and we will give you the information you need another way, such as by phone, and work to fix the problem. We aim to respond to accessibility feedback within <mark>[number]</mark> business days.</p>
+		<p>This statement was last reviewed on <mark>[Month DD, YYYY]</mark>.</p>
+	</LegalPage>
+</Layout>

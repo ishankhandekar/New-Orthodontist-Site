@@ -1,0 +1,54 @@
+---
+import LegalPage from '../components/LegalPage.astro';
+import Layout from '../layouts/Layout.astro';
+import { phone } from '../lib/contact';
+
+/*
+	DRAFT. Structured after HHS's sample notice of nondiscrimination and notice of availability of
+	language assistance under Section 1557 of the Affordable Care Act (45 CFR 92.10–92.11). Only
+	required if the practice receives federal financial assistance (for example Medi-Cal / Denti-Cal);
+	if it doesn't, remove this page and its footer link. Parts of the 2024 rule were blocked by courts,
+	so confirm current requirements before launch.
+*/
+const toc = [
+	{ id: 'policy', title: 'Our policy' },
+	{ id: 'assistance', title: 'Free help we provide' },
+	{ id: 'grievances', title: 'Filing a grievance' },
+	{ id: 'ocr', title: 'Filing with HHS' },
+	{ id: 'languages', title: 'Language assistance' },
+	{ id: 'contact', title: 'Contact us' },
+];
+---
+
+<Layout title="Nondiscrimination Notice | Torrey Hills Orthodontics" solidHeader>
+	<LegalPage title="Notice of Nondiscrimination" {toc}>
+		<h2 id="policy">Our policy</h2>
+		<p>Torrey Hills Orthodontics complies with applicable federal civil rights laws and does not discriminate on the basis of race, color, national origin, age, disability, or sex. We do not exclude people or treat them differently because of race, color, national origin, age, disability, or sex.</p>
+
+		<h2 id="assistance">Free help we provide</h2>
+		<h3>For people with disabilities</h3>
+		<p>We provide free aids and services so people with disabilities can communicate effectively with us, such as:</p>
+		<ul>
+			<li>Qualified sign language interpreters</li>
+			<li>Written information in other formats, such as large print, audio, or accessible electronic formats</li>
+		</ul>
+		<h3>For people whose primary language isn't English</h3>
+		<p>We provide free language services, such as:</p>
+		<ul>
+			<li>Qualified interpreters</li>
+			<li>Information written in other languages</li>
+		</ul>
+		<p>If you need these services, contact our Section 1557 Coordinator, <mark>[Name]</mark>, at {phone.display}.</p>
+
+		<h2 id="grievances">Filing a grievance</h2>
+		<p>If you believe we have failed to provide these services or discriminated in another way on the basis of race, color, national origin, age, disability, or sex, you can file a grievance with our Section 1557 Coordinator, <mark>[Name]</mark>, at {phone.display}, by email at <mark>[email address]</mark>, or in person or by mail at our office. If you need help filing a grievance, our coordinator is available to help you.</p>
+
+		<h2 id="ocr">Filing with the U.S. Department of Health and Human Services</h2>
+		<p>You can also file a civil rights complaint with the U.S. Department of Health and Human Services, Office for Civil Rights, electronically through the <a href="https://ocrportal.hhs.gov/ocr/portal/lobby.jsf" target="_blank" rel="noopener noreferrer">Office for Civil Rights Complaint Portal</a>, or by mail or phone at:</p>
+		<p>U.S. Department of Health and Human Services<br />200 Independence Avenue, SW, Room 509F, HHH Building<br />Washington, D.C. 20201<br />1-800-368-1019, 800-537-7697 (TDD)</p>
+		<p>Complaint forms are available at <a href="https://www.hhs.gov/ocr/office/file/index.html" target="_blank" rel="noopener noreferrer">www.hhs.gov/ocr/office/file</a>.</p>
+
+		<h2 id="languages">Language assistance</h2>
+		<p><mark>[Insert the required language assistance taglines, translated into the languages most commonly spoken by people with limited English proficiency in California, using HHS's translated sample taglines.]</mark></p>
+	</LegalPage>
+</Layout>

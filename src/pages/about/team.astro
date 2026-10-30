@@ -1,0 +1,152 @@
+---
+import { Image } from 'astro:assets';
+import ArrowIcon from '../../components/ArrowIcon.astro';
+import ClosingCta from '../../components/ClosingCta.astro';
+import Layout from '../../layouts/Layout.astro';
+import { h2, section, sectionInner, sectionInnerFirst, smallLabel, textLink } from '../../lib/pageStyles';
+import { url } from '../../lib/url';
+/*
+	Our Team: a wide team photo, then one section per person, alternating photo sides.
+	TODO: Every photo is a stock placeholder (the hero should become a real photo of the team
+	together). Names, roles, start years, and personal details are <mark> placeholders: these are real
+	people, so nothing about them may be invented. Each person should approve their own blurb.
+*/
+// Stock: "a group of people sitting on top of a couch" by victor dasilva on Unsplash (Unsplash License),
+// unsplash.com/photos/rkVB7ma7JjU. Replace with a real photo of the team.
+import teamPhoto from '../../assets/team-sofa.jpg';
+import drLeePhoto from '../../assets/about-doctor.jpg';
+import memberTwoPhoto from '../../assets/gallery-sarah.png';
+import memberThreePhoto from '../../assets/gallery-marcus.png';
+
+type Member = {
+	name: string;
+	role: string;
+	since: string;
+	photo: ImageMetadata;
+	focus: string;
+	// Paragraphs; text inside [brackets] renders as a highlighted placeholder.
+	blurb: string[];
+	link?: { label: string; href: string };
+};
+
+const members: Member[] = [
+	{
+		name: 'Dr. Judy Lee',
+		role: 'Orthodontist and founder',
+		since: '[Year]',
+		photo: drLeePhoto,
+		focus: 'object-[50%_30%]',
+		blurb: [
+			'Dr. Lee founded Torrey Hills Orthodontics so every patient would have one orthodontist who knows them personally. She plans every treatment herself and is there at every visit, from the first scan to the final retainer check.',
+			'[A sentence about what Dr. Lee loves most about her work.]',
+		],
+		link: { label: "Read Dr. Lee's full story", href: '/about/dr-lee' },
+	},
+	{
+		name: '[Name]',
+		role: '[Treatment Coordinator]',
+		since: '[Year]',
+		photo: memberTwoPhoto,
+		focus: 'object-[50%_28%]',
+		blurb: [
+			'Often the first person you meet, [Name] walks new patients through their visit, explains treatment options and costs, and makes sure insurance and payment plans are sorted before anything begins.',
+			'[A personal detail, such as where they grew up, a hobby, or a favorite part of the job.]',
+		],
+	},
+	{
+		name: '[Name]',
+		role: '[Orthodontic Assistant]',
+		since: '[Year]',
+		photo: memberThreePhoto,
+		focus: 'object-[50%_22%]',
+		blurb: [
+			'[Name] works chairside with Dr. Lee, taking scans and photos, fitting appliances, and making every adjustment visit quick and comfortable, especially for younger patients.',
+			'[A personal detail, such as where they grew up, a hobby, or a favorite part of the job.]',
+		],
+	},
+];
+
+// Split "[...]" placeholders out of a string so they can render highlighted.
+const parts = (text: string) => text.split(/(\[[^\]]+\])/).filter(Boolean);
+const isPlaceholder = (text: string) => text.startsWith('[');
+---
+
+<Layout title="Our Team | Torrey Hills Orthodontics" solidHeader>
+	<main class="bg-white text-ink">
+		<!-- Hero: the team together, full width -->
+		<section class="px-5 pt-28 pb-8 sm:px-7 lg:pt-36 lg:pb-12">
+			<div class="mx-auto max-w-7xl">
+				<div class="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-8">
+					<div class="lg:col-span-7">
+						<nav aria-label="Breadcrumb" class={smallLabel}>
+							<span>About us</span>
+							<span class="mx-2 text-ink/30" aria-hidden="true">/</span>
+							<span aria-current="page" class="text-ink">Our team</span>
+						</nav>
+						<h1 class="mt-6 text-[2.75rem] leading-[1.02] font-normal tracking-[-0.02em] text-balance sm:text-[clamp(3.5rem,6vw,5.5rem)]">
+							The people behind your smile.
+						</h1>
+					</div>
+					<p class="max-w-md text-base leading-relaxed text-ink/75 sm:text-lg lg:col-span-4 lg:col-start-9">
+						A small team, on purpose. You'll see the same friendly faces at every visit, and they'll know your name.
+					</p>
+				</div>
+				<div class="mt-12 overflow-hidden rounded-2xl bg-mist lg:mt-16">
+					<Image
+						src={teamPhoto}
+						alt="The Torrey Hills Orthodontics team together in the office"
+						widths={[640, 1024, 1600, 2000]}
+						sizes="(min-width: 1280px) 1216px, 100vw"
+						loading="eager"
+						class="aspect-[4/3] w-full object-cover object-[50%_62%] sm:aspect-[21/9]"
+					/>
+				</div>
+			</div>
+		</section>
+
+		<!-- One section per person; photos alternate sides on desktop -->
+		{
+			members.map((m, i) => (
+				<section aria-labelledby={`member-${i}`} class={section}>
+					<div class={i === 0 ? sectionInnerFirst : sectionInner}>
+						<div class="grid items-center gap-10 lg:grid-cols-12 lg:gap-8">
+							<div class:list={['overflow-hidden rounded-2xl bg-mist lg:col-span-5', i % 2 === 1 && 'lg:order-2 lg:col-start-8']}>
+								<Image
+									src={m.photo}
+									alt={isPlaceholder(m.name) ? 'Team member portrait' : m.name}
+									widths={[480, 900]}
+									sizes="(min-width: 1024px) 40vw, 100vw"
+									class:list={['aspect-[4/5] w-full object-cover', m.focus]}
+								/>
+							</div>
+							<div class:list={['lg:col-span-6', i % 2 === 1 ? 'lg:order-1 lg:col-start-1' : 'lg:col-start-7']}>
+								<p class={smallLabel}>
+									{parts(m.role).map((p) => (isPlaceholder(p) ? <mark>{p}</mark> : p))}
+								</p>
+								<h2 id={`member-${i}`} class:list={[h2, 'mt-4']}>
+									{parts(m.name).map((p) => (isPlaceholder(p) ? <mark>{p}</mark> : p))}
+								</h2>
+								<div class="mt-6 max-w-md space-y-4 text-[0.9375rem] leading-relaxed text-ink/75">
+									{m.blurb.map((para) => (
+										<p>{parts(para).map((p) => (isPlaceholder(p) ? <mark>{p}</mark> : p))}</p>
+									))}
+								</div>
+								<p class="mt-6 text-sm text-ink/60">
+									With the practice since {isPlaceholder(m.since) ? <mark>{m.since}</mark> : m.since}
+								</p>
+								{m.link && (
+									<a href={url(m.link.href)} class:list={[textLink, 'mt-8']}>
+										{m.link.label}
+										<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
+									</a>
+								)}
+							</div>
+						</div>
+					</div>
+				</section>
+			))
+		}
+
+		<ClosingCta heading="Come meet us." text="Your free consultation is the best way to meet the team, and Dr. Lee herself." />
+	</main>
+</Layout>

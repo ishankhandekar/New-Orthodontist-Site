@@ -1,0 +1,51 @@
+---
+import LegalPage from '../components/LegalPage.astro';
+import Layout from '../layouts/Layout.astro';
+import { url } from '../lib/url';
+
+/*
+	DRAFT. Based on CMS's model notice "Right to Receive a Good Faith Estimate of Expected Charges"
+	under the No Surprises Act (45 CFR 149.610). Before launch, confirm the wording against the current
+	model notice at cms.gov/nosurprises, and confirm the delivery timeframes still apply.
+*/
+const toc = [
+	{ id: 'your-right', title: 'Your right to an estimate' },
+	{ id: 'when', title: 'When you will get it' },
+	{ id: 'dispute', title: 'If your bill is higher' },
+	{ id: 'more-info', title: 'More information' },
+	{ id: 'contact', title: 'Contact us' },
+];
+---
+
+<Layout title="Good Faith Estimate | Torrey Hills Orthodontics" solidHeader>
+	<LegalPage
+		title="Your Right to Receive a Good Faith Estimate of Expected Charges"
+		intro="Under the No Surprises Act, if you don't have insurance or aren't using insurance, you have the right to know how much your care will cost before you receive it."
+		{toc}
+	>
+		<h2 id="your-right">Your right to an estimate</h2>
+		<p>You have the right to receive a "Good Faith Estimate" explaining how much your medical and dental care will cost.</p>
+		<p>Under the law, health care providers need to give patients who don't have insurance or who are not using insurance an estimate of the bill for items and services.</p>
+		<ul>
+			<li>You have the right to receive a Good Faith Estimate for the total expected cost of any non-emergency items or services. This includes related costs like tests, appliances, and fees.</li>
+			<li>Make sure your health care provider gives you a Good Faith Estimate in writing at least 1 business day before your service or item. You can also ask your provider for a Good Faith Estimate before you schedule an item or service.</li>
+			<li>If you receive a bill that is at least $400 more than your Good Faith Estimate, you can dispute the bill.</li>
+			<li>Make sure to save a copy or picture of your Good Faith Estimate.</li>
+		</ul>
+
+		<h2 id="when">When you will get it</h2>
+		<p>At Torrey Hills Orthodontics, your free consultation already ends with a written, all-inclusive quote. If you are uninsured or choose not to use insurance, we will provide your Good Faith Estimate:</p>
+		<ul>
+			<li>Within 1 business day after scheduling, if your treatment is scheduled at least 3 business days ahead</li>
+			<li>Within 3 business days after scheduling, if your treatment is scheduled at least 10 business days ahead</li>
+			<li>Within 3 business days after you ask for one</li>
+		</ul>
+		<p>You can also learn how our pricing works on our <a href={url('/financing')}>Financial and Insurance page</a>.</p>
+
+		<h2 id="dispute">If your bill is higher than your estimate</h2>
+		<p>If you receive a bill that is at least $400 more than your Good Faith Estimate, you can start a dispute process with the federal government. You must start the process within 120 calendar days of the date on the original bill. Please also contact us first; we are happy to review your bill with you.</p>
+
+		<h2 id="more-info">More information</h2>
+		<p>For questions or more information about your right to a Good Faith Estimate, visit <a href="https://www.cms.gov/nosurprises" target="_blank" rel="noopener noreferrer">www.cms.gov/nosurprises</a> or call 1-800-985-3059.</p>
+	</LegalPage>
+</Layout>

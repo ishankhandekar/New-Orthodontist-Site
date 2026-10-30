@@ -2,6 +2,7 @@
 import { smallLabel } from '../lib/pageStyles';
 
 // Quick facts as label/value pairs between hairlines: two columns on phones, four on desktop.
+// Values in [brackets] are placeholders and render highlighted.
 interface Props {
 	facts: { label: string; value: string }[];
 	class?: string;
@@ -22,7 +23,7 @@ const { facts, class: className } = Astro.props;
 				]}
 			>
 				<dt class={smallLabel}>{f.label}</dt>
-				<dd class="mt-2 text-lg tracking-[-0.01em]">{f.value}</dd>
+				<dd class="mt-2 text-lg tracking-[-0.01em]">{f.value.includes('[') ? <mark>{f.value}</mark> : f.value}</dd>
 			</div>
 		))
 	}

@@ -1,0 +1,142 @@
+---
+import { address, phone } from '../lib/contact';
+import { smallLabel } from '../lib/pageStyles';
+import { url } from '../lib/url';
+
+/*
+	Layout for the policy pages: long-form reading text with a table of contents. Content goes in the
+	slot as plain HTML (h2 with ids matching `toc`, p, ul, h3). Wrap practice-specific details the
+	reviewer must fill in with <mark>[like this]</mark>, so every placeholder is highlighted.
+	`draft` shows a banner until the practice signs off; set it to false only after review.
+*/
+interface Props {
+	title: string;
+	intro?: string;
+	toc: { id: string; title: string }[];
+	effective?: string;
+	draft?: boolean;
+}
+
+const { title, intro, toc, effective = '[Month DD, YYYY]', draft = true } = Astro.props;
+---
+
+<main class="bg-white text-ink">
+	<section class="px-5 pt-28 pb-24 sm:px-7 lg:pt-36 lg:pb-32">
+		<div class="mx-auto max-w-7xl">
+			<nav aria-label="Breadcrumb" class={smallLabel}>
+				<a href={url('/')} class="transition-colors hover:text-ink">Home</a>
+				<span class="mx-2 text-ink/30" aria-hidden="true">/</span>
+				<span>Policies</span>
+				<span class="mx-2 text-ink/30" aria-hidden="true">/</span>
+				<span aria-current="page" class="text-ink">{title}</span>
+			</nav>
+			<h1 class="mt-6 max-w-3xl text-[2.5rem] leading-[1.05] font-normal tracking-[-0.02em] text-balance sm:text-[clamp(3rem,5vw,4.25rem)]">
+				{title}
+			</h1>
+			<p class="mt-5 text-sm text-ink/60">
+				Effective date: {effective.startsWith('[') ? <mark>{effective}</mark> : effective}
+			</p>
+			{intro && <p class="mt-6 max-w-2xl text-base leading-relaxed text-ink/75 sm:text-lg">{intro}</p>}
+
+			{
+				draft && (
+					<p role="note" class="mt-10 flex max-w-3xl items-start gap-3 rounded-lg border border-ink/15 bg-mist px-5 py-4 text-sm leading-relaxed text-ink/80">
+						<span class="mt-1.5 size-2 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+						<span>
+							<strong class="font-medium text-ink">Draft, under review.</strong> This page is a working draft and is
+							not yet the practice's official policy. Highlighted text marks details the practice still needs to
+							confirm.
+						</span>
+					</p>
+				)
+			}
+
+			<div class="mt-14 grid gap-12 lg:mt-20 lg:grid-cols-12 lg:gap-8">
+				<!-- Table of contents: pinned on desktop, a simple list on phones -->
+				<nav aria-label="On this page" class="lg:sticky lg:top-24 lg:col-span-3 lg:self-start">
+					<p class={smallLabel}>On this page</p>
+					<ol class="mt-4 space-y-2.5 border-l border-ink/10 pl-4">
+						{
+							toc.map((t) => (
+								<li>
+									<a href={`#${t.id}`} class="text-sm leading-snug text-ink/70 transition-colors hover:text-ink">
+										{t.title}
+									</a>
+								</li>
+							))
+						}
+					</ol>
+				</nav>
+
+				<article class="legal-body lg:col-span-8 lg:col-start-5">
+					<slot />
+
+					<h2 id="contact">Contact us</h2>
+					<p>
+						Questions about this page? Contact our <mark>[Privacy Officer / Office Manager name]</mark> at{' '}
+						<a href={phone.href}>{phone.display}</a>, by email at <mark>[privacy@practice-domain.com]</mark>, or by mail
+						at Torrey Hills Orthodontics, {address.join(', ')}.
+					</p>
+				</article>
+			</div>
+		</div>
+	</section>
+</main>
+
+<style>
+	/* Comfortable long-form reading for slotted policy text. */
+	.legal-body {
+		max-width: 42rem;
+		font-size: 0.9375rem;
+		line-height: 1.75;
+		color: color-mix(in srgb, var(--color-ink) 82%, transparent);
+	}
+	.legal-body :global(h2) {
+		margin-top: 3.5rem;
+		padding-top: 2.5rem;
+		border-top: 1px solid color-mix(in srgb, var(--color-ink) 10%, transparent);
+		font-size: 1.5rem;
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+		color: var(--color-ink);
+		scroll-margin-top: 6rem;
+	}
+	.legal-body :global(h2:first-child) {
+		margin-top: 0;
+		padding-top: 0;
+		border-top: 0;
+	}
+	.legal-body :global(h3) {
+		margin-top: 2rem;
+		font-size: 1.0625rem;
+		font-weight: 500;
+		color: var(--color-ink);
+	}
+	.legal-body :global(p),
+	.legal-body :global(ul) {
+		margin-top: 1rem;
+	}
+	.legal-body :global(ul) {
+		padding-left: 1.25rem;
+		list-style: disc;
+	}
+	.legal-body :global(li + li) {
+		margin-top: 0.5rem;
+	}
+	.legal-body :global(li::marker) {
+		color: color-mix(in srgb, var(--color-ink) 35%, transparent);
+	}
+	.legal-body :global(strong) {
+		font-weight: 500;
+		color: var(--color-ink);
+	}
+	.legal-body :global(a) {
+		color: var(--color-ink);
+		text-decoration: underline;
+		text-decoration-color: color-mix(in srgb, var(--color-ink) 25%, transparent);
+		text-underline-offset: 4px;
+	}
+	.legal-body :global(a:hover) {
+		text-decoration-color: var(--color-accent);
+	}
+</style>

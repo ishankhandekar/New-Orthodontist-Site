@@ -1,0 +1,58 @@
+---
+import LegalPage from '../components/LegalPage.astro';
+import Layout from '../layouts/Layout.astro';
+import { url } from '../lib/url';
+
+/*
+	DRAFT terms of use. Have the practice's counsel review, especially the disclaimer, limitation of
+	liability, and governing-law sections, before the draft banner comes off.
+*/
+const toc = [
+	{ id: 'acceptance', title: 'Using this website' },
+	{ id: 'not-advice', title: 'Not medical advice' },
+	{ id: 'requests', title: 'Consultation requests' },
+	{ id: 'estimates', title: 'Prices and estimates' },
+	{ id: 'content', title: 'Our content' },
+	{ id: 'links', title: 'Other websites' },
+	{ id: 'disclaimer', title: 'Disclaimer' },
+	{ id: 'liability', title: 'Limitation of liability' },
+	{ id: 'law', title: 'Governing law' },
+	{ id: 'changes', title: 'Changes to these terms' },
+	{ id: 'contact', title: 'Contact us' },
+];
+---
+
+<Layout title="Terms of Use | Torrey Hills Orthodontics" solidHeader>
+	<LegalPage title="Terms of Use" {toc}>
+		<h2 id="acceptance">Using this website</h2>
+		<p>By using this website, you agree to these terms. If you don't agree, please don't use the site.</p>
+
+		<h2 id="not-advice">Not medical advice</h2>
+		<p>The information on this website is general and for educational purposes only. It is not a substitute for an exam or professional advice from Dr. Lee or another qualified provider. Using this website does not create a doctor-patient relationship.</p>
+		<p><strong>If you have a medical emergency, call 911.</strong></p>
+
+		<h2 id="requests">Consultation requests</h2>
+		<p>Submitting a consultation request does not guarantee an appointment. Our team will contact you to confirm a time. Please don't use the consultation form for urgent problems; call us instead.</p>
+
+		<h2 id="estimates">Prices and estimates</h2>
+		<p>Treatment lengths, costs, and payment examples on this website, including the payment calculator, are illustrations only. Your actual treatment plan and price are confirmed in writing at your consultation. Uninsured patients also have the right to a <a href={url('/good-faith-estimate')}>Good Faith Estimate</a>.</p>
+
+		<h2 id="content">Our content</h2>
+		<p>The text, photos, logo, and design of this website belong to Torrey Hills Orthodontics or are used with permission. You may view and share pages for personal use, but please don't copy or reuse them commercially without our written permission.</p>
+
+		<h2 id="links">Other websites</h2>
+		<p>This website links to and embeds content from other services, such as Google Maps and social media sites. We are not responsible for their content or privacy practices.</p>
+
+		<h2 id="disclaimer">Disclaimer</h2>
+		<p>We work to keep this website accurate and up to date, but it is provided "as is," without warranties of any kind. <mark>[Counsel to confirm wording.]</mark></p>
+
+		<h2 id="liability">Limitation of liability</h2>
+		<p>To the extent permitted by law, Torrey Hills Orthodontics is not liable for any damages arising from your use of this website. <mark>[Counsel to confirm wording.]</mark></p>
+
+		<h2 id="law">Governing law</h2>
+		<p>These terms are governed by the laws of the State of California.</p>
+
+		<h2 id="changes">Changes to these terms</h2>
+		<p>We may update these terms from time to time. Changes take effect when posted on this page with a new effective date.</p>
+	</LegalPage>
+</Layout>

@@ -1,0 +1,77 @@
+---
+import LegalPage from '../components/LegalPage.astro';
+import Layout from '../layouts/Layout.astro';
+import { url } from '../lib/url';
+
+/*
+	DRAFT website privacy policy, organized around California's CalOPPA disclosures (what is collected,
+	who it is shared with, how to review or change it, how changes are announced, the effective date,
+	Do Not Track, and third-party tracking). The answers depend on how the consultation form is
+	connected and whether analytics are added, so every highlighted item must be confirmed.
+*/
+const toc = [
+	{ id: 'collect', title: 'Information we collect' },
+	{ id: 'use', title: 'How we use it' },
+	{ id: 'share', title: 'How we share it' },
+	{ id: 'health', title: 'Health information' },
+	{ id: 'cookies', title: 'Cookies and tracking' },
+	{ id: 'dnt', title: 'Do Not Track' },
+	{ id: 'children', title: "Children's privacy" },
+	{ id: 'security', title: 'Security' },
+	{ id: 'choices', title: 'Your choices' },
+	{ id: 'changes', title: 'Changes to this policy' },
+	{ id: 'contact', title: 'Contact us' },
+];
+---
+
+<Layout title="Privacy Policy | Torrey Hills Orthodontics" solidHeader>
+	<LegalPage
+		title="Privacy Policy"
+		intro="This policy explains what information our website collects, how we use it, and the choices you have. It covers this website only; your care as a patient is covered by our Notice of Privacy Practices."
+		{toc}
+	>
+		<h2 id="collect">Information we collect</h2>
+		<h3>Information you give us</h3>
+		<p>When you request a consultation, we collect the information you enter: your name, email address, phone number, who the consultation is for, the treatment you're interested in, and when you'd like us to call.</p>
+		<h3>Information collected automatically</h3>
+		<p>Like most websites, our site and its hosting provider may automatically receive basic technical information such as your browser type, device, and the pages you visit. <mark>[List any analytics tool, such as Google Analytics, or state that none is used.]</mark></p>
+
+		<h2 id="use">How we use it</h2>
+		<ul>
+			<li>To contact you about the consultation you requested and schedule your visit</li>
+			<li>To answer questions you send us</li>
+			<li>To keep the website working, secure, and easy to use</li>
+		</ul>
+		<p>We do not sell your personal information, and we do not use it for third-party advertising.</p>
+
+		<h2 id="share">How we share it</h2>
+		<p>We share information only with service providers that help us run the website and handle consultation requests, and only as needed for those services:</p>
+		<ul>
+			<li><mark>[Name of the form or scheduling provider that receives consultation requests]</mark></li>
+			<li><mark>[Website hosting provider]</mark></li>
+		</ul>
+		<p>We may also disclose information if required by law or to protect the rights and safety of our patients, staff, or others.</p>
+
+		<h2 id="health">Health information</h2>
+		<p>Please don't include detailed medical information in the consultation form. If you become a patient, your health information is protected under HIPAA and handled as described in our <a href={url('/notice-of-privacy-practices')}>Notice of Privacy Practices</a>.</p>
+
+		<h2 id="cookies">Cookies and third-party services</h2>
+		<p><mark>[Describe any cookies the site sets, or state that it sets none.]</mark></p>
+		<p>Our location page includes an embedded Google Map. When it loads, Google may collect information as described in <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's Privacy Policy</a>. <mark>[List any other third parties that may collect information about your online activity across websites, or state that none do.]</mark></p>
+
+		<h2 id="dnt">Do Not Track</h2>
+		<p>Some browsers offer a "Do Not Track" setting. <mark>[State how the site responds to Do Not Track signals, for example: "Our website does not currently respond to Do Not Track signals, because we do not track visitors across other websites."]</mark></p>
+
+		<h2 id="children">Children's privacy</h2>
+		<p>Our website is not directed to children under 13, and we do not knowingly collect personal information from them online. Consultation requests for children should be submitted by a parent or guardian.</p>
+
+		<h2 id="security">Security</h2>
+		<p>We use reasonable safeguards to protect the information you send us. No method of transmission over the internet is completely secure, so please call us if you would rather share information by phone.</p>
+
+		<h2 id="choices">Your choices</h2>
+		<p>You can ask us to review, correct, or delete the information you submitted through our website by contacting us using the details below. <mark>[Confirm the process and whether any additional California rights apply to the practice.]</mark></p>
+
+		<h2 id="changes">Changes to this policy</h2>
+		<p>If we change this policy, we will post the updated version on this page and update the effective date above.</p>
+	</LegalPage>
+</Layout>

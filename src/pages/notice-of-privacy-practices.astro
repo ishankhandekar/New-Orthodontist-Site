@@ -1,0 +1,95 @@
+---
+import LegalPage from '../components/LegalPage.astro';
+import Layout from '../layouts/Layout.astro';
+
+/*
+	DRAFT. Structured after HHS's model Notice of Privacy Practices (45 CFR 164.520). The practice
+	almost certainly already has an official notice on paper; this page must be replaced with, or
+	match, that notice exactly, including any California (CMIA) provisions. Review by the practice's
+	HIPAA privacy officer is required before the draft banner comes off.
+*/
+const toc = [
+	{ id: 'your-rights', title: 'Your rights' },
+	{ id: 'your-choices', title: 'Your choices' },
+	{ id: 'our-uses', title: 'Our uses and disclosures' },
+	{ id: 'other-uses', title: 'Other ways we may share' },
+	{ id: 'our-responsibilities', title: 'Our responsibilities' },
+	{ id: 'changes', title: 'Changes to this notice' },
+	{ id: 'contact', title: 'Contact us' },
+];
+---
+
+<Layout title="Notice of Privacy Practices | Torrey Hills Orthodontics" solidHeader>
+	<LegalPage
+		title="Notice of Privacy Practices"
+		intro="This notice describes how medical information about you may be used and disclosed and how you can get access to this information. Please review it carefully."
+		{toc}
+	>
+		<h2 id="your-rights">Your rights</h2>
+		<p>When it comes to your health information, you have certain rights. This section explains your rights and some of our responsibilities to help you.</p>
+		<h3>Get a copy of your health and claims records</h3>
+		<p>You can ask to see or get an electronic or paper copy of your health records and other health information we have about you. We will provide a copy or a summary, usually within 30 days of your request, and may charge a reasonable, cost-based fee.</p>
+		<h3>Ask us to correct your records</h3>
+		<p>You can ask us to correct health information about you that you think is incorrect or incomplete. We may say no, but we will tell you why in writing within 60 days.</p>
+		<h3>Request confidential communications</h3>
+		<p>You can ask us to contact you in a specific way (for example, a home or office phone) or to send mail to a different address. We will say yes to all reasonable requests.</p>
+		<h3>Ask us to limit what we use or share</h3>
+		<p>You can ask us not to use or share certain health information for treatment, payment, or our operations. We are not required to agree if it would affect your care. If you pay for a service out of pocket in full, you can ask us not to share that information with your health insurer, and we will say yes unless a law requires us to share it.</p>
+		<h3>Get a list of those with whom we've shared information</h3>
+		<p>You can ask for a list (an accounting) of the times we've shared your health information for six years prior to the date you ask, who we shared it with, and why. We will include all disclosures except those about treatment, payment, and operations, and certain others (such as any you asked us to make). We will provide one list a year for free, and may charge a reasonable, cost-based fee for additional lists within 12 months.</p>
+		<h3>Get a copy of this notice</h3>
+		<p>You can ask for a paper copy of this notice at any time, even if you have agreed to receive it electronically.</p>
+		<h3>Choose someone to act for you</h3>
+		<p>If you have given someone medical power of attorney, or if someone is your legal guardian, that person can exercise your rights and make choices about your health information. We will make sure the person has this authority before we take any action.</p>
+		<h3>File a complaint if you feel your rights are violated</h3>
+		<p>You can complain if you feel we have violated your rights by contacting us using the information at the end of this notice. You can also file a complaint with the U.S. Department of Health and Human Services Office for Civil Rights by sending a letter to 200 Independence Avenue, S.W., Washington, D.C. 20201, calling 1-877-696-6775, or visiting <a href="https://www.hhs.gov/ocr/privacy/hipaa/complaints/" target="_blank" rel="noopener noreferrer">www.hhs.gov/ocr/privacy/hipaa/complaints</a>. We will not retaliate against you for filing a complaint.</p>
+
+		<h2 id="your-choices">Your choices</h2>
+		<p>For certain health information, you can tell us your choices about what we share. If you have a clear preference for how we share your information in the situations described below, talk to us.</p>
+		<p>In these cases, you have both the right and choice to tell us to:</p>
+		<ul>
+			<li>Share information with your family, close friends, or others involved in your care</li>
+			<li>Share information in a disaster relief situation</li>
+		</ul>
+		<p>If you are not able to tell us your preference, for example if you are unconscious, we may go ahead and share your information if we believe it is in your best interest. We may also share your information when needed to lessen a serious and imminent threat to health or safety.</p>
+		<p>In these cases, we never share your information unless you give us written permission:</p>
+		<ul>
+			<li>Marketing purposes</li>
+			<li>Sale of your information</li>
+		</ul>
+		<p><mark>[If the practice does fundraising, describe it here and how patients can opt out.]</mark></p>
+
+		<h2 id="our-uses">Our uses and disclosures</h2>
+		<p>We typically use or share your health information in the following ways.</p>
+		<h3>Treat you</h3>
+		<p>We can use your health information and share it with other professionals who are treating you. For example, we may share your records with your general dentist about your orthodontic care.</p>
+		<h3>Run our practice</h3>
+		<p>We can use and share your health information to run our practice, improve your care, and contact you when necessary. For example, we use your information to manage your treatment and send appointment reminders.</p>
+		<h3>Bill for your services</h3>
+		<p>We can use and share your health information to bill and get payment from health plans or other entities. For example, we give information about you to your dental insurance plan so it will pay for your services.</p>
+
+		<h2 id="other-uses">Other ways we may share</h2>
+		<p>We are allowed or required to share your information in other ways, usually in ways that contribute to the public good, such as public health and research. We have to meet many conditions in the law before we can share your information for these purposes.</p>
+		<ul>
+			<li><strong>Public health and safety:</strong> such as preventing disease, reporting suspected abuse, neglect, or domestic violence, and preventing or reducing a serious threat to anyone's health or safety.</li>
+			<li><strong>Research:</strong> we can use or share your information for health research, under the conditions the law requires.</li>
+			<li><strong>Complying with the law:</strong> we will share information about you if state or federal laws require it, including with the Department of Health and Human Services.</li>
+			<li><strong>Medical examiners and funeral directors:</strong> when an individual dies, as the law allows.</li>
+			<li><strong>Workers' compensation, law enforcement, and other government requests:</strong> for workers' compensation claims, for law enforcement purposes or with a law enforcement official, with health oversight agencies for activities authorized by law, and for special government functions such as military, national security, and presidential protective services.</li>
+			<li><strong>Lawsuits and legal actions:</strong> in response to a court or administrative order, or in response to a subpoena.</li>
+		</ul>
+		<p><mark>[Add any additional California-specific protections, for example under the Confidentiality of Medical Information Act, as advised by the practice's counsel.]</mark></p>
+
+		<h2 id="our-responsibilities">Our responsibilities</h2>
+		<ul>
+			<li>We are required by law to maintain the privacy and security of your protected health information.</li>
+			<li>We will let you know promptly if a breach occurs that may have compromised the privacy or security of your information.</li>
+			<li>We must follow the duties and privacy practices described in this notice and give you a copy of it.</li>
+			<li>We will not use or share your information other than as described here unless you tell us we can in writing. If you tell us we can, you may change your mind at any time by letting us know in writing.</li>
+		</ul>
+		<p>For more information, see <a href="https://www.hhs.gov/hipaa/for-individuals/notice-privacy-practices/index.html" target="_blank" rel="noopener noreferrer">HHS's page on notices of privacy practices</a>.</p>
+
+		<h2 id="changes">Changes to the terms of this notice</h2>
+		<p>We can change the terms of this notice, and the changes will apply to all information we have about you. The new notice will be available upon request, in our office, and on our website.</p>
+	</LegalPage>
+</Layout>

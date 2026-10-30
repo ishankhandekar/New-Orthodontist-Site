@@ -6,8 +6,8 @@ export type Menu = {
 	columns: { heading: string; large?: boolean; links: NavLink[] }[];
 };
 
-// TODO: The Before & After page, Meet Dr. Lee, Our Team and Office & Tech pages don't exist yet.
-// Gallery and Meet Dr. Lee point at their homepage sections until they're built.
+// TODO: The Before & After (Smile Gallery case) pages don't exist yet.
+// Gallery points at its homepage section until it's built.
 export const menus: Menu[] = [
 	{
 		id: 'treatments',
@@ -62,7 +62,7 @@ export const menus: Menu[] = [
 				// TODO: Confirm Dr. Lee is board certified (American Board of Orthodontics) before launch.
 				heading: 'Board Certified Specialist',
 				large: true,
-				links: [{ label: 'Meet Dr. Lee', href: '/#about' }],
+				links: [{ label: 'Meet Dr. Lee', href: '/about/dr-lee' }],
 			},
 			{
 				heading: 'Our practice',
@@ -84,8 +84,8 @@ export const isMenu = (item: Menu | NavLink): item is Menu => 'columns' in item;
 export const bookHref = '/consultation';
 
 /*
-	Pages a US (California) healthcare practice site needs. None exist yet, and their text must come
-	from the practice or its counsel, not be written from scratch:
+	Pages a US (California) healthcare practice site needs. Each exists as a reviewed-structure DRAFT
+	(with a "Draft, under review" banner); the final text must come from the practice or its counsel:
 	- Privacy Policy: CalOPPA (Bus. & Prof. Code § 22575) for any site collecting personal info.
 	- Notice of Privacy Practices: HIPAA, 45 CFR 164.520(c)(3), must be posted on the practice's site.
 	- Good Faith Estimate: No Surprises Act notice of self-pay patients' right to a cost estimate.

@@ -5,6 +5,15 @@ html {
 	scroll-padding-top: 3.5rem;
 }
 
+/* Placeholders the practice still needs to fill in (policy pages, bio details): highlighted so
+   reviewers can spot every one. */
+mark {
+	background: var(--color-accent-light);
+	color: var(--color-ink);
+	padding: 0 0.2em;
+	border-radius: 3px;
+}
+
 @theme {
 	--font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
 	/* Editorial serif for display headings (Smile Gallery). */
