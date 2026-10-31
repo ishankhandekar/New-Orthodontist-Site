@@ -15,7 +15,7 @@
 		// CLOUDFLARE_ENV=preview. The Astro Cloudflare adapter adds the server entry and points the
 		// assets at its own build output. Needs the SANITY_VIEWER_TOKEN secret.
 		"preview": {
-			"name": "torrey-hills-orthodontics-preview",
+			"name": "new-orthodontist-site",
 			"assets": {
 				"binding": "ASSETS",
 				"html_handling": "auto-trailing-slash",

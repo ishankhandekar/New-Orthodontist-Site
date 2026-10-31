@@ -3,4 +3,4 @@
 export const projectId = 'sqa4gdwo';
 export const dataset = 'production';
 // The website's preview Worker (built with SANITY_PREVIEW=true), shown in the Studio's Preview tab.
-export const previewUrl = 'https://torrey-hills-orthodontics-preview.ishankhandekar614.workers.dev';
+export const previewUrl = 'https://new-orthodontist-site.ishankhandekar614.workers.dev';
