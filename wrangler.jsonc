@@ -1,0 +1,12 @@
+// Cloudflare deploy settings. The site is fully static: `npm run build` writes plain HTML to dist/,
+// and this Worker only serves those files (no server code). Having this file also stops
+// `wrangler deploy` from auto-configuring the project as a server-rendered Astro app.
+{
+	"name": "torrey-hills-orthodontics",
+	"compatibility_date": "2026-10-01",
+	"assets": {
+		"directory": "./dist",
+		// /about/team and /about/team/ both serve about/team/index.html.
+		"html_handling": "auto-trailing-slash",
+	},
+}
