@@ -1,9 +1,10 @@
 ---
-import { address, email, phone, socials } from '../lib/contact';
+import { getPracticeInfo } from '../lib/contact';
 import { bookHref, galleryLink, legalLinks, menus } from '../lib/nav';
 import { url } from '../lib/url';
 import ArrowIcon from './ArrowIcon.astro';
 import Logo from './Logo.astro';
+const { address, email, phone, socials } = await getPracticeInfo(Astro.locals);
 
 const [treatments, patientInfo, aboutUs] = menus;
 const linksOf = (menu: (typeof menus)[number]) => menu.columns.flatMap((c) => c.links);

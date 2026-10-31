@@ -2,8 +2,9 @@
 import ArrowIcon from '../components/ArrowIcon.astro';
 import ClosingCta from '../components/ClosingCta.astro';
 import Layout from '../layouts/Layout.astro';
-import { address, directionsUrl, email, hours, phone } from '../lib/contact';
+import { getPracticeInfo } from '../lib/contact';
 import { smallLabel, textLink } from '../lib/pageStyles';
+const { address, directionsUrl, email, hours, phone } = await getPracticeInfo(Astro.locals);
 
 /*
 	Office hours and location: the essentials, plainly. Hours and address come from lib/contact, so

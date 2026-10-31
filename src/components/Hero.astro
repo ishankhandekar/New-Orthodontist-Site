@@ -2,13 +2,14 @@
 import { Image } from 'astro:assets';
 import ArrowIcon from './ArrowIcon.astro';
 import { buttonArrow, buttonLight } from '../lib/buttons';
-import { phone } from '../lib/contact';
+import { getPracticeInfo } from '../lib/contact';
 import { bookHref } from '../lib/nav';
 import type { HomePage } from '../lib/sanity';
 import { keepNameTogether } from '../lib/text';
 import { url } from '../lib/url';
 // TODO: Placeholder stock photo. Swap for a real photo of Dr. Lee with a patient.
 import heroImage from '../assets/hero-patient.jpg';
+const { phone } = await getPracticeInfo(Astro.locals);
 
 interface Props {
 	content: HomePage['hero'];

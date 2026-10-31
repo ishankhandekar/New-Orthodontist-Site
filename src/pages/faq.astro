@@ -2,8 +2,9 @@
 import Accordion from '../components/Accordion.astro';
 import ClosingCta from '../components/ClosingCta.astro';
 import Layout from '../layouts/Layout.astro';
-import { phone } from '../lib/contact';
+import { getPracticeInfo } from '../lib/contact';
 import { h2, section, sectionInner, sectionInnerFirst, smallLabel } from '../lib/pageStyles';
+const { phone } = await getPracticeInfo(Astro.locals);
 
 /*
 	Every question, grouped by topic, in the same accordion as the rest of the site.

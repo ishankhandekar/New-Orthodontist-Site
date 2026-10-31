@@ -1,12 +1,14 @@
 ---
 import { getImage } from 'astro:assets';
 import { url } from '../lib/url';
-import { email, hours, phone, postalAddress, socials } from '../lib/contact';
+import { getPracticeInfo } from '../lib/contact';
 import '../styles/global.css';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import VisualEditing from '~visual-editing';
 // Default share image for link previews. TODO: Swap for a real photo from the practice.
 import defaultShareImage from '../assets/hero-patient.jpg';
+const { email, hours, phone, postalAddress, socials } = await getPracticeInfo(Astro.locals);
 
 interface Props {
 	title?: string;
@@ -125,5 +127,7 @@ const cfAnalyticsToken = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN;
 		{!bare && <SiteHeader solid={solidHeader} />}
 		<slot />
 		{!bare && <SiteFooter />}
+		<!-- Click-to-edit outlines, only on the preview Worker in draft mode. -->
+		{Astro.locals.draftMode && <VisualEditing />}
 	</body>
 </html>

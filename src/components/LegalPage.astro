@@ -1,7 +1,8 @@
 ---
-import { address, phone } from '../lib/contact';
+import { getPracticeInfo } from '../lib/contact';
 import { smallLabel } from '../lib/pageStyles';
 import { url } from '../lib/url';
+const { address, phone } = await getPracticeInfo(Astro.locals);
 
 /*
 	Layout for the policy pages: long-form reading text with a table of contents. Content goes in the

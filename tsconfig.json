@@ -1,5 +1,18 @@
 {
   "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "studio"]
+  "include": [
+    ".astro/types.d.ts",
+    "**/*"
+  ],
+  "exclude": [
+    "dist",
+    "studio"
+  ],
+  "compilerOptions": {
+    "paths": {
+      "~visual-editing": [
+        "./src/components/VisualEditing.astro"
+      ]
+    }
+  }
 }

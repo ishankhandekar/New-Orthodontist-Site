@@ -1,0 +1,10 @@
+<!--
+	Click-to-edit outlines for Sanity Studio's Presentation tool. Built only into the preview Worker
+	(see the ~visual-editing alias in astro.config.mjs) and rendered only in draft mode. When the
+	Studio reports an edit, the page reloads with the new draft text.
+-->
+<script>
+	import { enableVisualEditing } from '@sanity/visual-editing';
+
+	enableVisualEditing({ zIndex: 1000 });
+</script>

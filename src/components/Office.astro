@@ -1,11 +1,12 @@
 ---
-import { address, directionsUrl as directions, email, hours, phone, socials } from '../lib/contact';
+import { getPracticeInfo } from '../lib/contact';
 import { bookHref } from '../lib/nav';
 import type { HomePage } from '../lib/sanity';
 import { keepNameTogether } from '../lib/text';
 import { url } from '../lib/url';
 import ArrowIcon from './ArrowIcon.astro';
 import Logo from './Logo.astro';
+const { address, directionsUrl: directions, email, hours, phone, socials } = await getPracticeInfo(Astro.locals);
 
 interface Props {
 	content: HomePage['office'];

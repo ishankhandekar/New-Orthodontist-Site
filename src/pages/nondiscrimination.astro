@@ -1,7 +1,8 @@
 ---
 import LegalPage from '../components/LegalPage.astro';
 import Layout from '../layouts/Layout.astro';
-import { phone } from '../lib/contact';
+import { getPracticeInfo } from '../lib/contact';
+const { phone } = await getPracticeInfo(Astro.locals);
 
 /*
 	DRAFT. Structured after HHS's sample notice of nondiscrimination and notice of availability of

@@ -6,7 +6,7 @@ import ClosingCta from '../components/ClosingCta.astro';
 import FactsStrip from '../components/FactsStrip.astro';
 import Layout from '../layouts/Layout.astro';
 import { buttonArrow, buttonInk } from '../lib/buttons';
-import { address, directionsUrl, phone } from '../lib/contact';
+import { getPracticeInfo } from '../lib/contact';
 import { bookHref } from '../lib/nav';
 import { h2, section, sectionInner, sectionInnerFirst, smallLabel, textLink } from '../lib/pageStyles';
 import { url } from '../lib/url';
@@ -27,6 +27,7 @@ import smilePhoto from '../assets/hero-patient.jpg';
 import sarahPhoto from '../assets/gallery-sarah.png';
 import marcusPhoto from '../assets/gallery-marcus.png';
 import childPhoto from '../assets/gallery-priya.png';
+const { address, directionsUrl, phone } = await getPracticeInfo(Astro.locals);
 
 const facts = [
 	{ label: 'Length', value: 'About an hour' },

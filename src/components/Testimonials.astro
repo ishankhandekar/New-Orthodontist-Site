@@ -1,7 +1,8 @@
 ---
-import { socials } from '../lib/contact';
+import { getPracticeInfo } from '../lib/contact';
 import type { HomePage } from '../lib/sanity';
 import ArrowIcon from './ArrowIcon.astro';
+const { socials } = await getPracticeInfo(Astro.locals);
 
 /*
 	Real Google reviews, trimmed to their strongest lines: the reviewer's exact words, with "…"

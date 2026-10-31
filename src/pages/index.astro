@@ -11,8 +11,9 @@ import FAQ from '../components/FAQ.astro';
 import Office from '../components/Office.astro';
 import { fetchSingleton, type HomePage } from '../lib/sanity';
 
-// The homepage's text, edited in Sanity Studio ("Homepage") and read once while the site builds.
-const home = await fetchSingleton<HomePage>('homePage');
+// The homepage's text, edited in Sanity Studio ("Homepage"). The public site reads it once while it
+// builds; the preview Worker reads it per request, with drafts and click-to-edit markers in draft mode.
+const home = await fetchSingleton<HomePage>('homePage', { draftMode: Astro.locals.draftMode, stega: true });
 ---
 
 <Layout>
