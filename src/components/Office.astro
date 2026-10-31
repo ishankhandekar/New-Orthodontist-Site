@@ -1,11 +1,18 @@
 ---
 import { address, directionsUrl as directions, email, hours, phone, socials } from '../lib/contact';
 import { bookHref } from '../lib/nav';
+import type { HomePage } from '../lib/sanity';
+import { keepNameTogether } from '../lib/text';
 import { url } from '../lib/url';
 import ArrowIcon from './ArrowIcon.astro';
 import Logo from './Logo.astro';
 
+interface Props {
+	content: HomePage['office'];
+}
+const { content } = Astro.props;
 
+// Kept in code rather than Sanity: the ring is tuned to this phrase's exact length.
 // Repeated twice: at 32px with 0.2em tracking this runs almost exactly one lap (2765 units),
 // so textLength only nudges it to close the loop instead of stretching the letters apart.
 const ringPhrase = 'One specialist, start to finish · Torrey Hills Orthodontics · ';
@@ -39,9 +46,9 @@ const actionRow =
 				id="contact-heading"
 				class="mt-8 text-[2.125rem] leading-[1.08] font-normal tracking-[-0.01em] text-balance sm:text-[clamp(2.5rem,4.4vw,4rem)]"
 			>
-				Proud to serve the Carmel Valley community.
+				{keepNameTogether(content.headline)}
 			</h2>
-			<p class="mt-6 max-w-sm text-base text-ink/60">Visits are by appointment only, so please book ahead.</p>
+			<p class="mt-6 max-w-sm text-base text-ink/60">{content.note}</p>
 			<!-- The actions as a short list of hairline rows rather than competing buttons. -->
 			<div class="mt-8 max-w-sm border-t border-ink/10">
 				<a href={url(bookHref)} class={actionRow}>

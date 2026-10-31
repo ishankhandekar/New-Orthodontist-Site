@@ -1,46 +1,16 @@
 ---
+import type { HomePage } from '../lib/sanity';
+import { keepNameTogether } from '../lib/text';
 import { url } from '../lib/url';
 import Accordion from './Accordion.astro';
 import ArrowIcon from './ArrowIcon.astro';
 
-// TODO: Placeholder answers; have Dr. Lee review every one for accuracy (timelines,
-// insurance and financing) before launch.
-// Kept to the questions patients most often ask before booking.
-const faqs = [
-	{
-		q: 'Is the first consultation really free?',
-		a: 'Yes. Your first visit, including the digital scan and a sit-down with Dr. Lee to review your options, costs nothing and comes with no obligation.',
-	},
-	{
-		// TODO: If the client wants a starting price shown here, confirm the exact figure first.
-		q: 'How much does treatment cost?',
-		a: 'Every smile is different, so your cost depends on the treatment you choose and how long it takes. At your free consultation you’ll get a clear, all-inclusive quote with no hidden fees, along with monthly payment options to fit your budget.',
-	},
-	{
-		q: 'How long does treatment usually take?',
-		a: 'Most treatment takes between 12 and 24 months, depending on what needs to move and how consistently aligners are worn. You’ll get a personal timeline at your consultation.',
-	},
-	{
-		q: 'Braces or Invisalign: which is right for me?',
-		a: 'Both can create excellent results. Invisalign is nearly invisible and removable; braces work around the clock and suit some complex cases better. Dr. Lee will walk you through which fits your teeth and your lifestyle.',
-	},
-	{
-		q: 'Do you accept insurance, and do you offer payment plans?',
-		a: 'We accept most major PPO insurance plans and will check your benefits before treatment begins. We also offer flexible in-house payment plans at 0% interest, and we’ll go over every option clearly at your consultation.',
-	},
-	{
-		q: 'At what age should my child have their first visit?',
-		a: 'The American Association of Orthodontists recommends a first check-up by age 7. Most children won’t need treatment that early, but it lets Dr. Lee spot jaw growth or bite issues while they’re easiest to guide.',
-	},
-	{
-		q: 'Does treatment hurt?',
-		a: 'You may feel some pressure or tenderness for a few days after starting and after adjustments, which usually settles quickly. Most patients manage it with soft foods and an over-the-counter pain reliever.',
-	},
-	{
-		q: 'Am I too old for braces or Invisalign?',
-		a: 'Not at all. Healthy teeth can be moved at any age, and many of our patients are adults. Invisalign and clear ceramic braces are popular, discreet options.',
-	},
-];
+// TODO: Have Dr. Lee review every answer for accuracy (timelines, insurance and financing) before launch.
+interface Props {
+	content: HomePage['faq'];
+}
+const { content } = Astro.props;
+const faqs = content.items.map((item) => ({ q: item.question, a: item.answer }));
 ---
 
 <section id="faq" aria-labelledby="faq-heading" class="bg-white px-5 py-20 text-ink sm:px-7 lg:py-28">
@@ -57,7 +27,7 @@ const faqs = [
 				id="faq-heading"
 				class="text-[2.125rem] leading-[1.08] font-normal tracking-[-0.01em] text-balance sm:text-[clamp(2.5rem,4.4vw,4rem)] lg:sticky lg:top-24 lg:col-span-4 lg:self-start"
 			>
-				Everything you need to know.
+				{keepNameTogether(content.headline)}
 			</h2>
 
 			<!-- Right: accordion, then a link to the full FAQ page -->

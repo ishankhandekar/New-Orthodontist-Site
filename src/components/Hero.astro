@@ -4,9 +4,16 @@ import ArrowIcon from './ArrowIcon.astro';
 import { buttonArrow, buttonLight } from '../lib/buttons';
 import { phone } from '../lib/contact';
 import { bookHref } from '../lib/nav';
+import type { HomePage } from '../lib/sanity';
+import { keepNameTogether } from '../lib/text';
 import { url } from '../lib/url';
 // TODO: Placeholder stock photo. Swap for a real photo of Dr. Lee with a patient.
 import heroImage from '../assets/hero-patient.jpg';
+
+interface Props {
+	content: HomePage['hero'];
+}
+const { content } = Astro.props;
 ---
 
 <section
@@ -41,7 +48,7 @@ import heroImage from '../assets/hero-patient.jpg';
 	<div class="px-5 pt-[5.75rem] sm:px-7 sm:pt-[6.5rem]">
 		<p class="inline-flex items-center gap-2.5 text-[11px] tracking-wide text-white uppercase">
 			<span class="size-1.5 rounded-full bg-accent" aria-hidden="true"></span>
-			Now welcoming new patients
+			{content.eyebrow}
 		</p>
 	</div>
 
@@ -52,16 +59,20 @@ import heroImage from '../assets/hero-patient.jpg';
 		<h1
 			class="text-[2.125rem] leading-[1.08] font-normal tracking-[-0.01em] text-balance sm:text-[clamp(2.5rem,4.4vw,4rem)] motion-safe:animate-fade-rise"
 		>
-			<span class="sm:block">Braces and Invisalign,</span>{' '}
-			<span class="sm:block">always with Dr.&nbsp;Judy&nbsp;Lee,</span>{' '}
-			<span class="sm:block">right here in Torrey Hills.</span>
+			<!-- Each line is its own block on larger screens; on phones they flow together. -->
+			{content.headlineLines.map((line, i) => (
+				<>
+					{i > 0 && ' '}
+					<span class="sm:block">{keepNameTogether(line)}</span>
+				</>
+			))}
 		</h1>
 
 		<div class="flex max-w-[17.5rem] flex-col gap-5 lg:mr-[4%] lg:mb-1">
 			<p
 				class="text-sm leading-snug text-white motion-safe:animate-fade-rise motion-safe:[animation-delay:100ms]"
 			>
-				You'll see Dr. Lee at every appointment, from your first consult to your final retainer check.
+				{content.intro}
 			</p>
 			<!-- The entrance animation sits on a wrapper so it never clashes with the button's own transitions. -->
 			<div class="motion-safe:animate-fade-rise motion-safe:[animation-delay:200ms]">
@@ -77,7 +88,7 @@ import heroImage from '../assets/hero-patient.jpg';
 	<div
 		class="mx-5 flex justify-between gap-4 border-t border-white/20 py-3.5 text-xs text-white/90 sm:mx-7"
 	>
-		<span>Carmel Valley, CA</span>
+		<span>{content.location}</span>
 		<!-- Tap-to-call, set quietly in the strip's own type so it reads as info, not an ad. -->
 		<a
 			href={phone.href}
@@ -87,6 +98,6 @@ import heroImage from '../assets/hero-patient.jpg';
 		</a>
 		<!-- Hidden on phones, where the strip only fits two items and the headline already names Dr. Lee. -->
 		<!-- TODO: Confirm credentials (e.g. board-certified) with the client before adding them here. -->
-		<span class="hidden sm:inline">Dr. Judy Lee, Orthodontist</span>
+		<span class="hidden sm:inline">{content.byline}</span>
 	</div>
 </section>

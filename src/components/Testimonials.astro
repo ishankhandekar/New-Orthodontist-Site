@@ -1,5 +1,6 @@
 ---
 import { socials } from '../lib/contact';
+import type { HomePage } from '../lib/sanity';
 import ArrowIcon from './ArrowIcon.astro';
 
 /*
@@ -7,40 +8,18 @@ import ArrowIcon from './ArrowIcon.astro';
 	wherever text was cut, and their actual star rating. Names are first name and last initial.
 	Avatars mimic Google's default profile picture: a solid circle with the reviewer's initial.
 */
-const testimonials = [
-	{
-		name: 'Shannon M.',
-		rating: 5,
-		quote: 'Dr. Lee is truly exceptional. … My son’s smile has been completely transformed, and we couldn’t be happier with the results.',
-		color: '#1e88e5',
-	},
-	{
-		name: 'Rosa M.',
-		rating: 5,
-		quote: 'The office was closed but Dr. Lee happen to be there and without hesitation asked us to come in so she can fix the wire.',
-		color: '#8d6e63',
-	},
-	{
-		name: 'Flore Q.',
-		rating: 5,
-		quote: 'Our daughter’s case was fairly complex but Dr Lee did a fantastic job and gave our daughter a beautiful smile in under 2 years.',
-		color: '#5c6bc0',
-	},
-	{
-		name: 'Seongho B.',
-		rating: 5,
-		quote: 'We were transferred to Dr. Lee after our previous orthodontist became unavailable, and the transition was seamless.',
-		color: '#c2185b',
-	},
-	{
-		name: 'Janice R.',
-		rating: 5,
-		quote: '…my son was able to finish his braces treatment without teeth being pulled and in a shorter amount of time than his treatment listed.',
-		color: '#78909c',
-	},
-];
-// The practice's overall Google rating and review count, as shown on its listing.
-const google = { rating: 4.5, count: '40', url: socials.find((s) => s.name === 'Google')!.href };
+interface Props {
+	content: HomePage['reviews'];
+}
+const { content } = Astro.props;
+const testimonials = content.items;
+// The practice's overall Google rating and review count, as shown on its listing. The link goes to
+// the "Google" profile in Practice info; without one, the line simply has no link.
+const google = {
+	rating: content.googleRating,
+	count: content.googleReviewCount,
+	url: socials.find((s) => s.name === 'Google')?.href,
+};
 const total = testimonials.length;
 const star = 'M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z';
 const navButton =
@@ -192,21 +171,27 @@ const navButton =
 				</span>
 				<span class="text-white/60" aria-hidden="true">·</span>
 				<span>{google.count} Google reviews</span>
-				<!-- On phones the link drops to its own line rather than leaving a dot dangling. -->
-				<span class="text-white/60 max-sm:hidden" aria-hidden="true">·</span>
-				<span class="basis-full sm:hidden" aria-hidden="true"></span>
-				<a
-					href={google.url}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="group inline-flex items-center gap-1.5 border-b border-white/50 pb-0.5 transition-colors hover:border-white focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-				>
-					Read all on Google<span class="sr-only"> (opens in a new tab)</span>
-					<ArrowIcon
-						size={10}
-						class="-rotate-45 transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
-					/>
-				</a>
+				{
+					google.url && (
+						<>
+							<!-- On phones the link drops to its own line rather than leaving a dot dangling. -->
+							<span class="text-white/60 max-sm:hidden" aria-hidden="true">·</span>
+							<span class="basis-full sm:hidden" aria-hidden="true" />
+							<a
+								href={google.url}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="group inline-flex items-center gap-1.5 border-b border-white/50 pb-0.5 transition-colors hover:border-white focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+							>
+								Read all on Google<span class="sr-only"> (opens in a new tab)</span>
+								<ArrowIcon
+									size={10}
+									class="-rotate-45 transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+								/>
+							</a>
+						</>
+					)
+				}
 			</p>
 		</div>
 	</div>

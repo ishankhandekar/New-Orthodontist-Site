@@ -7,6 +7,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Rebuilds when text is published in Sanity Studio: a Sanity webhook calls GitHub's
+  # repository_dispatch API with this event type (the site reads Sanity only while it builds).
+  repository_dispatch:
+    types: [sanity-publish]
 
 permissions:
   contents: read

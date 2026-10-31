@@ -1,0 +1,23 @@
+{
+  "name": "torrey-hills-studio",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "seed": "sanity exec scripts/seed.ts --with-user-token"
+  },
+  "dependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "sanity": "6.19.0",
+    "styled-components": "6.6.0"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}

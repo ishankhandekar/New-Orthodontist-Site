@@ -1,23 +1,16 @@
 ---
+import type { HomePage } from '../lib/sanity';
+import { keepNameTogether } from '../lib/text';
 import { url } from '../lib/url';
 import ArrowIcon from './ArrowIcon.astro';
 
 // TODO: Confirm the financing details (0% interest, in-house plans) and which PPO plans are
 // accepted with the client before launch.
-const steps = [
-	{
-		title: 'The Scan',
-		body: 'A fast, comfortable digital scan of your teeth. No messy impressions, just a few quiet minutes in the chair.',
-	},
-	{
-		title: 'The Plan',
-		body: 'Sit down with Dr. Lee herself to walk through your custom smile blueprint, and ask her anything.',
-	},
-	{
-		title: 'The Choice',
-		body: 'A clear breakdown of timelines and treatment options, so you can decide what feels right. Zero pressure.',
-	},
-];
+interface Props {
+	financing: HomePage['financing'];
+	firstVisit: HomePage['firstVisit'];
+}
+const { financing, firstVisit } = Astro.props;
 ---
 
 <section
@@ -40,29 +33,24 @@ const steps = [
 					id="first-visit-heading"
 					class="text-[2.125rem] leading-[1.08] font-normal tracking-[-0.01em] text-balance sm:text-[clamp(2.5rem,4.4vw,4rem)]"
 				>
-					Investment, made accessible.
+					{keepNameTogether(financing.headline)}
 				</h2>
 				<p class="mt-6 max-w-md text-base leading-relaxed text-ink/75">
-					A confident smile shouldn't come with financial stress. We offer flexible in-house payment
-					plans at 0% interest, and we accept most major PPO insurance plans. Before anything begins,
-					we'll walk you through your coverage and options, so there are never any surprises.
+					{financing.body}
 				</p>
 
 				<dl class="mt-10 grid max-w-md grid-cols-2 gap-x-8 gap-y-6">
-					<div>
-						<dt class="flex items-center gap-2 text-[11px] tracking-[0.14em] text-ink/70 uppercase">
-							<span class="h-px w-4 bg-accent" aria-hidden="true"></span>
-							Financing
-						</dt>
-						<dd class="mt-2 text-sm leading-snug">0% interest, in-house plans</dd>
-					</div>
-					<div>
-						<dt class="flex items-center gap-2 text-[11px] tracking-[0.14em] text-ink/70 uppercase">
-							<span class="h-px w-4 bg-accent" aria-hidden="true"></span>
-							Insurance
-						</dt>
-						<dd class="mt-2 text-sm leading-snug">Most major PPO plans accepted</dd>
-					</div>
+					{
+						financing.facts.map((fact) => (
+							<div>
+								<dt class="flex items-center gap-2 text-[11px] tracking-[0.14em] text-ink/70 uppercase">
+									<span class="h-px w-4 bg-accent" aria-hidden="true" />
+									{fact.label}
+								</dt>
+								<dd class="mt-2 text-sm leading-snug">{fact.value}</dd>
+							</div>
+						))
+					}
 				</dl>
 
 				<a
@@ -76,10 +64,10 @@ const steps = [
 
 			<!-- Right: the first visit, as a numbered sequence -->
 			<div id="first-visit-steps" class="lg:col-span-6 lg:col-start-7">
-				<h3 class="text-[11px] tracking-[0.14em] text-ink/70 uppercase">Your first visit</h3>
+				<h3 class="text-[11px] tracking-[0.14em] text-ink/70 uppercase">{firstVisit.heading}</h3>
 				<ol class="mt-6">
 					{
-						steps.map((step, i) => (
+						firstVisit.steps.map((step, i) => (
 							<li class="grid grid-cols-[4.5rem_1fr] gap-x-6 border-t border-ink/10 py-8 sm:grid-cols-[6rem_1fr] sm:gap-x-8 sm:py-10">
 								<span
 									class="text-[2.75rem] leading-none font-light tracking-[-0.03em] tabular-nums sm:text-[3.5rem]"

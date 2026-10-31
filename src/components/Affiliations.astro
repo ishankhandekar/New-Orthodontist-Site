@@ -1,4 +1,11 @@
 ---
+import type { HomePage } from '../lib/sanity';
+
+interface Props {
+	content: HomePage['affiliations'];
+}
+const { content } = Astro.props;
+
 // TODO: Confirm each listing with Dr. Lee before launch (memberships, board certification and
 // the systems the practice actually uses), and whether "backed by" is the right wording;
 // associations don't usually endorse individual practices. Swap in official logos only with
@@ -16,7 +23,7 @@ const names = [
 
 <section aria-label="Professional affiliations" class="bg-white pt-8 pb-1 text-ink sm:pt-10">
 	<p class="px-5 text-[11px] font-medium tracking-[0.2em] text-ink/60 uppercase sm:px-7">
-		Proudly backed by…
+		{content.label}
 	</p>
 
 	<!--

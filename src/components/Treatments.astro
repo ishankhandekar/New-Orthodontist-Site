@@ -1,5 +1,7 @@
 ---
 import { Image } from 'astro:assets';
+import type { HomePage } from '../lib/sanity';
+import { keepNameTogether } from '../lib/text';
 import { url } from '../lib/url';
 import ArrowIcon from './ArrowIcon.astro';
 import bracesPhoto from '../assets/treatment-braces.png';
@@ -8,8 +10,12 @@ import jawPhoto from '../assets/treatment-jaw.jpg';
 // TODO: Placeholder stock photo of the doctor; swap for Dr. Lee.
 import doctorPhoto from '../assets/about-doctor.jpg';
 
-// TODO: Placeholder copy; confirm with the client. The treatment links point to pages that
-// don't exist yet. The braces photo is only 473px wide; replace with a larger one (1000px+).
+// TODO: The braces photo is only 473px wide; replace with a larger one (1000px+).
+interface Props {
+	content: HomePage['treatments'];
+}
+const { content } = Astro.props;
+const { braces, invisalign, jaw } = content;
 
 // Shared card styling. Each card links through one small arrow button in its bottom-right corner;
 // the link stretches over the whole card (its ::after), so the entire card is clickable. Keyboard
@@ -44,11 +50,10 @@ const cornerArrow =
 			<h2
 				class="text-[2.125rem] leading-[1.08] font-normal tracking-[-0.01em] text-balance sm:text-[clamp(2.5rem,4.4vw,4rem)]"
 			>
-				Every treatment, planned by Dr.&nbsp;Lee.
+				{keepNameTogether(content.headline)}
 			</h2>
 			<p class="mx-auto mt-5 max-w-md text-sm leading-relaxed text-ink/75">
-				Braces, Invisalign, and early jaw orthopedics for kids, teens, and adults, each plan designed
-				and checked by Dr. Lee herself.
+				{content.intro}
 			</p>
 		</header>
 
@@ -74,9 +79,9 @@ const cornerArrow =
 				<div class="flex items-start gap-3">
 					<span class="mt-1 size-2 shrink-0 rounded-full bg-accent outline-4 outline-accent/25" aria-hidden="true"></span>
 					<div>
-						<h3 class="text-lg font-medium">Braces</h3>
+						<h3 class="text-lg font-medium">{braces.title}</h3>
 						<p class="mt-1 max-w-[15rem] text-sm leading-snug text-white">
-							Metal and clear ceramic braces, precisely planned for every smile.
+							{braces.text}
 						</p>
 					</div>
 				</div>
@@ -107,9 +112,9 @@ const cornerArrow =
 				<div class="flex items-start gap-3">
 					<span class="mt-1 size-2 shrink-0 rounded-full bg-accent outline-4 outline-accent/25" aria-hidden="true"></span>
 					<div>
-						<h3 class="text-lg font-medium">Invisalign</h3>
+						<h3 class="text-lg font-medium">{invisalign.title}</h3>
 						<p class="mt-1 max-w-[15rem] text-sm leading-snug text-white">
-							Nearly invisible clear aligners you can take out to eat, brush, and smile.
+							{invisalign.text}
 						</p>
 					</div>
 				</div>
@@ -150,9 +155,9 @@ const cornerArrow =
 				</div>
 
 				<div class="mt-7 mb-8">
-					<h3 class="text-xs tracking-[0.14em] text-ink/75 uppercase">Jaw orthopedics</h3>
+					<h3 class="text-xs tracking-[0.14em] text-ink/75 uppercase">{jaw.title}</h3>
 					<p class="mt-3 max-w-md text-[1.25rem] leading-snug tracking-[-0.01em] text-balance lg:text-[1.375rem]">
-						Guiding jaw growth early, while kids are still growing, so later treatment is simpler.
+						{jaw.text}
 					</p>
 				</div>
 

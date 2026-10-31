@@ -1,22 +1,25 @@
-// The practice's contact details, shared so every place that shows them stays in sync.
-export const phone = { display: '(858) 481-1771', href: 'tel:+18584811771' };
-export const email = { display: 'info@torreyhillsortho.com', href: 'mailto:info@torreyhillsortho.com' };
-export const postalAddress = { street: '4765 Carmel Mountain Road, Suite 200', city: 'San Diego', region: 'CA', postalCode: '92130' };
+// The practice's contact details, shared so every place that shows them stays in sync. They're edited
+// in Sanity Studio ("Practice info") and read once while the site builds.
+import { fetchSingleton, type PracticeSettings } from './sanity';
+
+const settings = await fetchSingleton<PracticeSettings>('practiceSettings');
+
+// Studio checks the number has 10 digits (optionally led by a 1), so the link is always +1 and 10 digits.
+const phoneDigits = settings.phone.replace(/\D/g, '').slice(-10);
+export const phone = { display: settings.phone, href: `tel:+1${phoneDigits}` };
+export const email = { display: settings.email, href: `mailto:${settings.email}` };
+export const postalAddress = settings.address;
 export const address = [postalAddress.street, `${postalAddress.city}, ${postalAddress.region} ${postalAddress.postalCode}`];
 export const directionsUrl =
 	'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(address.join(', '));
 // Rotational days follow a rotating schedule, so patients should call to confirm.
 // `schema` is the machine-readable version for search engines' structured data (24-hour times).
-export const hours = [
-	{ days: 'Mon, Tue', time: '9–5', rotational: true, schema: { days: ['Monday', 'Tuesday'], opens: '09:00', closes: '17:00' } },
-	{ days: 'Wed, Thu', time: '9–5', rotational: false, schema: { days: ['Wednesday', 'Thursday'], opens: '09:00', closes: '17:00' } },
-	{ days: 'Fri', time: '12–5', rotational: true, schema: { days: ['Friday'], opens: '12:00', closes: '17:00' } },
-	{ days: 'Sat, Sun', time: 'Closed', rotational: false, schema: null },
-];
-// The practice's profiles, as linked from its previous website. Google is its Maps listing (by place ID),
-// where patients read and leave reviews.
-export const socials = [
-	{ name: 'Facebook', href: 'https://www.facebook.com/DrJudyLee' },
-	{ name: 'Google', href: 'https://maps.google.com/?cid=18408970287676144921' },
-	{ name: 'Yelp', href: 'https://www.yelp.com/biz/torrey-hills-orthodontics-san-diego' },
-];
+export const hours = settings.hours.map((h) => ({
+	days: h.days,
+	time: h.time,
+	rotational: Boolean(h.rotational),
+	schema: h.closed ? null : { days: h.openDays ?? [], opens: h.opens ?? '', closes: h.closes ?? '' },
+}));
+// The practice's online profiles. The one named "Google" is its Maps listing, where patients read
+// and leave reviews.
+export const socials = (settings.socials ?? []).map((s) => ({ name: s.name, href: s.url }));

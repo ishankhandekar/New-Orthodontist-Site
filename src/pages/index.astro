@@ -9,18 +9,22 @@ import Treatments from '../components/Treatments.astro';
 import Testimonials from '../components/Testimonials.astro';
 import FAQ from '../components/FAQ.astro';
 import Office from '../components/Office.astro';
+import { fetchSingleton, type HomePage } from '../lib/sanity';
+
+// The homepage's text, edited in Sanity Studio ("Homepage") and read once while the site builds.
+const home = await fetchSingleton<HomePage>('homePage');
 ---
 
 <Layout>
 	<main>
-		<Hero />
-		<Affiliations />
-		<About />
-		<Gallery />
-		<Treatments />
-		<Logistics />
-		<Testimonials />
-		<FAQ />
-		<Office />
+		<Hero content={home.hero} />
+		<Affiliations content={home.affiliations} />
+		<About content={home.about} />
+		<Gallery content={home.gallery} />
+		<Treatments content={home.treatments} />
+		<Logistics financing={home.financing} firstVisit={home.firstVisit} />
+		<Testimonials content={home.reviews} />
+		<FAQ content={home.faq} />
+		<Office content={home.office} />
 	</main>
 </Layout>
