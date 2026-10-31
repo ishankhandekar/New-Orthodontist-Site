@@ -1,5 +1,6 @@
 // The practice's contact details, shared so every place that shows them stays in sync.
 export const phone = { display: '(858) 481-1771', href: 'tel:+18584811771' };
+export const email = { display: 'info@torreyhillsortho.com', href: 'mailto:info@torreyhillsortho.com' };
 export const postalAddress = { street: '4765 Carmel Mountain Road, Suite 200', city: 'San Diego', region: 'CA', postalCode: '92130' };
 export const address = [postalAddress.street, `${postalAddress.city}, ${postalAddress.region} ${postalAddress.postalCode}`];
 export const directionsUrl =
@@ -12,10 +13,10 @@ export const hours = [
 	{ days: 'Fri', time: '12–5', rotational: true, schema: { days: ['Friday'], opens: '12:00', closes: '17:00' } },
 	{ days: 'Sat, Sun', time: 'Closed', rotational: false, schema: null },
 ];
-// TODO: Add the practice's real profile URLs.
+// The practice's profiles, as linked from its previous website. Google is its Maps listing (by place ID),
+// where patients read and leave reviews.
 export const socials = [
-	{ name: 'Facebook', href: '#' },
-	{ name: 'Instagram', href: '#' },
-	{ name: 'Google', href: '#' },
-	{ name: 'Yelp', href: '#' },
+	{ name: 'Facebook', href: 'https://www.facebook.com/DrJudyLee' },
+	{ name: 'Google', href: 'https://maps.google.com/?cid=18408970287676144921' },
+	{ name: 'Yelp', href: 'https://www.yelp.com/biz/torrey-hills-orthodontics-san-diego' },
 ];

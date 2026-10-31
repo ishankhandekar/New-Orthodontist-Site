@@ -1,7 +1,7 @@
 ---
 import { getImage } from 'astro:assets';
 import { url } from '../lib/url';
-import { hours, phone, postalAddress } from '../lib/contact';
+import { email, hours, phone, postalAddress, socials } from '../lib/contact';
 import '../styles/global.css';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
@@ -54,6 +54,7 @@ const structuredData = {
 	url: absolute(url('/')),
 	image: shareUrl,
 	telephone: phone.href.replace('tel:', ''),
+	email: email.display,
 	address: {
 		'@type': 'PostalAddress',
 		streetAddress: postalAddress.street,
@@ -66,6 +67,7 @@ const structuredData = {
 		.filter((h) => h.schema)
 		.map((h) => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: h.schema!.days, opens: h.schema!.opens, closes: h.schema!.closes })),
 	employee: { '@type': 'Person', name: 'Dr. Judy Lee', jobTitle: 'Orthodontist' },
+	sameAs: socials.map((s) => s.href),
 };
 
 // Cloudflare Web Analytics: free, cookie-free, and collects no personal data, so it's safe on every

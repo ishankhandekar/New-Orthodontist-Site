@@ -1,5 +1,5 @@
 ---
-import { address, phone, socials } from '../lib/contact';
+import { address, email, phone, socials } from '../lib/contact';
 import { bookHref, galleryLink, legalLinks, menus } from '../lib/nav';
 import { url } from '../lib/url';
 import ArrowIcon from './ArrowIcon.astro';
@@ -31,6 +31,7 @@ const link =
 				<Logo class="w-fit" />
 				<div class="mt-6 space-y-1 text-ink/70">
 					<p><a href={phone.href} class={link}>{phone.display}</a></p>
+					<p><a href={email.href} class={link}>{email.display}</a></p>
 					<address class="not-italic">{address[0]}<br />{address[1]}</address>
 				</div>
 				<a
@@ -83,8 +84,9 @@ const link =
 				{
 					socials.map((s) => (
 						<li>
-							<a href={s.href} class={link}>
+							<a href={s.href} target="_blank" rel="noopener" class={link}>
 								{s.name}
+								<span class="sr-only"> (opens in a new tab)</span>
 							</a>
 						</li>
 					))

@@ -2,7 +2,7 @@
 import ArrowIcon from '../components/ArrowIcon.astro';
 import ClosingCta from '../components/ClosingCta.astro';
 import Layout from '../layouts/Layout.astro';
-import { address, directionsUrl, hours, phone } from '../lib/contact';
+import { address, directionsUrl, email, hours, phone } from '../lib/contact';
 import { smallLabel, textLink } from '../lib/pageStyles';
 
 /*
@@ -47,6 +47,12 @@ const details = [
 								<dt class={smallLabel}>Phone</dt>
 								<dd class="mt-2 text-lg tracking-[-0.01em]">
 									<a href={phone.href} class="underline decoration-ink/25 underline-offset-4 transition-colors hover:decoration-accent">{phone.display}</a>
+								</dd>
+							</div>
+							<div class="border-t border-ink/10 py-6">
+								<dt class={smallLabel}>Email</dt>
+								<dd class="mt-2 text-lg tracking-[-0.01em]">
+									<a href={email.href} class="underline decoration-ink/25 underline-offset-4 transition-colors hover:decoration-accent">{email.display}</a>
 								</dd>
 							</div>
 							<div class="border-t border-ink/10 py-6">

@@ -1,5 +1,5 @@
 ---
-import { address, directionsUrl as directions, hours, phone, socials } from '../lib/contact';
+import { address, directionsUrl as directions, email, hours, phone, socials } from '../lib/contact';
 import { bookHref } from '../lib/nav';
 import { url } from '../lib/url';
 import ArrowIcon from './ArrowIcon.astro';
@@ -42,7 +42,7 @@ const actionRow =
 				Proud to serve the Carmel Valley community.
 			</h2>
 			<p class="mt-6 max-w-sm text-base text-ink/60">Visits are by appointment only, so please book ahead.</p>
-			<!-- The three actions as a short list of hairline rows rather than competing buttons. -->
+			<!-- The actions as a short list of hairline rows rather than competing buttons. -->
 			<div class="mt-8 max-w-sm border-t border-ink/10">
 				<a href={url(bookHref)} class={actionRow}>
 					Schedule a Free Consultation
@@ -57,6 +57,10 @@ const actionRow =
 				</a>
 				<a href={phone.href} class={actionRow}>
 					Call us
+					<ArrowIcon size={12} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
+				</a>
+				<a href={email.href} class={actionRow}>
+					Email us
 					<ArrowIcon size={12} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
 				</a>
 			</div>
@@ -146,9 +150,12 @@ const actionRow =
 									<li>
 										<a
 											href={s.href}
+											target="_blank"
+											rel="noopener"
 											class="underline decoration-ink/25 underline-offset-4 transition-colors hover:decoration-accent focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
 										>
 											{s.name}
+											<span class="sr-only"> (opens in a new tab)</span>
 										</a>
 									</li>
 								))
