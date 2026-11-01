@@ -1,5 +1,8 @@
 import { createClient } from '@sanity/client';
 import { SANITY_VIEWER_TOKEN } from 'astro:env/server';
+import type { ComponentProps } from 'astro/types';
+import type AgePage from '../components/AgePage.astro';
+import type TreatmentPage from '../components/TreatmentPage.astro';
 
 /*
 	Site text edited in Sanity Studio (the studio/ folder). The public site fetches it once while it
@@ -29,12 +32,14 @@ interface FetchOptions {
 	stega?: boolean;
 }
 
-// Fetches one of the Studio's single documents. A missing document fails the build, so the live
-// site keeps its last good version instead of publishing a page with blank sections.
-export async function fetchSingleton<T>(
-	id: 'homePage' | 'practiceSettings',
-	{ draftMode = false, stega = false }: FetchOptions = {},
-): Promise<T> {
+// Fields whose text is used outside the visible page, where the hidden markers would break them:
+// search titles and descriptions (in <head>), link targets, anchor IDs, and review avatar colors.
+const keepClean = (path: readonly unknown[]) =>
+	path[0] === 'seo' || ['href', 'id', 'color'].includes(String(path.at(-1)));
+
+// Fetches one of the Studio's documents by ID (each page has a fixed one). A missing document fails
+// the build, so the live site keeps its last good version instead of publishing blank sections.
+export async function fetchDocument<T>(id: string, { draftMode = false, stega = false }: FetchOptions = {}): Promise<T> {
 	const source =
 		draftMode && SANITY_VIEWER_TOKEN
 			? client.withConfig({
@@ -43,8 +48,7 @@ export async function fetchSingleton<T>(
 					stega: stega && {
 						enabled: true,
 						studioUrl,
-						// Review avatar colors are used in a style attribute, where markers would break them.
-						filter: (props) => (props.sourcePath.at(-1) === 'color' ? false : props.filterDefault(props)),
+						filter: (props) => (keepClean(props.sourcePath) ? false : props.filterDefault(props)),
 					},
 				})
 			: client;
@@ -53,6 +57,119 @@ export async function fetchSingleton<T>(
 		throw new Error(`Sanity has no published "${id}" document. Publish it in the Studio, or run the seed script.`);
 	}
 	return doc;
+}
+
+// Search title and description, which every page document has.
+export interface Seo {
+	seo: { title: string; description: string };
+}
+
+// The page templates' props, minus what stays in code (photos, alt text, gallery category).
+type TemplateText<P, CodeOnly extends keyof P> = Omit<P, CodeOnly> & Seo;
+export type TreatmentPageContent = TemplateText<
+	ComponentProps<typeof TreatmentPage>,
+	'image' | 'imageAlt' | 'imageFocus' | 'results'
+>;
+export type AgePageContent = TemplateText<ComponentProps<typeof AgePage>, 'image' | 'imageAlt' | 'imageFocus'>;
+
+// The patient info pages. These mirror studio/schemaTypes/patientInfoPages.ts.
+type Fact = { label: string; value: string };
+type Titled = { title: string; body: string };
+type Faq = { q: string; a: string };
+type Closing = { closing: string; closingText: string };
+
+export interface FirstVisitPage extends Seo, Closing {
+	headline: string;
+	intro: string;
+	facts: Fact[];
+	itineraryHeading: string;
+	itinerary: { time: string; title: string; body: string }[];
+	checklistHeading: string;
+	checklistIntro: string;
+	checklist: { item: string; note: string }[];
+	insideHeading: string;
+	insideCaptions: string[];
+	leaveHeading: string;
+	leaveIntro: string;
+	takeaways: Titled[];
+	childHeading: string;
+	childIntro: string;
+	childNotes: string[];
+	hereHeading: string;
+	details: Fact[];
+	faqHeading: string;
+	faqs: Faq[];
+}
+
+export interface FinancingPage extends Seo, Closing {
+	headlineLines: string[];
+	intro: string;
+	promises: Titled[];
+	includedHeading: string;
+	includedIntro: string;
+	included: { item: string; value: string }[];
+	surpriseLabel: string;
+	surpriseValue: string;
+	notIncluded: string;
+	calcHeading: string;
+	calcIntro: string;
+	calcDisclaimer: string;
+	insuranceHeading: string;
+	insuranceIntro: string;
+	insuranceSteps: { label: string; title: string; body: string }[];
+	termsHeading: string;
+	glossary: { term: string; def: string }[];
+	payHeading: string;
+	waysToPay: Fact[];
+	faqHeading: string;
+	faqs: Faq[];
+}
+
+export interface FaqPage extends Seo, Closing {
+	headline: string;
+	intro: string;
+	groups: { id: string; title: string; faqs: Faq[] }[];
+}
+
+export interface LocationPage extends Seo, Closing {
+	headline: string;
+	details: Fact[];
+}
+
+// The About pages. These mirror studio/schemaTypes/aboutPages.ts.
+export interface DrLeePage extends Seo, Closing {
+	name: string;
+	credentialsLine: string;
+	intro: string;
+	facts: Fact[];
+	approachHeading: string;
+	approachIntro: string;
+	approach: Titled[];
+	educationHeading: string;
+	timeline: { year: string; title: string; place: string }[];
+	credentialsHeading: string;
+	credentials: { org: string; role: string; since: string }[];
+	outsideHeading: string;
+	outsideText: string;
+}
+
+export interface TeamPage extends Seo, Closing {
+	headline: string;
+	intro: string;
+	members: { name: string; role: string; since: string; blurb: string[]; link?: { label: string; href: string } }[];
+}
+
+export interface OfficePage extends Seo, Closing {
+	headline: string;
+	intro: string;
+	spaceHeading: string;
+	spaces: { name: string; body: string }[];
+	techHeading: string;
+	techIntro: string;
+	tech: { name: string; model: string; before: string; now: string }[];
+	comfortHeading: string;
+	comfort: Fact[];
+	sterilizationNote: string;
 }
 
 // The shapes below mirror studio/schemaTypes. Every field is required there, so Studio won't

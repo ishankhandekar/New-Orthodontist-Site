@@ -1,17 +1,26 @@
 import type { StructureResolver } from 'sanity/structure';
+import { pageGroups } from './pages';
 
-// The sidebar: one entry per page or settings document, each opening its single document directly.
-export const structure: StructureResolver = (S) =>
-	S.list()
+// The sidebar: the homepage, then one folder per section of the site, then the practice details.
+// Every entry opens its single document directly.
+export const structure: StructureResolver = (S) => {
+	const doc = (id: string, type: string, title: string) =>
+		S.listItem().title(title).id(id).child(S.document().schemaType(type).documentId(id).title(title));
+
+	return S.list()
 		.title('Website')
 		.items([
-			S.listItem()
-				.title('Homepage')
-				.id('homePage')
-				.child(S.document().schemaType('homePage').documentId('homePage').title('Homepage')),
+			doc('homePage', 'homePage', 'Homepage'),
+			...pageGroups.map((group) =>
+				S.listItem()
+					.title(group.title)
+					.child(
+						S.list()
+							.title(group.title)
+							.items(group.pages.map((p) => doc(p.id, p.type, p.title))),
+					),
+			),
 			S.divider(),
-			S.listItem()
-				.title('Practice info')
-				.id('practiceSettings')
-				.child(S.document().schemaType('practiceSettings').documentId('practiceSettings').title('Practice info')),
+			doc('practiceSettings', 'practiceSettings', 'Practice info'),
 		]);
+};

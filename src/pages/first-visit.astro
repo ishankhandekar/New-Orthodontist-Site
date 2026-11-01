@@ -9,6 +9,7 @@ import { buttonArrow, buttonInk } from '../lib/buttons';
 import { getPracticeInfo } from '../lib/contact';
 import { bookHref } from '../lib/nav';
 import { h2, section, sectionInner, sectionInnerFirst, smallLabel, textLink } from '../lib/pageStyles';
+import { fetchDocument, type FirstVisitPage } from '../lib/sanity';
 import { url } from '../lib/url';
 
 /*
@@ -29,68 +30,35 @@ import marcusPhoto from '../assets/gallery-marcus.png';
 import childPhoto from '../assets/gallery-priya.png';
 const { address, directionsUrl, phone } = await getPracticeInfo(Astro.locals);
 
-const facts = [
-	{ label: 'Length', value: 'About an hour' },
-	{ label: 'Cost', value: 'Free' },
-	{ label: "You'll see", value: 'Dr. Lee herself' },
-	{ label: "You'll leave with", value: 'A written plan and quote' },
-];
+// The page's text is edited in Sanity Studio (Patient info → First visit); the photos stay here.
+const page = await fetchDocument<FirstVisitPage>('page-first-visit', { draftMode: Astro.locals.draftMode, stega: true });
 
-const itinerary = [
-	{ time: '0:00', title: 'Welcome', body: "A friendly hello and a seat. Your forms are already done, so there's nothing to fill out.", photo: officePhoto, alt: 'The bright, calm reception area', focus: 'object-center' },
-	{ time: '0:05', title: 'Photos and 3D scan', body: 'A few quick photos and a 3D scan of your teeth. No messy impressions, nothing uncomfortable.', photo: scanPhoto, alt: 'Clear aligners made from a 3D scan', focus: 'object-[58%_center]' },
-	{ time: '0:20', title: 'Time with Dr. Lee', body: 'Dr. Lee examines your teeth, bite, and jaw herself, and asks what you would like to change.', photo: doctorPhoto, alt: 'Dr. Lee in the treatment room', focus: 'object-[50%_30%]' },
-	{ time: '0:35', title: 'Your plan', body: 'She walks you through what she sees, your options, and a preview of how your smile could look.', photo: planPhoto, alt: 'A dental model used to explain the plan', focus: 'object-[50%_62%]' },
-	{ time: '0:45', title: 'The numbers', body: 'Your all-inclusive quote, what insurance covers, and the monthly payment options.', photo: sarahPhoto, alt: 'A patient smiling during the visit', focus: 'object-[50%_28%]' },
-	{ time: '0:55', title: 'Your call', body: 'Ask anything. Then book your start date, or take time to think it over. No pressure either way.', photo: smilePhoto, alt: 'A smiling patient with braces', focus: 'object-[60%_30%]' },
+// One photo per step of the visit, in order. Extra steps added in the Studio reuse these from the start.
+const itineraryPhotos = [
+	{ photo: officePhoto, alt: 'The bright, calm reception area', focus: 'object-center' },
+	{ photo: scanPhoto, alt: 'Clear aligners made from a 3D scan', focus: 'object-[58%_center]' },
+	{ photo: doctorPhoto, alt: 'Dr. Lee in the treatment room', focus: 'object-[50%_30%]' },
+	{ photo: planPhoto, alt: 'A dental model used to explain the plan', focus: 'object-[50%_62%]' },
+	{ photo: sarahPhoto, alt: 'A patient smiling during the visit', focus: 'object-[50%_28%]' },
+	{ photo: smilePhoto, alt: 'A smiling patient with braces', focus: 'object-[60%_30%]' },
 ];
+const itinerary = page.itinerary.map((stop, i) => ({ ...stop, ...itineraryPhotos[i % itineraryPhotos.length] }));
 
-const checklist = [
-	{ item: 'Fill out your forms online', note: "We'll text you a link after you book." },
-	{ item: 'Your insurance card', note: 'So we can check your benefits on the spot.' },
-	{ item: 'A photo ID', note: 'For you, or the parent if the visit is for a child.' },
-	{ item: 'A list of medications', note: 'Including anything taken regularly.' },
-	{ item: "Your dentist's name", note: 'So we can keep them in the loop.' },
-	{ item: 'Your questions', note: 'Nothing is too small to ask.' },
+// The "look inside" photos; their captions come from the Studio, in order.
+const insidePhotos = [
+	{ photo: officePhoto, alt: 'The reception area', focus: 'object-center' },
+	{ photo: doctorPhoto, alt: 'Dr. Lee', focus: 'object-[50%_30%]' },
+	{ photo: marcusPhoto, alt: 'A patient smiling after treatment', focus: 'object-[50%_22%]' },
 ];
+const inside = page.insideCaptions.map((caption, i) => ({ caption, ...insidePhotos[i % insidePhotos.length] }));
 
-const takeaways = [
-	{ title: 'A preview of your new smile', body: 'See how your teeth could move, before anything begins.' },
-	{ title: 'A written treatment plan', body: 'Your options, timeline, and what each one involves.' },
-	{ title: 'An all-inclusive quote', body: 'One clear price, with nothing added later.' },
-	{ title: 'An insurance estimate', body: 'What your plan covers, and what your share would be.' },
-];
-
-const inside = [
-	{ photo: officePhoto, alt: 'The reception area', caption: 'A calm, bright space', focus: 'object-center' },
-	{ photo: doctorPhoto, alt: 'Dr. Lee', caption: 'Dr. Lee, at every visit', focus: 'object-[50%_30%]' },
-	{ photo: marcusPhoto, alt: 'A patient smiling after treatment', caption: 'Real patients, real smiles', focus: 'object-[50%_22%]' },
-];
-
-const childNotes = [
-	'You stay in the room the whole time.',
-	'No needles, no shots, nothing that hurts.',
-	'Dr. Lee explains everything in kid-friendly terms.',
-];
-
-const details = [
-	{ label: 'Address', value: address.join(', ') },
-	{ label: 'Parking', value: 'Free parking in the building lot' },
-	{ label: 'Finding us', value: 'Suite 200, on the second floor. The elevator is just inside the lobby.' },
-];
-
-const faqs = [
-	{ q: 'Do I need a referral from my dentist?', a: 'No. You can book your free consultation directly, and we are happy to work alongside your dentist.' },
-	{ q: 'Is there any obligation to start treatment?', a: 'None at all. You leave with your plan and quote, and you decide when, or whether, to begin.' },
-	{ q: 'Will you take X-rays?', a: 'If Dr. Lee needs them to plan treatment, we take them during the visit. It is quick and low-dose.' },
-	{ q: 'Can I bring someone with me?', a: 'Of course. Parents, partners, and family are always welcome to sit in.' },
-	{ q: 'What if I need to reschedule?', a: 'Just call us. We will find a new time that works for you.' },
-];
+// The address comes from Practice info; the other details from the Studio.
+const details = [{ label: 'Address', value: address.join(', ') }, ...page.details];
 
 const photoFrame = 'overflow-hidden rounded-2xl bg-mist';
 ---
 
-<Layout title="Your First Visit | Torrey Hills Orthodontics" description="What to expect at your free orthodontic consultation with Dr. Judy Lee in Carmel Valley: about an hour, a 3D scan, your plan, and your quote." image={officePhoto} solidHeader>
+<Layout title={page.seo.title} description={page.seo.description} image={officePhoto} solidHeader>
 	<main class="bg-white text-ink">
 		<!-- Hero: the promise up top, then the office itself, full width -->
 		<section class="px-5 pt-28 pb-8 sm:px-7 lg:pt-36 lg:pb-12">
@@ -103,13 +71,12 @@ const photoFrame = 'overflow-hidden rounded-2xl bg-mist';
 							<span aria-current="page" class="text-ink">First visit</span>
 						</nav>
 						<h1 class="mt-6 text-[2.75rem] leading-[1.02] font-normal tracking-[-0.02em] text-balance sm:text-[clamp(3.5rem,6vw,5.5rem)]">
-							Your first visit, start to finish.
+							{page.headline}
 						</h1>
 					</div>
 					<div class="lg:col-span-4 lg:col-start-9">
 						<p class="max-w-md text-base leading-relaxed text-ink/75 sm:text-lg">
-							Here's exactly what happens at your free consultation, minute by minute, so you can walk in knowing
-							what to expect.
+							{page.intro}
 						</p>
 						<a href={url(bookHref)} class:list={[buttonInk, 'mt-7']}>
 							Book your first visit
@@ -128,7 +95,7 @@ const photoFrame = 'overflow-hidden rounded-2xl bg-mist';
 						class="aspect-[4/3] w-full object-cover sm:aspect-[21/9]"
 					/>
 				</div>
-				<FactsStrip {facts} class="mt-10 lg:mt-12" />
+				<FactsStrip facts={page.facts} class="mt-10 lg:mt-12" />
 			</div>
 		</section>
 
@@ -138,7 +105,7 @@ const photoFrame = 'overflow-hidden rounded-2xl bg-mist';
 		-->
 		<section aria-labelledby="itinerary-heading" class={section} data-itinerary>
 			<div class={sectionInnerFirst}>
-				<h2 id="itinerary-heading" class:list={[h2, 'max-w-2xl']}>The visit, minute by minute.</h2>
+				<h2 id="itinerary-heading" class:list={[h2, 'max-w-2xl']}>{page.itineraryHeading}</h2>
 				<div class="mt-12 grid gap-12 lg:mt-16 lg:grid-cols-12 lg:gap-8">
 					<ol class="lg:col-span-6">
 						{
@@ -192,14 +159,14 @@ const photoFrame = 'overflow-hidden rounded-2xl bg-mist';
 			<div class={sectionInner}>
 				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
 					<div class="lg:col-span-4">
-						<h2 id="checklist-heading" class={h2}>Before you come.</h2>
+						<h2 id="checklist-heading" class={h2}>{page.checklistHeading}</h2>
 						<p class="mt-5 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">
-							A few things to bring, so the visit is all about you, not paperwork. Tick them off as you go.
+							{page.checklistIntro}
 						</p>
 					</div>
 					<ul class="grid gap-x-8 border-b border-ink/10 sm:grid-cols-2 lg:col-span-8">
 						{
-							checklist.map((c, i) => (
+							page.checklist.map((c, i) => (
 								<li class="border-t border-ink/10">
 									<label class="group flex cursor-pointer gap-4 py-5 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ink">
 										<input type="checkbox" id={`check-${i}`} class="peer sr-only" />
@@ -227,7 +194,7 @@ const photoFrame = 'overflow-hidden rounded-2xl bg-mist';
 		<!-- A look inside: photography carries this section -->
 		<section aria-labelledby="inside-heading" class={section}>
 			<div class={sectionInner}>
-				<h2 id="inside-heading" class:list={[h2, 'max-w-2xl']}>A look inside.</h2>
+				<h2 id="inside-heading" class:list={[h2, 'max-w-2xl']}>{page.insideHeading}</h2>
 				<ul class="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-3 lg:mt-16">
 					{
 						inside.map((p, i) => (
@@ -248,12 +215,12 @@ const photoFrame = 'overflow-hidden rounded-2xl bg-mist';
 			<div class={sectionInner}>
 				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
 					<div class="lg:col-span-4">
-						<h2 id="leave-heading" class={h2}>What you'll leave with.</h2>
-						<p class="mt-5 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">No pressure to decide that day.</p>
+						<h2 id="leave-heading" class={h2}>{page.leaveHeading}</h2>
+						<p class="mt-5 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">{page.leaveIntro}</p>
 					</div>
 					<div class="grid gap-x-8 sm:grid-cols-2 lg:col-span-8">
 						{
-							takeaways.map((t) => (
+							page.takeaways.map((t) => (
 								<div class="border-t border-ink/10 py-6 sm:py-8">
 									<h3 class="text-xl tracking-[-0.01em]">{t.title}</h3>
 									<p class="mt-2 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">{t.body}</p>
@@ -273,12 +240,12 @@ const photoFrame = 'overflow-hidden rounded-2xl bg-mist';
 						<Image src={childPhoto} alt="A young patient smiling" widths={[640, 1000]} sizes="(min-width: 1024px) 50vw, 100vw" class="aspect-[4/3] w-full object-cover object-[50%_35%]" />
 					</div>
 					<div class="lg:col-span-5 lg:col-start-8">
-						<h2 id="child-heading" class={h2}>Bringing your child?</h2>
+						<h2 id="child-heading" class={h2}>{page.childHeading}</h2>
 						<p class="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-ink/75">
-							Many first visits are for kids around age 7. We keep it short, friendly, and easy.
+							{page.childIntro}
 						</p>
 						<ul class="mt-8 border-b border-ink/10">
-							{childNotes.map((n) => <li class="border-t border-ink/10 py-4 text-lg tracking-[-0.01em]">{n}</li>)}
+							{page.childNotes.map((n) => <li class="border-t border-ink/10 py-4 text-lg tracking-[-0.01em]">{n}</li>)}
 						</ul>
 						<a href={url('/treatments/kids')} class:list={[textLink, 'mt-8']}>
 							More about care for kids
@@ -293,7 +260,7 @@ const photoFrame = 'overflow-hidden rounded-2xl bg-mist';
 		<section aria-labelledby="here-heading" class={section}>
 			<div class={sectionInner}>
 				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
-					<h2 id="here-heading" class:list={[h2, 'lg:col-span-4']}>Getting here.</h2>
+					<h2 id="here-heading" class:list={[h2, 'lg:col-span-4']}>{page.hereHeading}</h2>
 					<div class="lg:col-span-8">
 						<dl class="border-b border-ink/10">
 							{
@@ -323,16 +290,13 @@ const photoFrame = 'overflow-hidden rounded-2xl bg-mist';
 		<section aria-labelledby="faq-heading" class={section}>
 			<div class={sectionInner}>
 				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
-					<h2 id="faq-heading" class:list={[h2, 'lg:sticky lg:top-24 lg:col-span-4 lg:self-start']}>First visit questions.</h2>
-					<Accordion items={faqs} openFirst={false} class="lg:col-span-8 lg:col-start-5" />
+					<h2 id="faq-heading" class:list={[h2, 'lg:sticky lg:top-24 lg:col-span-4 lg:self-start']}>{page.faqHeading}</h2>
+					<Accordion items={page.faqs} openFirst={false} class="lg:col-span-8 lg:col-start-5" />
 				</div>
 			</div>
 		</section>
 
-		<ClosingCta
-			heading="Ready for your first visit?"
-			text="It's free, it takes about an hour, and you'll leave knowing exactly what's possible."
-		/>
+		<ClosingCta heading={page.closing} text={page.closingText} />
 	</main>
 </Layout>
 

@@ -1,9 +1,32 @@
 import { defineConfig } from 'sanity';
 import { defineLocations, presentationTool } from 'sanity/presentation';
 import { structureTool } from 'sanity/structure';
+import { allPages } from './pages';
 import { dataset, previewUrl, projectId } from './project';
 import { schemaTypes, singletonTypes } from './schemaTypes';
 import { structure } from './structure';
+
+// For the Preview tab: each page's document, matched by route (the site adds a trailing slash).
+const mainDocuments = allPages.map((p) => ({
+	route: p.route === '/' ? '/' : [p.route, `${p.route}/`],
+	filter: '_id == $id',
+	params: { id: p.id },
+}));
+// ...and, for each document type, the page(s) a document appears on.
+const pageFor = (id: string) => allPages.find((p) => p.id === id.replace(/^drafts\./, ''));
+const pageTypes = [...new Set(allPages.map((p) => p.type))];
+const locations = Object.fromEntries(
+	pageTypes.map((type) => [
+		type,
+		defineLocations({
+			select: { id: '_id' },
+			resolve: (doc) => {
+				const page = doc?.id ? pageFor(doc.id) : undefined;
+				return page ? { locations: [{ title: page.title, href: page.route === '/' ? '/' : `${page.route}/` }] } : null;
+			},
+		}),
+	]),
+);
 
 export default defineConfig({
 	name: 'default',
@@ -22,14 +45,10 @@ export default defineConfig({
 				previewMode: { enable: '/api/draft-mode/enable', shareAccess: false },
 			},
 			resolve: {
-				// Which document to open when a page is shown in the preview...
-				mainDocuments: [
-					{ route: '/', type: 'homePage' },
-					{ route: '/location', type: 'practiceSettings' },
-				],
-				// ...and which pages to offer when a document is open.
+				mainDocuments,
 				locations: {
-					homePage: defineLocations({ locations: [{ title: 'Homepage', href: '/' }] }),
+					...locations,
+					// Practice info appears on every page; offer the two where it's most visible.
 					practiceSettings: defineLocations({
 						locations: [
 							{ title: 'Office hours & location', href: '/location/' },

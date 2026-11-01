@@ -1,33 +1,11 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
+import { line, paragraph, section } from './fields';
 
 /*
 	The homepage's text, one group per section in page order. Photos, logos, button labels and the
 	small section labels stay in the site's code. Public marketing text only: never put patient
 	information in Sanity.
 */
-
-// A required one-line field. `max` warns (rather than blocks) when text may be too long for the layout.
-const line = (name: string, title: string, max: number, description?: string) =>
-	defineField({
-		name,
-		title,
-		type: 'string',
-		description,
-		validation: (rule) => [rule.required(), rule.max(max).warning(`Over ${max} characters may not fit the layout.`)],
-	});
-// A required paragraph field.
-const paragraph = (name: string, title: string, max: number, description?: string) =>
-	defineField({
-		name,
-		title,
-		type: 'text',
-		rows: 3,
-		description,
-		validation: (rule) => [rule.required(), rule.max(max).warning(`Over ${max} characters may not fit the layout.`)],
-	});
-// A collapsible group of fields for one section of the page.
-const section = (name: string, title: string, fields: ReturnType<typeof defineField>[]) =>
-	defineField({ name, title, type: 'object', options: { collapsible: true, collapsed: true }, fields });
 const card = (name: string, title: string) =>
 	defineField({
 		name,

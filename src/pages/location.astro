@@ -4,24 +4,20 @@ import ClosingCta from '../components/ClosingCta.astro';
 import Layout from '../layouts/Layout.astro';
 import { getPracticeInfo } from '../lib/contact';
 import { smallLabel, textLink } from '../lib/pageStyles';
+import { fetchDocument, type LocationPage } from '../lib/sanity';
 const { address, directionsUrl, email, hours, phone } = await getPracticeInfo(Astro.locals);
 
 /*
-	Office hours and location: the essentials, plainly. Hours and address come from lib/contact, so
-	they always match the homepage.
+	Office hours and location: the essentials, plainly. Hours and address come from Practice info, so
+	they always match the homepage; the rest is edited in Sanity Studio (Patient info → Location).
 	TODO: Confirm the parking, entrance, and accessibility details with the practice.
 */
+const page = await fetchDocument<LocationPage>('page-location', { draftMode: Astro.locals.draftMode, stega: true });
 // Google Maps' keyless embed. It loads Google's map (and its cookies) only when scrolled into view.
 const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(address.join(', '))}&output=embed`;
-
-const details = [
-	{ label: 'Parking', value: 'Free parking in the building lot.' },
-	{ label: 'Finding us', value: 'Suite 200, on the second floor. The elevator is just inside the lobby.' },
-	{ label: 'Accessibility', value: 'Step-free entrance and elevator access to the office.' },
-];
 ---
 
-<Layout title="Office Hours & Location | Torrey Hills Orthodontics" description="Torrey Hills Orthodontics is at 4765 Carmel Mountain Road, Suite 200, San Diego, CA 92130. Office hours, directions, parking, and phone." solidHeader>
+<Layout title={page.seo.title} description={page.seo.description} solidHeader>
 	<main class="bg-white text-ink">
 		<section class="px-5 pt-28 pb-24 sm:px-7 lg:pt-36 lg:pb-32">
 			<div class="mx-auto max-w-7xl">
@@ -31,7 +27,7 @@ const details = [
 					<span aria-current="page" class="text-ink">Office hours &amp; location</span>
 				</nav>
 				<h1 class="mt-6 text-[2.75rem] leading-[1.02] font-normal tracking-[-0.02em] sm:text-[clamp(3.5rem,6vw,5.5rem)]">
-					Find us in Carmel Valley.
+					{page.headline}
 				</h1>
 
 				<div class="mt-12 grid gap-12 lg:mt-16 lg:grid-cols-12 lg:gap-8">
@@ -99,7 +95,7 @@ const details = [
 				<!-- Getting here -->
 				<dl class="mt-16 grid gap-x-8 border-b border-ink/10 sm:grid-cols-3 lg:mt-24">
 					{
-						details.map((d) => (
+						page.details.map((d) => (
 							<div class="border-t border-ink/10 py-6">
 								<dt class={smallLabel}>{d.label}</dt>
 								<dd class="mt-2 max-w-xs text-[0.9375rem] leading-relaxed">{d.value}</dd>
@@ -110,9 +106,6 @@ const details = [
 			</div>
 		</section>
 
-		<ClosingCta
-			heading="Come see us."
-			text="Your first visit is free, takes about an hour, and you'll meet Dr. Lee herself."
-		/>
+		<ClosingCta heading={page.closing} text={page.closingText} />
 	</main>
 </Layout>

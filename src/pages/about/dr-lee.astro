@@ -7,6 +7,7 @@ import Layout from '../../layouts/Layout.astro';
 import { buttonArrow, buttonInk } from '../../lib/buttons';
 import { bookHref } from '../../lib/nav';
 import { h2, section, sectionInner, sectionInnerFirst, smallLabel, textLink } from '../../lib/pageStyles';
+import { fetchDocument, type DrLeePage } from '../../lib/sanity';
 import { url } from '../../lib/url';
 // TODO: Placeholder stock photos (not Dr. Lee). Swap for real portraits of Dr. Lee.
 import portrait from '../../assets/about-doctor.jpg';
@@ -18,42 +19,17 @@ import officePhoto from '../../assets/about-office.jpg';
 	facts about a real person; nothing here may be invented. Dr. Lee should supply and approve every
 	detail, including whether she is board certified by the American Board of Orthodontics.
 */
-const facts = [
-	{ label: 'Specialty', value: 'Orthodontics' },
-	{ label: 'In practice since', value: '[Year]' },
-	{ label: 'Board certified', value: '[Confirm: American Board of Orthodontics]' },
-	{ label: 'Sees every patient', value: 'Herself, at every visit' },
-];
-
-const approach = [
-	{ title: 'With you at every visit', body: 'Dr. Lee sees every patient herself, from the first consultation to the final retainer check. No hand-offs.' },
-	{ title: 'Plans you can understand', body: 'She walks you through what she sees and every option, in plain language, so you can decide with confidence.' },
-	{ title: 'Care that fits your life', body: 'Treatment planned around school, work, and family, with the most discreet options that will work for you.' },
-];
-
-// Each item: when, what, where. Bracketed values are placeholders for Dr. Lee to fill in.
-const timeline = [
-	{ year: '[Year]', title: 'Undergraduate degree', place: '[University], [Degree]' },
-	{ year: '[Year]', title: 'Dental school', place: '[Dental school], [DDS or DMD]' },
-	{ year: '[Year]', title: 'Orthodontic residency', place: '[Program], Certificate in Orthodontics' },
-	{ year: '[Year]', title: 'Board certification', place: '[Confirm: American Board of Orthodontics]' },
-	{ year: '[Year]', title: 'Torrey Hills Orthodontics', place: 'Opened her practice in Carmel Valley' },
-];
-
-const credentials = [
-	{ org: 'American Board of Orthodontics', role: '[Confirm: Board certified diplomate]', since: '[Year]' },
-	{ org: 'American Association of Orthodontists', role: '[Confirm: Member]', since: '[Year]' },
-	{ org: 'Dental Board of California', role: 'Licensed, license no. [number]', since: '[Year]' },
-	{ org: 'California Dental Association', role: '[Confirm: Member]', since: '[Year]' },
-	{ org: 'San Diego County Dental Society', role: '[Confirm: Member]', since: '[Year]' },
-	{ org: 'Invisalign', role: '[Confirm: Provider level]', since: '[Year]' },
-];
+// The page's text is edited in Sanity Studio (About → Meet Dr. Lee); the photos stay here.
+const page = await fetchDocument<DrLeePage>('page-dr-lee', { draftMode: Astro.locals.draftMode, stega: true });
+const { facts, approach, timeline, credentials } = page;
 
 // Render "[...]" values as highlighted placeholders.
 const isPlaceholder = (v: string) => v.includes('[');
+// For longer text: split out each "[...]" so only the placeholder itself is highlighted.
+const parts = (text: string) => text.split(/(\[[^\]]+\])/).filter(Boolean);
 ---
 
-<Layout title="Meet Dr. Judy Lee | Torrey Hills Orthodontics" description="Meet Dr. Judy Lee, the orthodontist behind Torrey Hills Orthodontics in Carmel Valley, San Diego, who plans every treatment and sees every patient herself." image={portrait} solidHeader>
+<Layout title={page.seo.title} description={page.seo.description} image={portrait} solidHeader>
 	<main class="bg-white text-ink">
 		<!-- Hero: a large portrait beside her name and a short introduction -->
 		<section class="px-5 pt-28 pb-8 sm:px-7 lg:pt-36 lg:pb-12">
@@ -76,12 +52,11 @@ const isPlaceholder = (v: string) => v.includes('[');
 							<span aria-current="page" class="text-ink">Meet Dr. Lee</span>
 						</nav>
 						<h1 class="mt-6 text-[2.75rem] leading-[1.02] font-normal tracking-[-0.02em] sm:text-[clamp(3.5rem,6vw,5.5rem)]">
-							Dr. Judy Lee
+							{page.name}
 						</h1>
-						<p class="mt-3 text-lg text-ink/70">Orthodontist, <mark>[DDS or DMD, MS]</mark></p>
+						<p class="mt-3 text-lg text-ink/70">{parts(page.credentialsLine).map((p) => (p.startsWith('[') ? <mark>{p}</mark> : p))}</p>
 						<p class="mt-8 max-w-md text-base leading-relaxed text-ink/75 sm:text-lg">
-							Dr. Lee founded Torrey Hills Orthodontics to give Carmel Valley families something rare: an orthodontist who
-							knows every patient personally, plans every smile herself, and is there at every visit.
+							{page.intro}
 						</p>
 						<a href={url(bookHref)} class:list={[buttonInk, 'mt-9']}>
 							Meet her at a free consultation
@@ -98,9 +73,9 @@ const isPlaceholder = (v: string) => v.includes('[');
 			<div class={sectionInnerFirst}>
 				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
 					<div class="lg:col-span-4">
-						<h2 id="approach-heading" class={h2}>Her approach.</h2>
+						<h2 id="approach-heading" class={h2}>{page.approachHeading}</h2>
 						<p class="mt-5 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">
-							<mark>[A few sentences in Dr. Lee's own words about why she became an orthodontist and what she loves about it.]</mark>
+							{parts(page.approachIntro).map((p) => (p.startsWith('[') ? <mark>{p}</mark> : p))}
 						</p>
 					</div>
 					<div class="grid gap-x-8 sm:grid-cols-3 lg:col-span-8">
@@ -120,7 +95,7 @@ const isPlaceholder = (v: string) => v.includes('[');
 		<!-- Education: a horizontal timeline on desktop, vertical on phones -->
 		<section aria-labelledby="education-heading" class={section}>
 			<div class={sectionInner}>
-				<h2 id="education-heading" class:list={[h2, 'max-w-2xl']}>Education and training.</h2>
+				<h2 id="education-heading" class:list={[h2, 'max-w-2xl']}>{page.educationHeading}</h2>
 				<ol class="mt-12 grid gap-y-10 lg:mt-16 lg:grid-cols-5 lg:gap-x-6">
 					{
 						timeline.map((t, i) => (
@@ -151,7 +126,7 @@ const isPlaceholder = (v: string) => v.includes('[');
 			<div class={sectionInner}>
 				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
 					<div class="lg:col-span-4">
-						<h2 id="credentials-heading" class={h2}>Certifications and memberships.</h2>
+						<h2 id="credentials-heading" class={h2}>{page.credentialsHeading}</h2>
 						<a href="https://search.dca.ca.gov/" target="_blank" rel="noopener noreferrer" class:list={[textLink, 'mt-8']}>
 							Verify her license with the State of California<span class="sr-only"> (opens in a new tab)</span>
 							<ArrowIcon size={11} class="-rotate-45 text-accent transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
@@ -184,9 +159,9 @@ const isPlaceholder = (v: string) => v.includes('[');
 						<Image src={officePhoto} alt="The office in Carmel Valley" widths={[640, 1000]} sizes="(min-width: 1024px) 50vw, 100vw" class="aspect-[4/3] w-full object-cover" />
 					</div>
 					<div class="lg:col-span-5 lg:col-start-8">
-						<h2 id="outside-heading" class={h2}>Outside the office.</h2>
+						<h2 id="outside-heading" class={h2}>{page.outsideHeading}</h2>
 						<p class="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-ink/75">
-							<mark>[A short, personal paragraph: family, where she grew up, hobbies, or community involvement in Carmel Valley.]</mark>
+							{parts(page.outsideText).map((p) => (p.startsWith('[') ? <mark>{p}</mark> : p))}
 						</p>
 						<a href={url('/first-visit')} class:list={[textLink, 'mt-8']}>
 							See what your first visit with her is like
@@ -197,6 +172,6 @@ const isPlaceholder = (v: string) => v.includes('[');
 			</div>
 		</section>
 
-		<ClosingCta heading="Meet Dr. Lee in person." text="Your free consultation is with Dr. Lee herself. Come see what's possible for your smile." />
+		<ClosingCta heading={page.closing} text={page.closingText} />
 	</main>
 </Layout>

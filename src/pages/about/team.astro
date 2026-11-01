@@ -4,6 +4,8 @@ import ArrowIcon from '../../components/ArrowIcon.astro';
 import ClosingCta from '../../components/ClosingCta.astro';
 import Layout from '../../layouts/Layout.astro';
 import { h2, section, sectionInner, sectionInnerFirst, smallLabel, textLink } from '../../lib/pageStyles';
+import { stegaClean } from '@sanity/client/stega';
+import { fetchDocument, type TeamPage } from '../../lib/sanity';
 import { url } from '../../lib/url';
 /*
 	Our Team: a wide team photo, then one section per person, alternating photo sides.
@@ -18,60 +20,22 @@ import drLeePhoto from '../../assets/about-doctor.jpg';
 import memberTwoPhoto from '../../assets/gallery-sarah.png';
 import memberThreePhoto from '../../assets/gallery-marcus.png';
 
-type Member = {
-	name: string;
-	role: string;
-	since: string;
-	photo: ImageMetadata;
-	focus: string;
-	// Paragraphs; text inside [brackets] renders as a highlighted placeholder.
-	blurb: string[];
-	link?: { label: string; href: string };
-};
-
-const members: Member[] = [
-	{
-		name: 'Dr. Judy Lee',
-		role: 'Orthodontist and founder',
-		since: '[Year]',
-		photo: drLeePhoto,
-		focus: 'object-[50%_30%]',
-		blurb: [
-			'Dr. Lee founded Torrey Hills Orthodontics so every patient would have one orthodontist who knows them personally. She plans every treatment herself and is there at every visit, from the first scan to the final retainer check.',
-			'[A sentence about what Dr. Lee loves most about her work.]',
-		],
-		link: { label: "Read Dr. Lee's full story", href: '/about/dr-lee' },
-	},
-	{
-		name: '[Name]',
-		role: '[Treatment Coordinator]',
-		since: '[Year]',
-		photo: memberTwoPhoto,
-		focus: 'object-[50%_28%]',
-		blurb: [
-			'Often the first person you meet, [Name] walks new patients through their visit, explains treatment options and costs, and makes sure insurance and payment plans are sorted before anything begins.',
-			'[A personal detail, such as where they grew up, a hobby, or a favorite part of the job.]',
-		],
-	},
-	{
-		name: '[Name]',
-		role: '[Orthodontic Assistant]',
-		since: '[Year]',
-		photo: memberThreePhoto,
-		focus: 'object-[50%_22%]',
-		blurb: [
-			'[Name] works chairside with Dr. Lee, taking scans and photos, fitting appliances, and making every adjustment visit quick and comfortable, especially for younger patients.',
-			'[A personal detail, such as where they grew up, a hobby, or a favorite part of the job.]',
-		],
-	},
+// The page's text is edited in Sanity Studio (About → Our team). Each person's photo stays here,
+// matched in order; a person added in the Studio reuses these from the start until theirs is added.
+const page = await fetchDocument<TeamPage>('page-team', { draftMode: Astro.locals.draftMode, stega: true });
+const photos = [
+	{ photo: drLeePhoto, focus: 'object-[50%_30%]' },
+	{ photo: memberTwoPhoto, focus: 'object-[50%_28%]' },
+	{ photo: memberThreePhoto, focus: 'object-[50%_22%]' },
 ];
+const members = page.members.map((m, i) => ({ ...m, ...photos[i % photos.length] }));
 
 // Split "[...]" placeholders out of a string so they can render highlighted.
 const parts = (text: string) => text.split(/(\[[^\]]+\])/).filter(Boolean);
 const isPlaceholder = (text: string) => text.startsWith('[');
 ---
 
-<Layout title="Our Team | Torrey Hills Orthodontics" description="Meet the small, friendly team at Torrey Hills Orthodontics in Carmel Valley, San Diego." image={teamPhoto} solidHeader>
+<Layout title={page.seo.title} description={page.seo.description} image={teamPhoto} solidHeader>
 	<main class="bg-white text-ink">
 		<!-- Hero: the team together, full width -->
 		<section class="px-5 pt-28 pb-8 sm:px-7 lg:pt-36 lg:pb-12">
@@ -84,11 +48,11 @@ const isPlaceholder = (text: string) => text.startsWith('[');
 							<span aria-current="page" class="text-ink">Our team</span>
 						</nav>
 						<h1 class="mt-6 text-[2.75rem] leading-[1.02] font-normal tracking-[-0.02em] text-balance sm:text-[clamp(3.5rem,6vw,5.5rem)]">
-							The people behind your smile.
+							{page.headline}
 						</h1>
 					</div>
 					<p class="max-w-md text-base leading-relaxed text-ink/75 sm:text-lg lg:col-span-4 lg:col-start-9">
-						A small team, on purpose. You'll see the same friendly faces at every visit, and they'll know your name.
+						{page.intro}
 					</p>
 				</div>
 				<div class="mt-12 overflow-hidden rounded-2xl bg-mist lg:mt-16">
@@ -113,7 +77,7 @@ const isPlaceholder = (text: string) => text.startsWith('[');
 							<div class:list={['overflow-hidden rounded-2xl bg-mist lg:col-span-5', i % 2 === 1 && 'lg:order-2 lg:col-start-8']}>
 								<Image
 									src={m.photo}
-									alt={isPlaceholder(m.name) ? 'Team member portrait' : m.name}
+									alt={isPlaceholder(m.name) ? 'Team member portrait' : stegaClean(m.name)}
 									widths={[480, 900]}
 									sizes="(min-width: 1024px) 40vw, 100vw"
 									class:list={['aspect-[4/5] w-full object-cover', m.focus]}
@@ -134,7 +98,7 @@ const isPlaceholder = (text: string) => text.startsWith('[');
 								<p class="mt-6 text-sm text-ink/60">
 									With the practice since {isPlaceholder(m.since) ? <mark>{m.since}</mark> : m.since}
 								</p>
-								{m.link && (
+								{m.link?.label && m.link.href && (
 									<a href={url(m.link.href)} class:list={[textLink, 'mt-8']}>
 										{m.link.label}
 										<ArrowIcon size={11} class="text-accent transition-transform motion-safe:group-hover:translate-x-0.5" />
@@ -147,6 +111,6 @@ const isPlaceholder = (text: string) => text.startsWith('[');
 			))
 		}
 
-		<ClosingCta heading="Come meet us." text="Your free consultation is the best way to meet the team, and Dr. Lee herself." />
+		<ClosingCta heading={page.closing} text={page.closingText} />
 	</main>
 </Layout>

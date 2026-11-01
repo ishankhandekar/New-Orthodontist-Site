@@ -5,6 +5,7 @@ import ClosingCta from '../../components/ClosingCta.astro';
 import FactsStrip from '../../components/FactsStrip.astro';
 import Layout from '../../layouts/Layout.astro';
 import { h2, section, sectionInner, sectionInnerFirst, smallLabel, textLink } from '../../lib/pageStyles';
+import { fetchDocument, type OfficePage } from '../../lib/sanity';
 import { url } from '../../lib/url';
 /*
 	Office & Tech: the space, then the tools. The technology section contrasts "the old way" with how
@@ -19,55 +20,20 @@ import scanPhoto from '../../assets/treatment-invisalign.jpg';
 import planPhoto from '../../assets/treatment-jaw.jpg';
 import doctorPhoto from '../../assets/about-doctor.jpg';
 
-const spaces = [
-	{ name: 'Reception', body: 'Bright and quiet, with no clipboard waiting for you.', photo: loungePhoto, alt: 'A bright, relaxed seating area', focus: 'object-[50%_60%]' },
-	{ name: 'Treatment area', body: 'Calm, private chairs where Dr. Lee sees every patient.', photo: officePhoto, alt: 'A treatment room in the office', focus: 'object-center' },
-	{ name: 'Consultation room', body: 'Where you sit down with Dr. Lee to talk through your plan.', photo: doctorPhoto, alt: 'Dr. Lee in the consultation room', focus: 'object-[50%_30%]' },
-	{ name: 'Lab and records', body: 'Where scans become models, aligners, and appliances.', photo: planPhoto, alt: 'A dental model made from a 3D scan', focus: 'object-[50%_62%]' },
+// The page's text is edited in Sanity Studio (About → Office & tech). Each room's photo stays
+// here, matched in order.
+const page = await fetchDocument<OfficePage>('page-office', { draftMode: Astro.locals.draftMode, stega: true });
+const spacePhotos = [
+	{ photo: loungePhoto, alt: 'A bright, relaxed seating area', focus: 'object-[50%_60%]' },
+	{ photo: officePhoto, alt: 'A treatment room in the office', focus: 'object-center' },
+	{ photo: doctorPhoto, alt: 'Dr. Lee in the consultation room', focus: 'object-[50%_30%]' },
+	{ photo: planPhoto, alt: 'A dental model made from a 3D scan', focus: 'object-[50%_62%]' },
 ];
-
-const tech = [
-	{
-		name: '3D digital scanning',
-		model: '[Scanner model, e.g. iTero]',
-		before: 'Trays of goopy impression material, held in your mouth for minutes.',
-		now: 'A quick, comfortable 3D scan. No gagging, no mess, and a perfect digital model of your teeth.',
-	},
-	{
-		name: 'Digital X-rays',
-		model: '[X-ray system]',
-		before: 'Film X-rays, developed in a darkroom, with a wait for results.',
-		now: 'Low-dose digital images that appear on screen in seconds, so Dr. Lee can show you what she sees.',
-	},
-	{
-		name: 'Treatment previews',
-		model: '[Software, e.g. Invisalign ClinCheck]',
-		before: 'Imagining the result from a description.',
-		now: 'A 3D preview of how your teeth will move and what your finished smile could look like, before you start.',
-	},
-	{
-		name: 'Digital records',
-		model: '[Practice software]',
-		before: 'Paper charts and plaster models on a shelf.',
-		now: 'Your scans, photos, and progress in one place, ready for every visit and easy to share with your dentist.',
-	},
-	{
-		name: 'Online forms and reminders',
-		model: '[Forms and reminder service]',
-		before: 'Clipboards in the waiting room and calls to confirm.',
-		now: 'Forms you fill out from your phone before your visit, and text reminders so nothing gets missed.',
-	},
-];
-
-const comfort = [
-	{ label: 'Sterilization', value: 'Every instrument, every time' },
-	{ label: 'Wi-Fi', value: 'Free, for patients and families' },
-	{ label: 'Comfort', value: '[Amenities, e.g. headphones, blankets]' },
-	{ label: 'Accessibility', value: 'Step-free, with elevator access' },
-];
+const spaces = page.spaces.map((s, i) => ({ ...s, ...spacePhotos[i % spacePhotos.length] }));
+const { tech, comfort } = page;
 ---
 
-<Layout title="Office & Technology | Torrey Hills Orthodontics" description="Inside Torrey Hills Orthodontics in Carmel Valley: a calm office with 3D digital scanning, digital X-rays, and treatment previews." image={officePhoto} solidHeader>
+<Layout title={page.seo.title} description={page.seo.description} image={officePhoto} solidHeader>
 	<main class="bg-white text-ink">
 		<!-- Hero: the promise, then an uneven three-photo layout -->
 		<section class="px-5 pt-28 pb-8 sm:px-7 lg:pt-36 lg:pb-12">
@@ -80,12 +46,11 @@ const comfort = [
 							<span aria-current="page" class="text-ink">Office &amp; tech</span>
 						</nav>
 						<h1 class="mt-6 text-[2.75rem] leading-[1.02] font-normal tracking-[-0.02em] text-balance sm:text-[clamp(3.5rem,6vw,5.5rem)]">
-							A calm space, with modern tools.
+							{page.headline}
 						</h1>
 					</div>
 					<p class="max-w-md text-base leading-relaxed text-ink/75 sm:text-lg lg:col-span-4 lg:col-start-9">
-						Our Carmel Valley office is designed to feel relaxed, and equipped so every visit is quicker, more
-						comfortable, and more precise.
+						{page.intro}
 					</p>
 				</div>
 
@@ -106,7 +71,7 @@ const comfort = [
 		<!-- The space -->
 		<section aria-labelledby="space-heading" class={section}>
 			<div class={sectionInnerFirst}>
-				<h2 id="space-heading" class:list={[h2, 'max-w-2xl']}>The space.</h2>
+				<h2 id="space-heading" class:list={[h2, 'max-w-2xl']}>{page.spaceHeading}</h2>
 				<ul class="mt-12 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
 					{
 						spaces.map((s) => (
@@ -127,9 +92,9 @@ const comfort = [
 		<section aria-labelledby="tech-heading" class={section}>
 			<div class={sectionInner}>
 				<div class="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
-					<h2 id="tech-heading" class:list={[h2, 'lg:col-span-6']}>The technology, and what it means for you.</h2>
+					<h2 id="tech-heading" class:list={[h2, 'lg:col-span-6']}>{page.techHeading}</h2>
 					<p class="max-w-md text-[0.9375rem] leading-relaxed text-ink/75 lg:col-span-5 lg:col-start-8">
-						Orthodontics has changed a lot. Here's what's different about a visit with us.
+						{page.techIntro}
 					</p>
 				</div>
 
@@ -145,8 +110,9 @@ const comfort = [
 							<li class="grid gap-4 border-t border-ink/10 py-7 lg:grid-cols-12 lg:gap-8 lg:py-8 lg:first:border-t-0">
 								<div class="lg:col-span-3">
 									<h3 class="text-xl tracking-[-0.01em]">{t.name}</h3>
+									<!-- Highlighted only while it's still a [placeholder]. -->
 									<p class="mt-1.5 text-sm text-ink/60">
-										<mark>{t.model}</mark>
+										{t.model.includes('[') ? <mark>{t.model}</mark> : t.model}
 									</p>
 								</div>
 								<p class="text-[0.9375rem] leading-relaxed text-ink/50 lg:col-span-4">
@@ -172,17 +138,17 @@ const comfort = [
 		<section aria-labelledby="comfort-heading" class={section}>
 			<div class={sectionInner}>
 				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
-					<h2 id="comfort-heading" class:list={[h2, 'lg:col-span-4']}>Comfort and care.</h2>
+					<h2 id="comfort-heading" class:list={[h2, 'lg:col-span-4']}>{page.comfortHeading}</h2>
 					<div class="lg:col-span-8">
 						<FactsStrip facts={comfort} />
 						<p class="mt-6 max-w-xl text-sm leading-relaxed text-ink/60">
-							Instruments are cleaned and sterilized between every patient, following CDC infection-control guidelines.
+							{page.sterilizationNote}
 						</p>
 					</div>
 				</div>
 			</div>
 		</section>
 
-		<ClosingCta heading="See it for yourself." text="Your free consultation includes a 3D scan, so you'll experience the technology firsthand." />
+		<ClosingCta heading={page.closing} text={page.closingText} />
 	</main>
 </Layout>

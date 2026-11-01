@@ -1,7 +1,7 @@
 // The practice's contact details, shared so every place that shows them stays in sync. They're edited
 // in Sanity Studio ("Practice info"). Use in a page or component:
 //   const { phone, hours } = await getPracticeInfo(Astro.locals);
-import { fetchSingleton, type PracticeSettings } from './sanity';
+import { fetchDocument, type PracticeSettings } from './sanity';
 
 // One fetch per page render (or per preview request), however many components ask.
 const cache = new WeakMap<App.Locals, ReturnType<typeof load>>();
@@ -17,7 +17,7 @@ export function getPracticeInfo(locals: App.Locals) {
 
 async function load(draftMode: boolean) {
 	// No hidden field markers here: these values go into links, copy buttons and Google's data.
-	const settings = await fetchSingleton<PracticeSettings>('practiceSettings', { draftMode });
+	const settings = await fetchDocument<PracticeSettings>('practiceSettings', { draftMode });
 
 	// Studio checks the number has 10 digits (optionally led by a 1), so the link is always +1 and 10 digits.
 	const phoneDigits = settings.phone.replace(/\D/g, '').slice(-10);

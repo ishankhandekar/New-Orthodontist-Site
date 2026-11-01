@@ -7,6 +7,7 @@ import Layout from '../layouts/Layout.astro';
 import { buttonArrow, buttonInk } from '../lib/buttons';
 import { bookHref } from '../lib/nav';
 import { h2, section, sectionInner, smallLabel, textLink } from '../lib/pageStyles';
+import { fetchDocument, type FinancingPage } from '../lib/sanity';
 import { url } from '../lib/url';
 
 /*
@@ -17,66 +18,9 @@ import { url } from '../lib/url';
 	includes, the plan lengths and down payments they offer, accepted cards, HSA/FSA, and whether
 	first retainers are included, before launch.
 */
-const promises = [
-	{ title: 'One all-inclusive quote', body: 'The price we quote is the price you pay, even if treatment takes longer.' },
-	{ title: '0% interest payment plans', body: 'Spread payments across your treatment with no interest and no hidden fees.' },
-	{ title: 'Insurance, handled', body: 'We check your benefits, file the claims, and track the payments for you.' },
-];
-
-const included = [
-	{ item: 'Consultation and 3D scan', value: 'Free' },
-	{ item: 'Your custom treatment plan', value: 'Included' },
-	{ item: 'Braces or aligners', value: 'Included' },
-	{ item: 'Every adjustment visit', value: 'Included' },
-	{ item: 'Emergency visits during treatment', value: 'Included' },
-	{ item: 'Your first set of retainers', value: 'Included' },
-	{ item: 'Retainer check-ins for the first year', value: 'Included' },
-];
-
-const insuranceSteps = [
-	{ label: 'Before treatment', title: 'We check your benefits', body: "Share your plan details and we'll confirm your orthodontic coverage, so your quote shows your real share." },
-	{ label: 'During treatment', title: 'We file the claims', body: 'We submit the paperwork and follow up with your insurer. Most pay their share in installments.' },
-	{ label: 'Your share', title: 'You pay only the rest', body: 'Whatever insurance does not cover can go on a 0% interest monthly plan.' },
-];
-
-const glossary = [
-	{ term: 'Orthodontic benefit', def: 'The part of a dental plan that covers braces or aligners. Not every plan includes one.' },
-	{ term: 'Lifetime maximum', def: 'The most your plan will ever pay toward orthodontics. It is usually separate from your regular dental maximum.' },
-	{ term: 'Coinsurance', def: "Your plan's share of the cost, often around half for orthodontics, up to the lifetime maximum." },
-	{ term: 'Age limit', def: 'Some plans only cover orthodontics for children under a certain age, often 19.' },
-	{ term: 'Deductible', def: 'What you pay before insurance starts paying. Many plans do not apply one to orthodontics.' },
-	{ term: 'Installment payments', def: 'Insurers often pay their share over the course of treatment rather than all at once.' },
-];
-
-const waysToPay = [
-	{ label: 'Monthly plans', value: '0% interest' },
-	{ label: 'Pay in full', value: 'Ask about savings' },
-	{ label: 'HSA and FSA', value: 'Accepted' },
-	{ label: 'Cards', value: 'All major cards' },
-];
-
-const faqs = [
-	{
-		q: 'Is the first consultation really free?',
-		a: 'Yes. The scan, the sit-down with Dr. Lee, and your written quote cost nothing, with no obligation to start.',
-	},
-	{
-		q: 'Will my price change if treatment takes longer?',
-		a: 'No. Your quote is all-inclusive. If treatment runs longer than planned, the extra visits are on us.',
-	},
-	{
-		q: 'Do your payment plans charge interest?',
-		a: 'No. Our in-house plans are 0% interest, with no hidden fees. You will see the exact monthly amount before you sign.',
-	},
-	{
-		q: 'Can I use my HSA or FSA?',
-		a: 'Yes. Orthodontic treatment is generally a qualified medical expense, and we can provide the receipts you need.',
-	},
-	{
-		q: "What if my insurance doesn't cover orthodontics?",
-		a: 'Many patients start without coverage. A 0% interest monthly plan spreads the cost across treatment.',
-	},
-];
+// The page's text is edited in Sanity Studio (Patient info → Financial & insurance). The calculator's
+// numbers below stay in code, since its script rebuilds the explanation line from them.
+const page = await fetchDocument<FinancingPage>('page-financing', { draftMode: Astro.locals.draftMode, stega: true });
 
 const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 // Calculator defaults (an illustration, not a price list).
@@ -84,7 +28,7 @@ const calc = { total: 5500, totalMin: 2500, totalMax: 9000, down: 500, downMax: 
 const monthly = (calc.total - calc.down) / calc.defaultMonths;
 ---
 
-<Layout title="Financial & Insurance | Torrey Hills Orthodontics" description="Clear, all-inclusive orthodontic pricing in Carmel Valley: one quote, 0% interest payment plans, and insurance handled for you. Try the payment calculator." solidHeader>
+<Layout title={page.seo.title} description={page.seo.description} solidHeader>
 	<main class="bg-white text-ink">
 		<!-- Hero: the promise, in words. No photo; this page is about clarity. -->
 		<section class="px-5 pt-28 pb-16 sm:px-7 lg:pt-36 lg:pb-24">
@@ -96,11 +40,15 @@ const monthly = (calc.total - calc.down) / calc.defaultMonths;
 						<span aria-current="page" class="text-ink">Financial &amp; insurance</span>
 					</nav>
 					<h1 class="mt-6 text-[2.75rem] leading-[1.02] font-normal tracking-[-0.02em] sm:text-[clamp(3.5rem,6vw,5.5rem)]">
-						Clear costs.<br />No surprises.
+						{page.headlineLines.map((line, i) => (
+							<>
+								{i > 0 && <br />}
+								{line}
+							</>
+						))}
 					</h1>
 					<p class="mt-7 max-w-md text-base leading-relaxed text-ink/75 sm:text-lg">
-						You'll know exactly what treatment costs, what insurance covers, and what you'll pay each month,
-						before anything begins.
+						{page.intro}
 					</p>
 					<a href={url(bookHref)} class:list={[buttonInk, 'mt-9']}>
 						Get your free quote
@@ -109,7 +57,7 @@ const monthly = (calc.total - calc.down) / calc.defaultMonths;
 				</div>
 				<ul class="self-end border-b border-ink/10 lg:col-span-5 lg:col-start-8">
 					{
-						promises.map((p) => (
+						page.promises.map((p) => (
 							<li class="border-t border-ink/10 py-6">
 								<h2 class="text-lg font-medium tracking-[-0.01em]">{p.title}</h2>
 								<p class="mt-1.5 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">{p.body}</p>
@@ -125,9 +73,9 @@ const monthly = (calc.total - calc.down) / calc.defaultMonths;
 			<div class={sectionInner}>
 				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
 					<div class="lg:col-span-4">
-						<h2 id="included-heading" class={h2}>What your quote includes.</h2>
+						<h2 id="included-heading" class={h2}>{page.includedHeading}</h2>
 						<p class="mt-5 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">
-							One price covers your whole treatment, from the first scan to your first retainers.
+							{page.includedIntro}
 						</p>
 					</div>
 					<div class="lg:col-span-7 lg:col-start-6">
@@ -136,7 +84,7 @@ const monthly = (calc.total - calc.down) / calc.defaultMonths;
 						</p>
 						<ul class="py-2">
 							{
-								included.map((row) => (
+								page.included.map((row) => (
 									<li class="flex items-baseline gap-3 py-3.5 text-[0.9375rem] sm:text-base">
 										<span>{row.item}</span>
 										<span class="mb-1 flex-1 border-b-2 border-dotted border-ink/30" aria-hidden="true" />
@@ -146,13 +94,12 @@ const monthly = (calc.total - calc.down) / calc.defaultMonths;
 							}
 						</ul>
 						<p class="flex items-baseline gap-3 border-y-2 border-ink py-5 text-lg font-medium tracking-[-0.01em] sm:text-xl">
-							<span>Surprise fees</span>
+							<span>{page.surpriseLabel}</span>
 							<span class="mb-1 flex-1 border-b-2 border-dotted border-ink/30" aria-hidden="true" />
-							<span class="tabular-nums">$0</span>
+							<span class="tabular-nums">{page.surpriseValue}</span>
 						</p>
 						<p class="mt-5 max-w-lg text-sm leading-relaxed text-ink/60">
-							Not included: replacement retainers or appliances that are lost or broken. We'll always tell you the price
-							before we make anything.
+							{page.notIncluded}
 						</p>
 					</div>
 				</div>
@@ -164,9 +111,9 @@ const monthly = (calc.total - calc.down) / calc.defaultMonths;
 			<div class={sectionInner}>
 				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
 					<div class="lg:col-span-4">
-						<h2 id="calc-heading" class={h2}>See what monthly payments could look like.</h2>
+						<h2 id="calc-heading" class={h2}>{page.calcHeading}</h2>
 						<p class="mt-5 max-w-sm text-[0.9375rem] leading-relaxed text-ink/75">
-							Move the sliders to see how a 0% interest plan breaks down. Your exact numbers come with your quote.
+							{page.calcIntro}
 						</p>
 					</div>
 					<form data-calc class="lg:col-span-7 lg:col-start-6" onsubmit="return false">
@@ -230,8 +177,7 @@ const monthly = (calc.total - calc.down) / calc.defaultMonths;
 							</p>
 						</div>
 						<p class="mt-6 text-xs leading-relaxed text-ink/50">
-							An example only, not a quote. Your price depends on your treatment and is confirmed in writing at your
-							free consultation.
+							{page.calcDisclaimer}
 						</p>
 					</form>
 				</div>
@@ -241,13 +187,13 @@ const monthly = (calc.total - calc.down) / calc.defaultMonths;
 		<!-- Insurance: who does what, as a horizontal before / during / after -->
 		<section aria-labelledby="insurance-heading" class={section}>
 			<div class={sectionInner}>
-				<h2 id="insurance-heading" class:list={[h2, 'max-w-2xl']}>We handle the insurance paperwork.</h2>
+				<h2 id="insurance-heading" class:list={[h2, 'max-w-2xl']}>{page.insuranceHeading}</h2>
 				<p class="mt-5 max-w-xl text-[0.9375rem] leading-relaxed text-ink/75">
-					We work with most major PPO plans. You don't need to call your insurer or fill out a single form.
+					{page.insuranceIntro}
 				</p>
 				<ol class="mt-12 grid gap-x-8 gap-y-10 md:grid-cols-3 lg:mt-16 lg:gap-x-10">
 					{
-						insuranceSteps.map((s, i) => (
+						page.insuranceSteps.map((s, i) => (
 							<li class="border-t-2 border-ink pt-5">
 								<p class={smallLabel}>{s.label}</p>
 								<h3 class="mt-4 text-xl tracking-[-0.01em]">
@@ -272,10 +218,10 @@ const monthly = (calc.total - calc.down) / calc.defaultMonths;
 		<section aria-labelledby="terms-heading" class={section}>
 			<div class={sectionInner}>
 				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
-					<h2 id="terms-heading" class:list={[h2, 'lg:col-span-4']}>Insurance terms, in plain English.</h2>
+					<h2 id="terms-heading" class:list={[h2, 'lg:col-span-4']}>{page.termsHeading}</h2>
 					<dl class="grid gap-x-10 sm:grid-cols-2 lg:col-span-8">
 						{
-							glossary.map((g) => (
+							page.glossary.map((g) => (
 								<div class="border-t border-ink/10 py-6">
 									<dt class="text-lg font-medium tracking-[-0.01em]">{g.term}</dt>
 									<dd class="mt-2 text-[0.9375rem] leading-relaxed text-ink/75">{g.def}</dd>
@@ -291,8 +237,8 @@ const monthly = (calc.total - calc.down) / calc.defaultMonths;
 		<section aria-labelledby="pay-heading" class={section}>
 			<div class={sectionInner}>
 				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
-					<h2 id="pay-heading" class:list={[h2, 'lg:col-span-4']}>Every way to pay.</h2>
-					<FactsStrip facts={waysToPay} class="lg:col-span-8" />
+					<h2 id="pay-heading" class:list={[h2, 'lg:col-span-4']}>{page.payHeading}</h2>
+					<FactsStrip facts={page.waysToPay} class="lg:col-span-8" />
 				</div>
 			</div>
 		</section>
@@ -300,16 +246,13 @@ const monthly = (calc.total - calc.down) / calc.defaultMonths;
 		<section aria-labelledby="faq-heading" class={section}>
 			<div class={sectionInner}>
 				<div class="grid gap-12 lg:grid-cols-12 lg:gap-8">
-					<h2 id="faq-heading" class:list={[h2, 'lg:sticky lg:top-24 lg:col-span-4 lg:self-start']}>Money questions, answered.</h2>
-					<Accordion items={faqs} openFirst={false} class="lg:col-span-8 lg:col-start-5" />
+					<h2 id="faq-heading" class:list={[h2, 'lg:sticky lg:top-24 lg:col-span-4 lg:self-start']}>{page.faqHeading}</h2>
+					<Accordion items={page.faqs} openFirst={false} class="lg:col-span-8 lg:col-start-5" />
 				</div>
 			</div>
 		</section>
 
-		<ClosingCta
-			heading="Get your exact numbers."
-			text="Your free consultation ends with a written, all-inclusive quote and an insurance estimate, so you can decide with everything in front of you."
-		/>
+		<ClosingCta heading={page.closing} text={page.closingText} />
 	</main>
 </Layout>
 
